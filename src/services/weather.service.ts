@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import { LocationData, WeatherResponse } from '../interfaces';
+import { LocationData, WeatherResponse } from '@/interfaces';
 import apiClient from './api.client';
 
 export const fetchCoordinates = async (): Promise<{ latitude: number; longitude: number }> => {

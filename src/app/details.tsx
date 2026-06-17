@@ -9,8 +9,8 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useFetchLocation, useFetchWeather } from '../hooks';
-import { weatherCodeToCondition, weatherCodeToSymbol } from '../utils/weatherMapper';
+import { useFetchLocation, useFetchWeather } from '@/hooks';
+import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
 
 export default function DetailsScreen() {
   const router = useRouter();

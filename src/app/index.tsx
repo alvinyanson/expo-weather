@@ -11,8 +11,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { useFetchLocation, useFetchWeather } from '../hooks';
-import { weatherCodeToCondition, weatherCodeToSymbol } from '../utils/weatherMapper';
+import { useFetchLocation, useFetchWeather } from '@/hooks';
+import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -25,7 +25,6 @@ export default function HomeScreen() {
     refetch: refetchLocation,
   } = useFetchLocation();
 
-  console.log('location', location);
   const {
     data: weather,
     isLoading: isLoadingWeather,

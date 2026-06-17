@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { LocationData } from '../interfaces';
-import { fetchLocation } from '../services/weather.service';
+import { LocationData } from '@/interfaces';
+import { fetchLocation } from '@/services';
 
 export const useFetchLocation = () => {
   return useQuery<LocationData, Error>({

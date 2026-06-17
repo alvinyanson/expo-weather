@@ -1,7 +1,7 @@
 import { create } from 'axios';
 
 const apiClient = create({
-  baseURL: 'https://api.open-meteo.com/v1',
+  baseURL: process.env.EXPO_PUBLIC_OPEN_METEO_API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
