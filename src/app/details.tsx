@@ -1,21 +1,73 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { FlatList, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { ForecastDay, MOCK_WEATHER } from '../data/mockWeather';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { useFetchLocation, useFetchWeather } from '../hooks';
+import { weatherCodeToCondition, weatherCodeToSymbol } from '../utils/weatherMapper';
 
 export default function DetailsScreen() {
   const router = useRouter();
 
-  const renderForecastItem = ({ item }: { item: ForecastDay }) => (
-    <View style={styles.forecastRow}>
-      <Text style={styles.forecastDay}>{item.day}</Text>
-      <SymbolView name={item.icon} size={24} tintColor="white" style={styles.forecastIcon} />
-      <View style={styles.tempRange}>
-        <Text style={styles.maxTemp}>{item.maxTemp}°</Text>
-        <Text style={styles.minTemp}>{item.minTemp}°</Text>
+  const { data: location, isLoading: isLoadingLocation } = useFetchLocation();
+  const { data: weather, isLoading: isLoadingWeather } = useFetchWeather(location);
+
+  const isLoading = isLoadingLocation || isLoadingWeather;
+
+  const renderForecastItem = ({ item, index }: { item: number; index: number }) => {
+    const date = new Date(weather!.daily.time[index]);
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+
+    return (
+      <View style={styles.forecastRow}>
+        <Text style={styles.forecastDay}>{dayName}</Text>
+        <SymbolView
+          name={weatherCodeToSymbol(weather!.daily.weather_code[index])}
+          size={24}
+          tintColor="white"
+          style={styles.forecastIcon}
+        />
+        <View style={styles.tempRange}>
+          <Text style={styles.maxTemp}>
+            {Math.round(weather!.daily.temperature_2m_max[index])}°
+          </Text>
+          <Text style={styles.minTemp}>
+            {Math.round(weather!.daily.temperature_2m_min[index])}°
+          </Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color="white" />
+          <Text style={styles.loadingText}>Loading details...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (!weather || !location) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.center}>
+          <Text style={styles.loadingText}>No weather data available.</Text>
+          <Pressable style={styles.retryButton} onPress={() => router.back()}>
+            <Text style={styles.retryText}>Go Back</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -33,30 +85,36 @@ export default function DetailsScreen() {
           />
         </Pressable>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerCity}>{MOCK_WEATHER.city}</Text>
-          <Text style={styles.headerCondition}>{MOCK_WEATHER.condition}</Text>
+          <Text style={styles.headerCity}>{location.city}</Text>
+          <Text style={styles.headerCondition}>
+            {weatherCodeToCondition(weather.current.weather_code)}
+          </Text>
         </View>
         <View style={{ width: 48 }} />
       </View>
 
       <View style={styles.summaryCard}>
         <View style={styles.summaryMain}>
-          <Text style={styles.summaryTemp}>{MOCK_WEATHER.temperature}°</Text>
-          <SymbolView name={MOCK_WEATHER.icon} size={60} tintColor="white" />
+          <Text style={styles.summaryTemp}>{Math.round(weather.current.temperature_2m)}°</Text>
+          <SymbolView
+            name={weatherCodeToSymbol(weather.current.weather_code)}
+            size={60}
+            tintColor="white"
+          />
         </View>
         <View style={styles.divider} />
         <View style={styles.summaryDetails}>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Humidity</Text>
-            <Text style={styles.detailValue}>64%</Text>
+            <Text style={styles.detailValue}>{weather.current.relative_humidity_2m}%</Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Wind</Text>
-            <Text style={styles.detailValue}>12 km/h</Text>
+            <Text style={styles.detailValue}>{weather.current.wind_speed_10m} km/h</Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>UV Index</Text>
-            <Text style={styles.detailValue}>Low</Text>
+            <Text style={styles.detailValue}>{Math.round(weather.daily.uv_index_max[0])}</Text>
           </View>
         </View>
       </View>
@@ -64,9 +122,9 @@ export default function DetailsScreen() {
       <View style={styles.forecastContainer}>
         <Text style={styles.forecastTitle}>8-Day Forecast</Text>
         <FlatList
-          data={MOCK_WEATHER.forecast}
+          data={weather.daily.weather_code}
           renderItem={renderForecastItem}
-          keyExtractor={(item, index) => `${item.day}-${index}`}
+          keyExtractor={(_, index) => weather.daily.time[index]}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.forecastList}
         />
@@ -79,6 +137,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1A237E',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    color: 'white',
+    marginTop: 10,
+    fontSize: 16,
+  },
+  retryButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 30,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 20,
+  },
+  retryText: {
+    color: 'white',
+    fontWeight: '600',
   },
   header: {
     flexDirection: 'row',
