@@ -44,17 +44,17 @@
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "npx expo run:android",
-    "ios": "npx expo run:ios",
-    "web": "npx expo run:web",
-    "lint": "npx expo lint",
-    "lint:fix": "npx expo lint --fix",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo run:web",
+    "lint": "expo lint",
+    "lint:fix": "expo lint --fix",
     "format": "prettier --write .",
     "prepare": "husky"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "npx expo lint --fix",
+      "expo lint --fix",
       "prettier --write"
     ],
     "*.{json,md,css}": [

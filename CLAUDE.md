@@ -7,13 +7,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm start          # expo start (Metro dev server; pick platform interactively)
-npm run android    # expo run:android (native build + launch)
-npm run ios        # expo run:ios
-npm run web        # expo run:web
-npm run lint       # expo lint
-npm run lint:fix   # expo lint --fix
-npm run format     # prettier --write .
+pnpm start          # expo start (Metro dev server; pick platform interactively)
+pnpm run android    # expo run:android (native build + launch)
+pnpm run ios        # expo run:ios
+pnpm run web        # expo run:web
+pnpm run lint       # expo lint
+pnpm run lint:fix   # expo lint --fix
+pnpm run format     # prettier --write .
 ```
 
 No test runner is configured. A pre-commit hook (husky + lint-staged) runs `expo lint --fix` and `prettier --write` on staged files, so commits auto-format/lint.
