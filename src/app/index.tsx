@@ -1,98 +1,138 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+import { useRouter } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
+import { useState } from 'react';
+import { Platform, Pressable, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { MOCK_WEATHER } from '../data/mockWeather';
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handlePressWeather = () => {
+    router.push('/details');
+  };
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <View style={styles.searchContainer}>
+        <View style={styles.searchCapsule}>
+          <SymbolView
+            name={{ ios: 'magnifyingglass', android: 'search' }}
+            size={18}
+            tintColor="rgba(255, 255, 255, 0.6)"
+            style={styles.searchIcon}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search city..."
+            placeholderTextColor="rgba(255, 255, 255, 0.6)"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
           />
-        </ThemedView>
+        </View>
+      </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <View style={styles.locationHeader}>
+        <Text style={styles.cityName}>{MOCK_WEATHER.city}</Text>
+        <Text style={styles.dateText}>Today, June 16</Text>
+      </View>
+
+      <Pressable
+        style={({ pressed }) => [styles.heroContainer, pressed && styles.heroPressed]}
+        onPress={handlePressWeather}
+        android_ripple={{ color: 'rgba(255, 255, 255, 0.1)', borderless: false }}
+      >
+        <SymbolView
+          name={MOCK_WEATHER.icon}
+          size={120}
+          tintColor="white"
+          type="monochrome"
+          style={styles.heroIcon}
+        />
+        <Text style={styles.temperatureText}>{MOCK_WEATHER.temperature}°C</Text>
+        <Text style={styles.conditionText}>{MOCK_WEATHER.condition}</Text>
+      </Pressable>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Tap for more details</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#1A237E', // Deep Sky Blue / Storm Gray inspired atmospheric solid
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  searchCapsule: {
     flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    height: 45,
   },
-  safeArea: {
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    color: 'white',
+    fontSize: 16,
+    fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif-light',
   },
-  heroSection: {
+  locationHeader: {
     alignItems: 'center',
+    marginTop: 40,
+  },
+  cityName: {
+    fontSize: 34,
+    fontWeight: '600',
+    color: 'white',
+    letterSpacing: 0.5,
+  },
+  dateText: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginTop: 5,
+  },
+  heroContainer: {
+    flex: 1,
     justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    alignItems: 'center',
+    marginHorizontal: 30,
+    marginVertical: 40,
+    borderRadius: 24,
   },
-  title: {
-    textAlign: 'center',
+  heroPressed: {
+    opacity: 0.8,
   },
-  code: {
-    textTransform: 'uppercase',
+  heroIcon: {
+    marginBottom: 20,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  temperatureText: {
+    fontSize: 80,
+    fontWeight: '200',
+    color: 'white',
+  },
+  conditionText: {
+    fontSize: 24,
+    fontWeight: '400',
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginTop: 10,
+  },
+  footer: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  footerText: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.5)',
   },
 });
