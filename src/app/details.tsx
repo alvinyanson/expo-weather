@@ -20,7 +20,7 @@ export default function DetailsScreen() {
 
   const isLoading = isLoadingLocation || isLoadingWeather;
 
-  const renderForecastItem = ({ item, index }: { item: number; index: number }) => {
+  const renderForecastItem = ({ index }: { item: number; index: number }) => {
     const date = new Date(weather!.daily.time[index]);
     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 

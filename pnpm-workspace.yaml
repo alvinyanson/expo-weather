@@ -4,10 +4,3 @@
 # through the deep .pnpm symlink target). Hoist so native tooling resolves
 # modules like npm/yarn.
 nodeLinker: hoisted
-
-# Decide pnpm's blocked dependency build scripts. An undecided entry (the
-# "set this to true or false" placeholder) makes `pnpm install` exit 1, which
-# fails the husky pre-commit hook (`pnpm exec lint-staged`). unrs-resolver is
-# the eslint import resolver; true approves its postinstall.
-allowBuilds:
-  unrs-resolver: true

@@ -11,12 +11,12 @@ pnpm start          # expo start (Metro dev server; pick platform interactively)
 pnpm run android    # expo run:android (native build + launch)
 pnpm run ios        # expo run:ios
 pnpm run web        # expo run:web
-pnpm run lint       # expo lint
-pnpm run lint:fix   # expo lint --fix
+pnpm run lint       # oxlint
+pnpm run lint:fix   # oxlint --fix
 pnpm run format     # prettier --write .
 ```
 
-No test runner is configured. A pre-commit hook (husky + lint-staged) runs `expo lint --fix` and `prettier --write` on staged files, so commits auto-format/lint.
+No test runner is configured. Linting uses **oxlint** (config in `.oxlintrc.json`), not ESLint — oxlint has no Expo preset, so React/React-Native rules are compensated explicitly via the `react`, `react-perf`, `jsx-a11y`, `import`, `typescript`, `unicorn`, and `oxc` plugins (notably `react-hooks/rules-of-hooks` and `react-hooks/exhaustive-deps`). Formatting is a separate Prettier step (`pnpm format`). A pre-commit hook (husky + lint-staged) runs `oxlint --fix` and `prettier --write` on staged files, so commits auto-format/lint.
 
 ## Architecture
 

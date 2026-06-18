@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "jsx-a11y", "import", "typescript", "unicorn", "oxc"],
+  "env": {
+    "browser": true,
+    "es2024": true,
+    "node": true
+  },
+  "settings": {
+    "react": {
+      "version": "19.2"
+    }
+  },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/jsx-key": "error",
+    "react/no-children-prop": "error",
+    "react/no-direct-mutation-state": "error",
+    "react/jsx-no-duplicate-props": "error",
+    "import/no-duplicates": "error",
+    "no-console": "off",
+
+    "react/react-in-jsx-scope": "off",
+    "react/no-unknown-property": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    ".expo/**",
+    "android/**",
+    "ios/**",
+    "dist/**",
+    "web-build/**",
+    "assets/**",
+    "example/**"
+  ]
+}
