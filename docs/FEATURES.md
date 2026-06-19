@@ -6,7 +6,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ## Progress
 
-`0 / 10 implemented`
+`1 / 10 implemented`
 
 ---
 
@@ -22,7 +22,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ### 1. Make the search bar work: city search & geocoding
 
-- [ ] **Implemented**
+- [x] **Implemented**
 - **Why:** It's the most glaring gap, a visible input that does nothing. Lets users check weather anywhere, not just GPS. High impact, the data layer already supports arbitrary lat/lon.
 - **Roadmap:** Forms & user input · Networking (Open-Meteo Geocoding API) · State management (debounced query)
 - **Complexity:** Easy–Medium
@@ -96,7 +96,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 |  Order  | Feature                                   | Complexity  | Done |
 | :-----: | ----------------------------------------- | ----------- | :--: |
-|    1    | #1 Search bar: city search & geocoding    | Easy–Medium | [ ]  |
+|    1    | #1 Search bar: city search & geocoding    | Easy–Medium | [x]  |
 |    2    | #3 Settings: units + persisted preference | Easy        | [ ]  |
 |    3    | #4 Pull-to-refresh + last-updated         | Easy        | [ ]  |
 |    4    | #2 Saved locations / favorites            | Medium      | [ ]  |

@@ -5,6 +5,7 @@ const { backMock } = vi.hoisted(() => ({ backMock: vi.fn() }));
 
 vi.mock('expo-router', () => ({
   useRouter: () => ({ back: backMock }),
+  useLocalSearchParams: () => ({}),
 }));
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
@@ -48,7 +49,7 @@ describe('DetailsScreen', () => {
 
   it('shows an empty state with a working "Go Back" when there is no data', () => {
     mockLocationHook.mockReturnValue(hookState());
-    mockWeatherHook.mockReturnValue(hookState());
+    mockWeatherHook.mockReturnValue(hookState({ isError: true }));
 
     render(<DetailsScreen />);
     expect(screen.getByText('No weather data available.')).toBeTruthy();

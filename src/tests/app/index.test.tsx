@@ -12,12 +12,23 @@ vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 vi.mock('@/hooks', () => ({
   useFetchLocation: vi.fn(),
   useFetchWeather: vi.fn(),
+  useDebounce: vi.fn((val) => val), // mock debounce to return value immediately
+  useSearchLocation: vi.fn(),
 }));
 
-import { useFetchLocation, useFetchWeather } from '@/hooks';
+const mockAddSearch = vi.fn();
+vi.mock('@/store/useSearchStore', () => ({
+  useSearchStore: vi.fn(() => ({
+    addSearch: mockAddSearch,
+    recentSearches: [],
+  })),
+}));
+
+import { useFetchLocation, useFetchWeather, useSearchLocation } from '@/hooks';
 
 const mockLocationHook = vi.mocked(useFetchLocation);
 const mockWeatherHook = vi.mocked(useFetchWeather);
+const mockSearchHook = vi.mocked(useSearchLocation);
 
 const location = { latitude: 1, longitude: 2, city: 'Manila' };
 const weather = {
@@ -31,6 +42,10 @@ const weather = {
   },
 };
 
+const searchResults = [
+  { id: 101, name: 'Tokyo', latitude: 35.6895, longitude: 139.6917, country: 'Japan' },
+];
+
 const hookState = (overrides = {}) =>
   ({
     data: undefined,
@@ -40,12 +55,23 @@ const hookState = (overrides = {}) =>
     ...overrides,
   }) as never;
 
-afterEach(cleanup);
+const searchHookState = (overrides = {}) =>
+  ({
+    data: undefined,
+    isFetching: false,
+    ...overrides,
+  }) as never;
+
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
 
 describe('HomeScreen', () => {
   it('shows the loading indicator while fetching', () => {
     mockLocationHook.mockReturnValue(hookState({ isLoading: true }));
     mockWeatherHook.mockReturnValue(hookState({ isLoading: true }));
+    mockSearchHook.mockReturnValue(searchHookState());
 
     render(<HomeScreen />);
 
@@ -55,6 +81,7 @@ describe('HomeScreen', () => {
   it('renders the city, temperature and condition once loaded', () => {
     mockLocationHook.mockReturnValue(hookState({ data: location }));
     mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+    mockSearchHook.mockReturnValue(searchHookState());
 
     render(<HomeScreen />);
 
@@ -67,11 +94,15 @@ describe('HomeScreen', () => {
   it('navigates to the details screen when the hero is pressed', () => {
     mockLocationHook.mockReturnValue(hookState({ data: location }));
     mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+    mockSearchHook.mockReturnValue(searchHookState());
 
     render(<HomeScreen />);
     fireEvent.click(screen.getByText('24°C'));
 
-    expect(pushMock).toHaveBeenCalledWith('/details');
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: '/details',
+      params: { lat: 1, lon: 2, city: 'Manila' },
+    });
   });
 
   it('shows the error message and retries on press', () => {
@@ -81,6 +112,7 @@ describe('HomeScreen', () => {
       hookState({ error: new Error('Permission denied'), refetch: refetchLocation }),
     );
     mockWeatherHook.mockReturnValue(hookState({ refetch: refetchWeather }));
+    mockSearchHook.mockReturnValue(searchHookState());
 
     render(<HomeScreen />);
     expect(screen.getByText('Permission denied')).toBeTruthy();
@@ -88,5 +120,31 @@ describe('HomeScreen', () => {
     fireEvent.click(screen.getByText('Retry'));
     expect(refetchLocation).toHaveBeenCalled();
     expect(refetchWeather).toHaveBeenCalled();
+  });
+
+  it('shows search results and selects a location', () => {
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+    mockSearchHook.mockReturnValue(searchHookState({ data: searchResults }));
+
+    render(<HomeScreen />);
+
+    const searchInput = screen.getByPlaceholderText('Search city...');
+    fireEvent.change(searchInput, { target: { value: 'Tok' } });
+
+    // The mock debounce returns immediately, so useSearchLocation gets 'Tok' and we mocked its return data
+    expect(screen.getByText('Tokyo, Japan')).toBeTruthy();
+
+    // Select Tokyo
+    fireEvent.click(screen.getByText('Tokyo, Japan'));
+
+    // addSearch should be called
+    expect(mockAddSearch).toHaveBeenCalledWith(searchResults[0]);
+
+    // should navigate to details with new location params
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: '/details',
+      params: { lat: 35.6895, lon: 139.6917, city: 'Tokyo' },
+    });
   });
 });

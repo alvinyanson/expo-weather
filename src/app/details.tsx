@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import {
   ActivityIndicator,
@@ -14,36 +14,58 @@ import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapp
 
 export default function DetailsScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
 
-  const { data: location, isLoading: isLoadingLocation } = useFetchLocation();
-  const { data: weather, isLoading: isLoadingWeather } = useFetchWeather(location);
+  const { data: gpsLocation, isLoading: isLoadingLocation } = useFetchLocation();
 
-  const isLoading = isLoadingLocation || isLoadingWeather;
+  const targetLocation =
+    params.lat && params.lon
+      ? {
+          latitude: Number(params.lat),
+          longitude: Number(params.lon),
+          city: params.city as string,
+        }
+      : gpsLocation;
+
+  const { data: weather, isFetching: isFetchingWeather, isError } = useFetchWeather(targetLocation);
+
+  const isGettingLocation = !params.lat && isLoadingLocation;
+  const isLoading = isGettingLocation || isFetchingWeather || !weather;
 
   const renderForecastItem = ({ index }: { item: number; index: number }) => {
-    const date = new Date(weather!.daily.time[index]);
+    if (!weather?.daily) return null;
+    const date = new Date(weather.daily.time[index]);
     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
 
     return (
       <View style={styles.forecastRow}>
         <Text style={styles.forecastDay}>{dayName}</Text>
         <SymbolView
-          name={weatherCodeToSymbol(weather!.daily.weather_code[index])}
+          name={weatherCodeToSymbol(weather.daily.weather_code[index])}
           size={24}
           tintColor="white"
           style={styles.forecastIcon}
         />
         <View style={styles.tempRange}>
-          <Text style={styles.maxTemp}>
-            {Math.round(weather!.daily.temperature_2m_max[index])}°
-          </Text>
-          <Text style={styles.minTemp}>
-            {Math.round(weather!.daily.temperature_2m_min[index])}°
-          </Text>
+          <Text style={styles.maxTemp}>{Math.round(weather.daily.temperature_2m_max[index])}°</Text>
+          <Text style={styles.minTemp}>{Math.round(weather.daily.temperature_2m_min[index])}°</Text>
         </View>
       </View>
     );
   };
+
+  if (isError) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.center}>
+          <Text style={styles.loadingText}>No weather data available.</Text>
+          <Pressable style={styles.retryButton} onPress={() => router.back()}>
+            <Text style={styles.retryText}>Go Back</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -56,17 +78,8 @@ export default function DetailsScreen() {
     );
   }
 
-  if (!weather || !location) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.center}>
-          <Text style={styles.loadingText}>No weather data available.</Text>
-          <Pressable style={styles.retryButton} onPress={() => router.back()}>
-            <Text style={styles.retryText}>Go Back</Text>
-          </Pressable>
-        </View>
-      </View>
-    );
+  if (!weather?.current || !weather?.daily || !targetLocation) {
+    return null; // Should never hit this due to isLoading check, but safe fallback
   }
 
   return (
@@ -85,7 +98,7 @@ export default function DetailsScreen() {
           />
         </Pressable>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerCity}>{location.city}</Text>
+          <Text style={styles.headerCity}>{targetLocation.city}</Text>
           <Text style={styles.headerCondition}>
             {weatherCodeToCondition(weather.current.weather_code)}
           </Text>
