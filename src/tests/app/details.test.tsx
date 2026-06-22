@@ -66,7 +66,7 @@ describe('DetailsScreen', () => {
 
     expect(screen.getByText('Manila')).toBeTruthy();
     expect(screen.getByText('Clear Sky')).toBeTruthy(); // weather_code 0
-    expect(screen.getByText('24°')).toBeTruthy(); // 23.6 rounded
+    expect(screen.getByText('24°C')).toBeTruthy(); // 23.6 rounded
     expect(screen.getByText('60%')).toBeTruthy(); // humidity
     expect(screen.getByText('12 km/h')).toBeTruthy(); // wind
     expect(screen.getByText('7')).toBeTruthy(); // uv index max rounded

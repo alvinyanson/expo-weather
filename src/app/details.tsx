@@ -1,20 +1,18 @@
+import { useFetchLocation, useFetchWeather } from '@/hooks';
+import { useSettingsStore } from '@/store/useSettingsStore';
+import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useFetchLocation, useFetchWeather } from '@/hooks';
-import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function DetailsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const temperatureUnit = useSettingsStore((state) => state.temperatureUnit);
+  const windSpeedUnit = useSettingsStore((state) => state.windSpeedUnit);
+
+  const tempUnit = temperatureUnit === 'celsius' ? '°C' : '°F';
+  const windUnit = windSpeedUnit === 'kmh' ? 'km/h' : 'mph';
 
   const { data: gpsLocation, isLoading: isLoadingLocation } = useFetchLocation();
 
@@ -47,8 +45,14 @@ export default function DetailsScreen() {
           style={styles.forecastIcon}
         />
         <View style={styles.tempRange}>
-          <Text style={styles.maxTemp}>{Math.round(weather.daily.temperature_2m_max[index])}°</Text>
-          <Text style={styles.minTemp}>{Math.round(weather.daily.temperature_2m_min[index])}°</Text>
+          <Text style={styles.maxTemp}>
+            {Math.round(weather.daily.temperature_2m_max[index])}
+            {tempUnit}
+          </Text>
+          <Text style={styles.minTemp}>
+            {Math.round(weather.daily.temperature_2m_min[index])}
+            {tempUnit}
+          </Text>
         </View>
       </View>
     );
@@ -84,7 +88,7 @@ export default function DetailsScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      {/* <StatusBar barStyle="light-content" backgroundColor="transparent" translucent /> */}
       <View style={styles.header}>
         <Pressable
           onPress={() => router.back()}
@@ -108,7 +112,10 @@ export default function DetailsScreen() {
 
       <View style={styles.summaryCard}>
         <View style={styles.summaryMain}>
-          <Text style={styles.summaryTemp}>{Math.round(weather.current.temperature_2m)}°</Text>
+          <Text style={styles.summaryTemp}>
+            {Math.round(weather.current.temperature_2m)}
+            {tempUnit}
+          </Text>
           <SymbolView
             name={weatherCodeToSymbol(weather.current.weather_code)}
             size={60}
@@ -123,7 +130,9 @@ export default function DetailsScreen() {
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Wind</Text>
-            <Text style={styles.detailValue}>{weather.current.wind_speed_10m} km/h</Text>
+            <Text style={styles.detailValue}>
+              {weather.current.wind_speed_10m} {windUnit}
+            </Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>UV Index</Text>
@@ -133,7 +142,13 @@ export default function DetailsScreen() {
       </View>
 
       <View style={styles.forecastContainer}>
-        <Text style={styles.forecastTitle}>8-Day Forecast</Text>
+        <View style={styles.forecastHeader}>
+          <Text style={styles.forecastTitle}>8-Day Forecast</Text>
+          <View style={styles.forecastLabels}>
+            <Text style={styles.forecastLabelMax}>Max</Text>
+            <Text style={styles.forecastLabelMin}>Min</Text>
+          </View>
+        </View>
         <FlatList
           data={weather.daily.weather_code}
           renderItem={renderForecastItem}
@@ -248,14 +263,39 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingTop: 24,
     marginTop: 10,
+  },
+  forecastHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   forecastTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: 'white',
-    marginBottom: 20,
+  },
+  forecastLabels: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  forecastLabelMax: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.5)',
+    textTransform: 'uppercase',
+    width: 50,
+    textAlign: 'right',
+    marginRight: 12,
+  },
+  forecastLabelMin: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.5)',
+    textTransform: 'uppercase',
+    width: 50,
+    textAlign: 'right',
   },
   forecastList: {
     paddingBottom: 20,
@@ -288,11 +328,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: 'white',
+    width: 50,
+    textAlign: 'right',
     marginRight: 12,
   },
   minTemp: {
     fontSize: 16,
     fontWeight: '400',
     color: 'rgba(255, 255, 255, 0.6)',
+    width: 50,
+    textAlign: 'right',
   },
 });

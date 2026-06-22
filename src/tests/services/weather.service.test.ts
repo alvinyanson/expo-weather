@@ -92,7 +92,7 @@ describe('fetchLocation', () => {
 });
 
 describe('fetchWeather', () => {
-  it('requests the forecast with the expected params and returns the data', async () => {
+  it('requests the forecast with the expected params and returns the data for metric default', async () => {
     const data = { current: { temperature_2m: 25 } };
     mockGet.mockResolvedValue({ data } as never);
 
@@ -103,8 +103,24 @@ describe('fetchWeather', () => {
         params: expect.objectContaining({
           latitude: 10,
           longitude: 20,
-          timezone: 'auto',
-          forecast_days: 8,
+          temperature_unit: 'celsius',
+          wind_speed_unit: 'kmh',
+        }),
+      }),
+    );
+  });
+
+  it('requests the forecast with custom units when specified', async () => {
+    const data = { current: { temperature_2m: 77 } };
+    mockGet.mockResolvedValue({ data } as never);
+
+    await expect(fetchWeather(10, 20, 'fahrenheit', 'mph')).resolves.toBe(data);
+    expect(mockGet).toHaveBeenCalledWith(
+      '/forecast',
+      expect.objectContaining({
+        params: expect.objectContaining({
+          temperature_unit: 'fahrenheit',
+          wind_speed_unit: 'mph',
         }),
       }),
     );

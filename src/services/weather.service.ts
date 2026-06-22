@@ -43,7 +43,12 @@ export const fetchLocation = async (): Promise<LocationData> => {
   return { latitude, longitude, city };
 };
 
-export const fetchWeather = async (lat: number, lon: number): Promise<WeatherResponse> => {
+export const fetchWeather = async (
+  lat: number,
+  lon: number,
+  temperatureUnit: 'celsius' | 'fahrenheit' = 'celsius',
+  windSpeedUnit: 'kmh' | 'mph' = 'kmh',
+): Promise<WeatherResponse> => {
   const response = await apiClient.get<WeatherResponse>('/forecast', {
     params: {
       latitude: lat,
@@ -52,6 +57,8 @@ export const fetchWeather = async (lat: number, lon: number): Promise<WeatherRes
       daily: 'weather_code,temperature_2m_max,temperature_2m_min,uv_index_max',
       timezone: 'auto',
       forecast_days: 8,
+      temperature_unit: temperatureUnit,
+      wind_speed_unit: windSpeedUnit,
     },
   });
   return response.data;

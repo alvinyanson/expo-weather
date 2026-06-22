@@ -6,7 +6,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ## Progress
 
-`2 / 10 implemented`
+`3 / 10 implemented`
 
 ---
 
@@ -36,7 +36,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ### 3. Settings: units (°C/°F, km/h vs mph) + persisted preference
 
-- [ ] **Implemented**
+- [x] **Implemented**
 - **Why:** Temperature is hardcoded `°C` and wind `km/h`. Unit toggle is expected baseline functionality and forces a clean separation of formatting from data.
 - **Roadmap:** Local storage · State management (global/context) · Forms
 - **Complexity:** Easy
@@ -97,7 +97,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 |  Order  | Feature                                   | Complexity  | Done |
 | :-----: | ----------------------------------------- | ----------- | :--: |
 |    1    | #1 Search bar: city search & geocoding    | Easy–Medium | [x]  |
-|    2    | #3 Settings: units + persisted preference | Easy        | [ ]  |
+|    2    | #3 Settings: units + persisted preference | Easy        | [x]  |
 |    3    | #4 Pull-to-refresh + last-updated         | Easy        | [ ]  |
 |    4    | #2 Saved locations / favorites            | Medium      | [x]  |
 |    5    | #5 Hourly forecast                        | Medium      | [ ]  |

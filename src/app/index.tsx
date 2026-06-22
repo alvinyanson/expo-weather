@@ -1,8 +1,14 @@
+import { useDebounce, useFetchLocation, useFetchWeather, useSearchLocation } from '@/hooks';
+import { LocationSearchResult, useSearchStore } from '@/store/useSearchStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
+import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  FlatList,
+  Keyboard,
   Platform,
   Pressable,
   StatusBar,
@@ -10,12 +16,7 @@ import {
   Text,
   TextInput,
   View,
-  FlatList,
-  Keyboard,
 } from 'react-native';
-import { useFetchLocation, useFetchWeather, useDebounce, useSearchLocation } from '@/hooks';
-import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
-import { useSearchStore, LocationSearchResult } from '@/store/useSearchStore';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -24,6 +25,8 @@ export default function HomeScreen() {
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
   const { addSearch, recentSearches } = useSearchStore();
+  const temperatureUnit = useSettingsStore((state) => state.temperatureUnit);
+  const tempUnit = temperatureUnit === 'celsius' ? '°C' : '°F';
 
   const {
     data: gpsLocation,
@@ -92,23 +95,35 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <View style={styles.searchContainer}>
-        <View style={styles.searchCapsule}>
-          <SymbolView
-            name={{ ios: 'magnifyingglass', android: 'search' }}
-            size={18}
-            tintColor="rgba(255, 255, 255, 0.6)"
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search city..."
-            placeholderTextColor="rgba(255, 255, 255, 0.6)"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onFocus={() => setShowRecent(true)}
-            onBlur={() => setTimeout(() => setShowRecent(false), 200)}
-          />
-          {isSearching && <ActivityIndicator size="small" color="white" />}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={[styles.searchCapsule, { flex: 1, marginRight: 10 }]}>
+            <SymbolView
+              name={{ ios: 'magnifyingglass', android: 'search' }}
+              size={18}
+              tintColor="rgba(255, 255, 255, 0.6)"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search city..."
+              placeholderTextColor="rgba(255, 255, 255, 0.6)"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onFocus={() => setShowRecent(true)}
+              onBlur={() => setTimeout(() => setShowRecent(false), 200)}
+            />
+            {isSearching && <ActivityIndicator size="small" color="white" />}
+          </View>
+          <Pressable
+            onPress={() => router.push('/settings')}
+            style={({ pressed }) => [styles.settingsButton, pressed && { opacity: 0.7 }]}
+          >
+            <SymbolView
+              name={{ ios: 'gearshape', android: 'settings' }}
+              size={24}
+              tintColor="white"
+            />
+          </Pressable>
         </View>
 
         {/* Search Results Dropdown */}
@@ -191,7 +206,8 @@ export default function HomeScreen() {
                   style={styles.heroIcon}
                 />
                 <Text style={styles.temperatureText}>
-                  {Math.round(weather.current.temperature_2m)}°C
+                  {Math.round(weather.current.temperature_2m)}
+                  {tempUnit}
                 </Text>
                 <Text style={styles.conditionText}>
                   {weatherCodeToCondition(weather.current.weather_code)}
@@ -232,6 +248,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 15,
     height: 45,
+  },
+  settingsButton: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   searchIcon: {
     marginRight: 10,
