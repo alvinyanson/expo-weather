@@ -6,7 +6,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ## Progress
 
-`1 / 10 implemented`
+`2 / 10 implemented`
 
 ---
 
@@ -29,7 +29,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ### 2. Saved locations / favorites with local persistence
 
-- [ ] **Implemented**
+- [x] **Implemented**
 - **Why:** The natural follow-up to search, pin multiple cities and switch between them. This is _the_ defining feature of every production weather app.
 - **Roadmap:** **Local storage** (AsyncStorage or MMKV), currently the app has zero persistence, a notable roadmap gap · Lists
 - **Complexity:** Medium
@@ -99,7 +99,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 |    1    | #1 Search bar: city search & geocoding    | Easy–Medium | [x]  |
 |    2    | #3 Settings: units + persisted preference | Easy        | [ ]  |
 |    3    | #4 Pull-to-refresh + last-updated         | Easy        | [ ]  |
-|    4    | #2 Saved locations / favorites            | Medium      | [ ]  |
+|    4    | #2 Saved locations / favorites            | Medium      | [x]  |
 |    5    | #5 Hourly forecast                        | Medium      | [ ]  |
 |    6    | #8 Dynamic theming                        | Easy–Medium | [ ]  |
 |    7    | #6 Offline support                        | Medium      | [ ]  |
