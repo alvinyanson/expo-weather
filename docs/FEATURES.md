@@ -57,7 +57,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ### 6. Offline support: persisted query cache
 
-- [ ] **Implemented**
+- [x] **Implemented**
 - **Why:** Mobile apps must degrade gracefully without a network. TanStack Query has a persister; combined with #2's storage, you can show last-known data offline.
 - **Roadmap:** **Offline handling** + `@react-native-community/netinfo` to detect connectivity · Storage
 - **Complexity:** Medium
@@ -102,7 +102,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 |    4    | #2 Saved locations / favorites            | Medium      | [x]  |
 |    5    | #5 Hourly forecast                        | Medium      | [ ]  |
 |    6    | #8 Dynamic theming                        | Easy–Medium | [ ]  |
-|    7    | #6 Offline support                        | Medium      | [ ]  |
+|    7    | #6 Offline support                        | Medium      | [x]  |
 |    8    | #7 Animated transitions                   | Medium      | [ ]  |
 |    9    | #9 Weather alerts / push                  | Hard        | [ ]  |
 | Anytime | #10 Error boundary (slot in as needed)    | Easy        | [ ]  |
