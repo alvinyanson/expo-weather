@@ -6,7 +6,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ## Progress
 
-`3 / 10 implemented`
+`4 / 10 implemented`
 
 ---
 
@@ -43,7 +43,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ### 4. Pull-to-refresh + last-updated timestamp
 
-- [ ] **Implemented**
+- [x] **Implemented**
 - **Why:** Weather data is time-sensitive. The `refetch()` from TanStack Query is already available, so wiring `RefreshControl` is a small change with obvious UX value.
 - **Roadmap:** Lists / ScrollView · Networking (cache invalidation)
 - **Complexity:** Easy
@@ -98,7 +98,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 | :-----: | ----------------------------------------- | ----------- | :--: |
 |    1    | #1 Search bar: city search & geocoding    | Easy–Medium | [x]  |
 |    2    | #3 Settings: units + persisted preference | Easy        | [x]  |
-|    3    | #4 Pull-to-refresh + last-updated         | Easy        | [ ]  |
+|    3    | #4 Pull-to-refresh + last-updated         | Easy        | [x]  |
 |    4    | #2 Saved locations / favorites            | Medium      | [x]  |
 |    5    | #5 Hourly forecast                        | Medium      | [ ]  |
 |    6    | #8 Dynamic theming                        | Easy–Medium | [ ]  |

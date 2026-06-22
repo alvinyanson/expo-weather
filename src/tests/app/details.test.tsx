@@ -33,7 +33,13 @@ const weather = {
 };
 
 const hookState = (overrides = {}) =>
-  ({ data: undefined, isLoading: false, ...overrides }) as never;
+  ({
+    data: undefined,
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+    ...overrides,
+  }) as never;
 
 afterEach(cleanup);
 

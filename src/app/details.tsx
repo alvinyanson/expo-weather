@@ -3,7 +3,17 @@ import { useSettingsStore } from '@/store/useSettingsStore';
 import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useState, useCallback } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  RefreshControl,
+  StatusBar,
+} from 'react-native';
 
 export default function DetailsScreen() {
   const router = useRouter();
@@ -25,10 +35,28 @@ export default function DetailsScreen() {
         }
       : gpsLocation;
 
-  const { data: weather, isFetching: isFetchingWeather, isError } = useFetchWeather(targetLocation);
+  const {
+    data: weather,
+    isFetching: isFetchingWeather,
+    isError,
+    refetch,
+    dataUpdatedAt,
+  } = useFetchWeather(targetLocation);
+
+  const lastUpdated = dataUpdatedAt
+    ? new Date(dataUpdatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+    : '';
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   const isGettingLocation = !params.lat && isLoadingLocation;
-  const isLoading = isGettingLocation || isFetchingWeather || !weather;
+  const isLoading = isGettingLocation || (!weather && isFetchingWeather);
 
   const renderForecastItem = ({ index }: { item: number; index: number }) => {
     if (!weather?.daily) return null;
@@ -88,7 +116,7 @@ export default function DetailsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* <StatusBar barStyle="light-content" backgroundColor="transparent" translucent /> */}
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <View style={styles.header}>
         <Pressable
           onPress={() => router.back()}
@@ -106,6 +134,7 @@ export default function DetailsScreen() {
           <Text style={styles.headerCondition}>
             {weatherCodeToCondition(weather.current.weather_code)}
           </Text>
+          {lastUpdated ? <Text style={styles.lastUpdatedText}>Updated {lastUpdated}</Text> : null}
         </View>
         <View style={{ width: 48 }} />
       </View>
@@ -155,6 +184,14 @@ export default function DetailsScreen() {
           keyExtractor={(_, index) => weather.daily.time[index]}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.forecastList}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="white"
+              colors={['#1A237E']}
+            />
+          }
         />
       </View>
     </View>
@@ -216,6 +253,11 @@ const styles = StyleSheet.create({
   headerCondition: {
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.7)',
+  },
+  lastUpdatedText: {
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.5)',
+    marginTop: 2,
   },
   summaryCard: {
     margin: 20,
