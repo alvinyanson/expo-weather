@@ -6,7 +6,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ## Progress
 
-`4 / 10 implemented`
+`5 / 10 implemented`
 
 ---
 
@@ -50,7 +50,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ### 5. Hourly forecast (horizontal scroll)
 
-- [ ] **Implemented**
+- [x] **Implemented**
 - **Why:** Open-Meteo exposes `hourly` data you're not requesting yet. A horizontal `FlatList` of the next 24h complements the existing daily view and exercises list-rendering skills.
 - **Roadmap:** Lists (horizontal FlatList / FlashList) · Networking
 - **Complexity:** Medium
@@ -100,7 +100,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 |    2    | #3 Settings: units + persisted preference | Easy        | [x]  |
 |    3    | #4 Pull-to-refresh + last-updated         | Easy        | [x]  |
 |    4    | #2 Saved locations / favorites            | Medium      | [x]  |
-|    5    | #5 Hourly forecast                        | Medium      | [ ]  |
+|    5    | #5 Hourly forecast                        | Medium      | [x]  |
 |    6    | #8 Dynamic theming                        | Easy–Medium | [ ]  |
 |    7    | #6 Offline support                        | Medium      | [x]  |
 |    8    | #7 Animated transitions                   | Medium      | [ ]  |

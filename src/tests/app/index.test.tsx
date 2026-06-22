@@ -33,6 +33,16 @@ const mockSearchHook = vi.mocked(useSearchLocation);
 const location = { latitude: 1, longitude: 2, city: 'Manila' };
 const weather = {
   current: { temperature_2m: 23.6, weather_code: 0, relative_humidity_2m: 60, wind_speed_10m: 12 },
+  hourly: {
+    time: [
+      new Date().toISOString(),
+      new Date(Date.now() + 3600000).toISOString(),
+      new Date(Date.now() + 7200000).toISOString(),
+    ],
+    temperature_2m: [23.6, 23.0, 22.5],
+    weather_code: [0, 0, 1],
+    precipitation_probability: [0, 10, 20],
+  },
   daily: {
     time: ['2026-06-18'],
     weather_code: [0],

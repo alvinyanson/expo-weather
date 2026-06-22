@@ -216,6 +216,63 @@ export default function HomeScreen() {
             )}
           </Pressable>
 
+          {weather && weather.hourly && (
+            <View style={styles.hourlyContainer}>
+              <Text style={styles.hourlySummary}>
+                {weatherCodeToCondition(weather.current.weather_code)} conditions will continue for
+                the rest of the day. Wind gusts are up to{' '}
+                {Math.round(weather.current.wind_speed_10m)} km/h.
+              </Text>
+              <View style={styles.hourlyDivider} />
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={weather.hourly.time.reduce((acc, time, i) => {
+                  if (new Date(time).getTime() >= Date.now() - 3600000 && acc.length < 24) {
+                    acc.push({
+                      time,
+                      temperature: weather.hourly.temperature_2m[i],
+                      weatherCode: weather.hourly.weather_code[i],
+                      precipitation: weather.hourly.precipitation_probability[i],
+                    });
+                  }
+                  return acc;
+                }, [] as any[])}
+                keyExtractor={(item) => item.time}
+                contentContainerStyle={styles.hourlyListContent}
+                renderItem={({ item, index }) => {
+                  const itemDate = new Date(item.time);
+                  let timeString = '';
+                  if (index === 0) {
+                    timeString = 'Now';
+                  } else {
+                    timeString = itemDate
+                      .toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
+                      .replace(' ', '');
+                  }
+                  return (
+                    <View style={styles.hourlyItem}>
+                      <Text style={styles.hourlyTime}>{timeString}</Text>
+                      <SymbolView
+                        name={weatherCodeToSymbol(item.weatherCode)}
+                        size={28}
+                        tintColor="white"
+                        type="monochrome"
+                        style={styles.hourlyIcon}
+                      />
+                      {item.precipitation > 0 ? (
+                        <Text style={styles.hourlyPrecipitation}>{item.precipitation}%</Text>
+                      ) : (
+                        <View style={{ height: 16 }} />
+                      )}
+                      <Text style={styles.hourlyTemp}>{Math.round(item.temperature)}°</Text>
+                    </View>
+                  );
+                }}
+              />
+            </View>
+          )}
+
           <View style={styles.footer}>
             <Text style={styles.footerText}>Tap for more details</Text>
           </View>
@@ -335,6 +392,52 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: 'rgba(255, 255, 255, 0.9)',
     marginTop: 10,
+  },
+  hourlyContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 20,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    paddingVertical: 15,
+  },
+  hourlySummary: {
+    color: 'white',
+    fontSize: 14,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    lineHeight: 20,
+  },
+  hourlyDivider: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    marginBottom: 15,
+  },
+  hourlyListContent: {
+    paddingHorizontal: 10,
+  },
+  hourlyItem: {
+    alignItems: 'center',
+    marginHorizontal: 12,
+  },
+  hourlyTime: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 10,
+  },
+  hourlyIcon: {
+    marginBottom: 10,
+  },
+  hourlyPrecipitation: {
+    color: '#81D4FA',
+    fontSize: 12,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  hourlyTemp: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '500',
   },
   footer: {
     alignItems: 'center',

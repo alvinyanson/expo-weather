@@ -12,4 +12,10 @@ export interface WeatherResponse {
     temperature_2m_min: number[];
     uv_index_max: number[];
   };
+  hourly: {
+    time: string[];
+    temperature_2m: number[];
+    weather_code: number[];
+    precipitation_probability: number[];
+  };
 }

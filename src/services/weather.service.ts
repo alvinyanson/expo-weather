@@ -55,6 +55,7 @@ export const fetchWeather = async (
       longitude: lon,
       current: 'temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m',
       daily: 'weather_code,temperature_2m_max,temperature_2m_min,uv_index_max',
+      hourly: 'temperature_2m,weather_code,precipitation_probability',
       timezone: 'auto',
       forecast_days: 8,
       temperature_unit: temperatureUnit,
