@@ -1,12 +1,14 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { useNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { temperatureUnit, windSpeedUnit, setTemperatureUnit, setWindSpeedUnit } =
     useSettingsStore();
+  const { sendTestNotification } = useNotifications();
 
   return (
     <View style={styles.container}>
@@ -97,6 +99,19 @@ export default function SettingsScreen() {
             </Pressable>
           </View>
         </View>
+
+        <Pressable
+          style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
+          onPress={sendTestNotification}
+          android_ripple={{ color: 'rgba(255, 255, 255, 0.2)' }}
+        >
+          <SymbolView
+            name={{ ios: 'bell.badge.fill', android: 'notifications_active' }}
+            size={20}
+            tintColor="#1A237E"
+          />
+          <Text style={styles.testButtonText}>Test Notification</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -173,6 +188,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   toggleTextActive: {
+    color: '#1A237E',
+  },
+  testButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    paddingVertical: 14,
+    marginTop: 30,
+  },
+  testButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#1A237E',
   },
 });

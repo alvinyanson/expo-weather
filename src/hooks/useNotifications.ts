@@ -1,0 +1,125 @@
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, Platform } from 'react-native';
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import apiClient from '@/services/api.client';
+
+// Expo push service endpoint. Passing an absolute URL to apiClient bypasses its
+// (Open-Meteo) baseURL while still reusing the shared error interceptor.
+const EXPO_PUSH_ENDPOINT = process.env.EXPO_PUBLIC_EXPO_PUSH_ENDPOINT;
+
+const ANDROID_CHANNEL: Notifications.NotificationChannelInput = {
+  name: 'default',
+  importance: Notifications.AndroidImportance.MAX,
+  vibrationPattern: [0, 250, 250, 250],
+  lightColor: '#FF231F7C',
+};
+
+interface ExpoPushMessage {
+  to: string;
+  sound?: 'default' | null;
+  title?: string;
+  body?: string;
+  data?: Record<string, unknown>;
+}
+
+// How notifications behave while the app is in the foreground.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
+// EAS projectId is required to request an Expo push token.
+function getProjectId(): string | undefined {
+  return Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+}
+
+async function ensureNotificationPermission(): Promise<boolean> {
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  if (existingStatus === 'granted') return true;
+
+  const { status } = await Notifications.requestPermissionsAsync();
+  if (status === 'granted') return true;
+
+  Alert.alert('Permission required', 'Enable notifications in settings to receive alerts.');
+  return false;
+}
+
+async function registerForPushNotificationsAsync(): Promise<string | undefined> {
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', ANDROID_CHANNEL);
+  }
+
+  if (!(await ensureNotificationPermission())) return undefined;
+
+  // Push token registration
+  const projectId = getProjectId();
+  if (!projectId) return undefined;
+
+  try {
+    const { data } = await Notifications.getExpoPushTokenAsync({ projectId });
+    console.log('Expo push token:', data);
+    return data;
+  } catch (error) {
+    console.warn('Failed to get Expo push token:', error);
+    return undefined;
+  }
+}
+
+export function useNotifications() {
+  const [expoPushToken, setExpoPushToken] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+      .then(setExpoPushToken)
+      .catch((error: unknown) => console.warn('Push registration error:', error));
+
+    const receivedListener = Notifications.addNotificationReceivedListener((notification) => {
+      console.log('Notification received:', notification.request.content.title);
+    });
+    const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log('Notification response:', response.notification.request.content.title);
+    });
+
+    return () => {
+      receivedListener.remove();
+      responseListener.remove();
+    };
+  }, []);
+
+  // Sends a remote push notification to this device via the Expo push service,
+  // using the registered push token.
+  const sendTestNotification = useCallback(async () => {
+    if (!expoPushToken) {
+      Alert.alert('Not ready', 'Push token is not available yet.');
+      return;
+    }
+
+    if (!EXPO_PUSH_ENDPOINT) {
+      console.warn('EXPO_PUBLIC_EXPO_PUSH_ENDPOINT is not configured.');
+      Alert.alert('Error', 'Push service is not configured.');
+      return;
+    }
+
+    const message: ExpoPushMessage = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Test Notification',
+      body: 'Your notifications are set up and working!',
+      data: { source: 'settings-test' },
+    };
+
+    try {
+      await apiClient.post(EXPO_PUSH_ENDPOINT, message);
+    } catch (error) {
+      console.warn('Failed to send test notification:', error);
+      Alert.alert('Error', 'Could not send the test notification.');
+    }
+  }, [expoPushToken]);
+
+  return { expoPushToken, sendTestNotification };
+}
