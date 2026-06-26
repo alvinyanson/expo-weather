@@ -1,4 +1,5 @@
 import { weatherCodeToSymbol } from '@/utils/weatherMapper';
+import { formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
@@ -14,7 +15,7 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
     <View style={styles.summaryCard}>
       <View style={styles.summaryMain}>
         <Text style={styles.summaryTemp}>
-          {Math.round(weather.current.temperature_2m)}
+          {formatRound(weather.current.temperature_2m)}
           {tempUnit}
         </Text>
         <SymbolView
@@ -37,7 +38,7 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>UV Index</Text>
-          <Text style={styles.detailValue}>{Math.round(weather.daily.uv_index_max[0])}</Text>
+          <Text style={styles.detailValue}>{formatRound(weather.daily.uv_index_max[0])}</Text>
         </View>
       </View>
     </View>

@@ -1,4 +1,5 @@
 import { weatherCodeToSymbol } from '@/utils/weatherMapper';
+import { formatDayName, formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
@@ -19,8 +20,7 @@ export const DailyForecastList = ({
   if (!weather?.daily) return null;
 
   const renderForecastItem = ({ index }: { item: number; index: number }) => {
-    const date = new Date(weather.daily.time[index]);
-    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+    const dayName = formatDayName(weather.daily.time[index]);
 
     return (
       <View style={styles.forecastRow}>
@@ -33,11 +33,11 @@ export const DailyForecastList = ({
         />
         <View style={styles.tempRange}>
           <Text style={styles.maxTemp}>
-            {Math.round(weather.daily.temperature_2m_max[index])}
+            {formatRound(weather.daily.temperature_2m_max[index])}
             {tempUnit}
           </Text>
           <Text style={styles.minTemp}>
-            {Math.round(weather.daily.temperature_2m_min[index])}
+            {formatRound(weather.daily.temperature_2m_min[index])}
             {tempUnit}
           </Text>
         </View>

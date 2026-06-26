@@ -1,5 +1,6 @@
 import { WeatherResponse } from '@/interfaces';
 import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
+import { formatDateFull, formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -15,9 +16,7 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
     <>
       <View style={styles.locationHeader}>
         <Text style={styles.cityName}>{city}</Text>
-        <Text style={styles.dateText}>
-          Today, {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
-        </Text>
+        <Text style={styles.dateText}>Today, {formatDateFull()}</Text>
       </View>
 
       <Pressable
@@ -33,7 +32,7 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
           style={styles.heroIcon}
         />
         <Text style={styles.temperatureText}>
-          {Math.round(weather.current.temperature_2m)}
+          {formatRound(weather.current.temperature_2m)}
           {tempUnit}
         </Text>
         <Text style={styles.conditionText}>

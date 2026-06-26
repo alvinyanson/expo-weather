@@ -1,5 +1,6 @@
 import { WeatherResponse } from '@/interfaces';
 import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
+import { formatHourlyTime, formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -14,7 +15,7 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
     <View style={styles.hourlyContainer}>
       <Text style={styles.hourlySummary}>
         {weatherCodeToCondition(weather.current.weather_code)} conditions will continue for the rest
-        of the day. Wind gusts are up to {Math.round(weather.current.wind_speed_10m)} km/h.
+        of the day. Wind gusts are up to {formatRound(weather.current.wind_speed_10m)} km/h.
       </Text>
       <View style={styles.hourlyDivider} />
       <FlatList
@@ -34,14 +35,11 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
         keyExtractor={(item) => item.time}
         contentContainerStyle={styles.hourlyListContent}
         renderItem={({ item, index }) => {
-          const itemDate = new Date(item.time);
           let timeString = '';
           if (index === 0) {
             timeString = 'Now';
           } else {
-            timeString = itemDate
-              .toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
-              .replace(' ', '');
+            timeString = formatHourlyTime(item.time);
           }
           return (
             <View style={styles.hourlyItem}>
@@ -58,7 +56,7 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
               ) : (
                 <View style={{ height: 16 }} />
               )}
-              <Text style={styles.hourlyTemp}>{Math.round(item.temperature)}°</Text>
+              <Text style={styles.hourlyTemp}>{formatRound(item.temperature)}°</Text>
             </View>
           );
         }}

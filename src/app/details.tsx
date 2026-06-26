@@ -1,5 +1,6 @@
 import { useFetchLocation, useFetchWeather } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { formatTime } from '@/utils/formatters';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useCallback } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, StatusBar } from 'react-native';
@@ -36,9 +37,7 @@ export default function DetailsScreen() {
     dataUpdatedAt,
   } = useFetchWeather(targetLocation);
 
-  const lastUpdated = dataUpdatedAt
-    ? new Date(dataUpdatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
-    : '';
+  const lastUpdated = dataUpdatedAt ? formatTime(dataUpdatedAt) : '';
 
   const [refreshing, setRefreshing] = useState(false);
 
