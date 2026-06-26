@@ -1,8 +1,3 @@
-/**
- * Auth types decoupled from `@react-native-firebase` so the store and other
- * consumers don't pull in native module types directly.
- */
-
 /** Minimal mapped shape of an authenticated user. */
 export interface AuthUser {
   uid: string;
@@ -11,3 +6,11 @@ export interface AuthUser {
   email: string | null;
   photoURL: string | null;
 }
+
+/**
+ * Minimal structural shape we read off a Firebase user.
+ */
+export type FirebaseUserLike = Pick<
+  AuthUser,
+  'uid' | 'isAnonymous' | 'displayName' | 'email' | 'photoURL'
+>;
