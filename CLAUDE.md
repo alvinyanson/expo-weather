@@ -10,7 +10,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 pnpm start          # expo start (Metro dev server; pick platform interactively)
 pnpm run android    # expo run:android (native build + launch)
 pnpm run ios        # expo run:ios
-pnpm run web        # expo run:web
 pnpm run lint       # oxlint
 pnpm run lint:fix   # oxlint --fix
 pnpm run format     # prettier --write .

@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { useNotifications } from '@/hooks';
+import { useAuth, useNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
 export default function SettingsScreen() {
@@ -9,6 +9,13 @@ export default function SettingsScreen() {
   const { temperatureUnit, windSpeedUnit, setTemperatureUnit, setWindSpeedUnit } =
     useSettingsStore();
   const { sendTestNotification } = useNotifications();
+  const { user, signOut } = useAuth();
+
+  // On sign-out the auth listener clears the store and the root layout
+  // redirects to the login screen.
+  const accountLabel = user?.isAnonymous
+    ? 'Guest'
+    : (user?.email ?? user?.displayName ?? 'Signed in');
 
   return (
     <View style={styles.container}>
@@ -112,6 +119,26 @@ export default function SettingsScreen() {
           />
           <Text style={styles.testButtonText}>Test Notification</Text>
         </Pressable>
+
+        <View style={styles.settingRow}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.settingLabel}>Account</Text>
+            <Text style={styles.settingDescription}>{accountLabel}</Text>
+          </View>
+        </View>
+
+        <Pressable
+          style={({ pressed }) => [styles.signOutButton, pressed && styles.buttonPressed]}
+          onPress={signOut}
+          android_ripple={{ color: 'rgba(255, 255, 255, 0.1)' }}
+        >
+          <SymbolView
+            name={{ ios: 'rectangle.portrait.and.arrow.right', android: 'logout' }}
+            size={20}
+            tintColor="#FFCDD2"
+          />
+          <Text style={styles.signOutButtonText}>Sign Out</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -204,5 +231,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#1A237E',
+  },
+  signOutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 8,
+    paddingVertical: 14,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 205, 210, 0.5)',
+  },
+  signOutButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFCDD2',
   },
 });
