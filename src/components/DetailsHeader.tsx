@@ -2,6 +2,7 @@ import { weatherCodeToCondition } from '@/utils/weatherMapper';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
+import { theme } from '@/theme';
 
 interface DetailsHeaderProps {
   city: string;
@@ -16,7 +17,7 @@ export const DetailsHeader = ({ city, weather, lastUpdated, onBack }: DetailsHea
       <Pressable
         onPress={onBack}
         style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
-        android_ripple={{ color: 'rgba(255, 255, 255, 0.2)', borderless: true, radius: 24 }}
+        android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
       >
         <SymbolView
           name={{ ios: 'chevron.left', android: 'chevron_left' }}
@@ -64,11 +65,11 @@ const styles = StyleSheet.create({
   },
   headerCondition: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: theme.colors.textMuted,
   },
   lastUpdatedText: {
     fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: theme.colors.textHint,
     marginTop: 2,
   },
 });

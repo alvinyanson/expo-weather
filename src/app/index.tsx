@@ -1,4 +1,5 @@
 import { useFetchLocation, useFetchWeather } from '@/hooks';
+import { theme } from '@/theme';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
@@ -99,7 +100,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A237E',
+    backgroundColor: theme.colors.background,
   },
   center: {
     flex: 1,
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: theme.colors.textHint,
   },
   loadingText: {
     color: 'white',
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: theme.colors.surface,
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 20,

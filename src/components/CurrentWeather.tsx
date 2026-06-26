@@ -3,6 +3,7 @@ import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapp
 import { formatDateFull, formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { theme } from '@/theme';
 
 interface CurrentWeatherProps {
   city?: string;
@@ -22,7 +23,7 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
       <Pressable
         style={({ pressed }) => [styles.heroContainer, pressed && styles.heroPressed]}
         onPress={onPress}
-        android_ripple={{ color: 'rgba(255, 255, 255, 0.1)', borderless: false }}
+        android_ripple={{ color: theme.colors.ripple, borderless: false }}
       >
         <SymbolView
           name={weatherCodeToSymbol(weather.current.weather_code)}
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: theme.colors.textMuted,
     marginTop: 5,
   },
   heroContainer: {
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   conditionText: {
     fontSize: 24,
     fontWeight: '400',
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: theme.colors.text,
     marginTop: 10,
   },
 });

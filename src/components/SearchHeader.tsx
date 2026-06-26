@@ -3,6 +3,7 @@ import { LocationSearchResult, useSearchStore } from '@/store/useSearchStore';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
+import { theme } from '@/theme';
 import {
   ActivityIndicator,
   FlatList,
@@ -42,13 +43,13 @@ export const SearchHeader = () => {
           <SymbolView
             name={{ ios: 'magnifyingglass', android: 'search' }}
             size={18}
-            tintColor="rgba(255, 255, 255, 0.6)"
+            tintColor={theme.colors.textHint}
             style={styles.searchIcon}
           />
           <TextInput
             style={styles.searchInput}
             placeholder="Search city..."
-            placeholderTextColor="rgba(255, 255, 255, 0.6)"
+            placeholderTextColor={theme.colors.textHint}
             value={searchQuery}
             onChangeText={setSearchQuery}
             onFocus={() => setShowRecent(true)}
@@ -103,7 +104,7 @@ export const SearchHeader = () => {
                     <SymbolView
                       name={{ ios: 'clock', android: 'history' }}
                       size={18}
-                      tintColor="rgba(255, 255, 255, 0.5)"
+                      tintColor={theme.colors.textHint}
                     />
                   </View>
                   <Text style={styles.dropdownItemText}>
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
   searchCapsule: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: theme.colors.surface,
     borderRadius: 25,
     paddingHorizontal: 15,
     height: 45,
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 22.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: theme.colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -153,25 +154,25 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif-light',
   },
   dropdownContainer: {
-    backgroundColor: 'rgba(25, 35, 126, 0.95)',
+    backgroundColor: theme.colors.overlay,
     borderRadius: 15,
     marginTop: 5,
     maxHeight: 200,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: theme.colors.border,
     overflow: 'hidden',
   },
   dropdownItem: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: theme.colors.borderLight,
   },
   dropdownItemText: {
     color: 'white',
     fontSize: 16,
   },
   recentSearchesTitle: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: theme.colors.textHint,
     fontSize: 12,
     textTransform: 'uppercase',
     letterSpacing: 1,

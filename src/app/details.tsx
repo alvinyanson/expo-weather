@@ -1,5 +1,6 @@
 import { useFetchLocation, useFetchWeather } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { theme } from '@/theme';
 import { formatTime } from '@/utils/formatters';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useCallback } from 'react';
@@ -104,7 +105,7 @@ export default function DetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A237E',
+    backgroundColor: theme.colors.background,
   },
   center: {
     flex: 1,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   retryButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: theme.colors.surface,
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 20,

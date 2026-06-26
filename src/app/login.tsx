@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SymbolView } from 'expo-symbols';
-import { useAuth } from '@/hooks';
+import { useAuth } from '@/hooks/useAuth';
+import { theme } from '@/theme';
 
 type Pending = 'google' | 'guest' | null;
 
@@ -58,16 +59,16 @@ export default function LoginScreen() {
           style={({ pressed }) => [styles.googleButton, pressed && styles.pressed]}
           onPress={handleGoogle}
           disabled={busy}
-          android_ripple={{ color: 'rgba(0, 0, 0, 0.1)' }}
+          android_ripple={{ color: theme.colors.rippleDark }}
         >
           {pending === 'google' ? (
-            <ActivityIndicator size="small" color="#1A237E" />
+            <ActivityIndicator size="small" color={theme.colors.primary} />
           ) : (
             <>
               <SymbolView
                 name={{ ios: 'g.circle.fill', android: 'account_circle' }}
                 size={22}
-                tintColor="#1A237E"
+                tintColor={theme.colors.primary}
               />
               <Text style={styles.googleButtonText}>Continue with Google</Text>
             </>
@@ -78,7 +79,7 @@ export default function LoginScreen() {
           style={({ pressed }) => [styles.guestButton, pressed && styles.pressed]}
           onPress={handleGuest}
           disabled={busy}
-          android_ripple={{ color: 'rgba(255, 255, 255, 0.15)' }}
+          android_ripple={{ color: theme.colors.surface }}
         >
           {pending === 'guest' ? (
             <ActivityIndicator size="small" color="white" />
@@ -94,7 +95,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A237E',
+    backgroundColor: theme.colors.background,
     justifyContent: 'space-between',
     paddingHorizontal: 30,
     paddingTop: 120,
@@ -112,14 +113,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: theme.colors.textMuted,
     marginTop: 8,
   },
   actions: {
     gap: 14,
   },
   errorText: {
-    color: '#FFCDD2',
+    color: theme.colors.error,
     textAlign: 'center',
     fontSize: 14,
     marginBottom: 6,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
   googleButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1A237E',
+    color: theme.colors.primary,
   },
   guestButton: {
     alignItems: 'center',
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     height: 52,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+    borderColor: theme.colors.border,
   },
   guestButtonText: {
     fontSize: 16,

@@ -9,6 +9,7 @@ import { useNetworkMonitor } from '@/hooks/useNetworkMonitor';
 import { useAuthListener } from '@/hooks/useAuthListener';
 import { useAuth } from '@/hooks/useAuth';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { theme } from '@/theme';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,14 +32,14 @@ function RootApp() {
   // the login screen would flash before a persisted session is restored.
   if (initializing) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#1A237E', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="white" />
+      <View style={{ flex: 1, backgroundColor: theme.colors.background, justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color={theme.colors.text} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#1A237E' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <OfflineIndicator />
       <Stack
         screenOptions={{
@@ -80,17 +81,19 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: '#1A237E',
+        backgroundColor: theme.colors.background,
         justifyContent: 'center',
         alignItems: 'center',
       }}
     >
-      <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>
+      <Text
+        style={{ color: theme.colors.text, fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}
+      >
         We ran into a problem.
       </Text>
       <Text
         style={{
-          color: 'white',
+          color: theme.colors.text,
           fontSize: 16,
           textAlign: 'center',
           paddingHorizontal: 20,
@@ -101,7 +104,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       </Text>
       <Text
         style={{
-          color: '#FFCDD2',
+          color: theme.colors.error,
           fontSize: 14,
           textAlign: 'center',
           paddingHorizontal: 20,
@@ -110,7 +113,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       >
         {error.message}
       </Text>
-      <Button title="Try Again" onPress={retry} color="#5C6BC0" />
+      <Button title="Try Again" onPress={retry} color={theme.colors.secondary} />
     </SafeAreaView>
   );
 }

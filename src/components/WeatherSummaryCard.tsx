@@ -3,6 +3,7 @@ import { formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
+import { theme } from '@/theme';
 
 interface WeatherSummaryCardProps {
   weather: WeatherResponse;
@@ -49,10 +50,10 @@ const styles = StyleSheet.create({
   summaryCard: {
     margin: 20,
     padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: theme.colors.surfaceSubtle,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: theme.colors.borderLight,
   },
   summaryMain: {
     flexDirection: 'row',
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: theme.colors.surfaceSubtle,
     marginBottom: 20,
   },
   summaryDetails: {
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: theme.colors.textHint,
     marginBottom: 4,
   },
   detailValue: {

@@ -1,6 +1,7 @@
 import { WeatherResponse } from '@/interfaces';
 import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
 import { formatHourlyTime, formatRound } from '@/utils/formatters';
+import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -67,7 +68,7 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
 
 const styles = StyleSheet.create({
   hourlyContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: theme.colors.surfaceSubtle,
     borderRadius: 20,
     marginHorizontal: 20,
     marginBottom: 20,
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
   },
   hourlyDivider: {
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: theme.colors.surface,
     marginBottom: 15,
   },
   hourlyListContent: {
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   hourlyPrecipitation: {
-    color: '#81D4FA',
+    color: theme.colors.accent,
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 4,

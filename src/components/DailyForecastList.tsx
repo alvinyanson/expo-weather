@@ -1,5 +1,6 @@
 import { weatherCodeToSymbol } from '@/utils/weatherMapper';
 import { formatDayName, formatRound } from '@/utils/formatters';
+import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
 import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
@@ -65,7 +66,7 @@ export const DailyForecastList = ({
             refreshing={refreshing}
             onRefresh={onRefresh}
             tintColor="white"
-            colors={['#1A237E']}
+            colors={[theme.colors.primary]}
           />
         }
       />
@@ -76,7 +77,7 @@ export const DailyForecastList = ({
 const styles = StyleSheet.create({
   forecastContainer: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: theme.colors.surfaceSubtle,
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     paddingHorizontal: 24,
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
   },
   forecastLabelMax: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: theme.colors.textHint,
     textTransform: 'uppercase',
     width: 50,
     textAlign: 'right',
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
   },
   forecastLabelMin: {
     fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: theme.colors.textHint,
     textTransform: 'uppercase',
     width: 50,
     textAlign: 'right',
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: theme.colors.borderLight,
   },
   forecastDay: {
     flex: 1,
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
   minTemp: {
     fontSize: 16,
     fontWeight: '400',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: theme.colors.textHint,
     width: 50,
     textAlign: 'right',
   },

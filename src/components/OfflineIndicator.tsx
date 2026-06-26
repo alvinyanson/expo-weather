@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useNetworkStore } from '@/store/useNetworkStore';
+import { theme } from '@/theme';
 
 export function OfflineIndicator() {
   const isConnected = useNetworkStore((state) => state.isConnected);
@@ -30,7 +31,7 @@ export function OfflineIndicator() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#E53935',
+    backgroundColor: theme.colors.danger,
     width: '100%',
     overflow: 'hidden',
     zIndex: 100,

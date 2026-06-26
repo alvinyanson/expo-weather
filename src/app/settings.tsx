@@ -3,6 +3,7 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { useAuth, useNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { theme } from '@/theme';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function SettingsScreen() {
         <Pressable
           onPress={() => router.back()}
           style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
-          android_ripple={{ color: 'rgba(255, 255, 255, 0.2)', borderless: true, radius: 24 }}
+          android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
         >
           <SymbolView
             name={{ ios: 'chevron.left', android: 'chevron_left' }}
@@ -110,12 +111,12 @@ export default function SettingsScreen() {
         <Pressable
           style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
           onPress={sendTestNotification}
-          android_ripple={{ color: 'rgba(255, 255, 255, 0.2)' }}
+          android_ripple={{ color: theme.colors.ripple }}
         >
           <SymbolView
             name={{ ios: 'bell.badge.fill', android: 'notifications_active' }}
             size={20}
-            tintColor="#1A237E"
+            tintColor={theme.colors.primary}
           />
           <Text style={styles.testButtonText}>Test Notification</Text>
         </Pressable>
@@ -130,12 +131,12 @@ export default function SettingsScreen() {
         <Pressable
           style={({ pressed }) => [styles.signOutButton, pressed && styles.buttonPressed]}
           onPress={signOut}
-          android_ripple={{ color: 'rgba(255, 255, 255, 0.1)' }}
+          android_ripple={{ color: theme.colors.ripple }}
         >
           <SymbolView
             name={{ ios: 'rectangle.portrait.and.arrow.right', android: 'logout' }}
             size={20}
-            tintColor="#FFCDD2"
+            tintColor={theme.colors.error}
           />
           <Text style={styles.signOutButtonText}>Sign Out</Text>
         </Pressable>
@@ -147,7 +148,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A237E',
+    backgroundColor: theme.colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: theme.colors.borderLight,
   },
   labelContainer: {
     flex: 1,
@@ -193,12 +194,12 @@ const styles = StyleSheet.create({
   },
   settingDescription: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: theme.colors.textHint,
     marginTop: 4,
   },
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: theme.colors.surfaceSubtle,
     borderRadius: 8,
     padding: 4,
   },
@@ -211,11 +212,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   toggleText: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: theme.colors.textMuted,
     fontWeight: '600',
   },
   toggleTextActive: {
-    color: '#1A237E',
+    color: theme.colors.primary,
   },
   testButton: {
     flexDirection: 'row',
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
   testButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1A237E',
+    color: theme.colors.primary,
   },
   signOutButton: {
     flexDirection: 'row',
@@ -241,11 +242,11 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 205, 210, 0.5)',
+    borderColor: theme.colors.borderError,
   },
   signOutButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFCDD2',
+    color: theme.colors.error,
   },
 });
