@@ -1,6 +1,6 @@
 # Expo Weather App
 
-A React Native weather app I've been working on. It lets you check current conditions, view an 8-day forecast, and save your favorite locations. I've also baked in offline support so it works without a connection, plus Firebase authentication to keep your settings synced.
+A React Native weather app I've been working on. It lets you check current conditions, view an 8-day forecast, and keep track of recent searches. It features offline support so it works without a connection, and includes Firebase authentication (I'm currently working on getting the settings to sync).
 
 _Note: I regularly update this app with new features, and I'll make sure this README stays up-to-date too._
 
@@ -14,7 +14,7 @@ _Note: I regularly update this app with new features, and I'll make sure this RE
 
 - **Current Weather & Forecasts**: View the latest conditions, an 8-day forecast, and hourly breakdowns.
 - **Location Search & Geocoding**: Search for cities worldwide and instantly view their weather.
-- **Saved Locations**: Pin your favorite cities for quick access.
+- **Recent Searches**: Keep track of your recently searched cities for quick access.
 - **Offline Caching**: View previously loaded weather data even without an active internet connection.
 - **Authentication**: Seamlessly log in with Google or use an anonymous account, powered by Firebase.
 - **Customizable Preferences**: Toggle between temperature units (°C/°F).

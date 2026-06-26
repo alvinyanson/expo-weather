@@ -15,7 +15,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 - **Home** (`src/app/index.tsx`): auto-detects location, functional search bar with geocoding, and displays current weather conditions.
 - **Details** (`src/app/details.tsx`): current humidity/wind/UV + 8-day forecast list, along with an hourly forecast view.
 - **Settings** (`src/app/settings.tsx`): manage user preferences like temperature/wind units and handle account authentication.
-- **Features**: Saved locations, pull-to-refresh, offline caching, and error boundaries.
+- **Features**: Recent searches, pull-to-refresh, offline caching, and error boundaries.
 - **Auth**: Firebase Authentication supporting Google Sign-In and Anonymous login.
 - **Stack**: TanStack Query (offline caching), Axios client, `expo-location`, Open-Meteo, Firebase, AsyncStorage for local storage. Tests via Vitest.
 
@@ -30,10 +30,10 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 - **Roadmap:** Forms & user input · Networking (Open-Meteo Geocoding API) · State management (debounced query)
 - **Complexity:** Easy–Medium
 
-### 2. Saved locations / favorites with local persistence
+### 2. Recent searches with local persistence
 
 - [x] **Implemented**
-- **Why:** The natural follow-up to search, pin multiple cities and switch between them. This is _the_ defining feature of every production weather app.
+- **Why:** The natural follow-up to search, keep track of recently searched cities and switch between them. This is _the_ defining feature of every production weather app.
 - **Roadmap:** **Local storage** (AsyncStorage), currently the app has zero persistence, a notable roadmap gap · Lists
 - **Complexity:** Medium
 
@@ -109,7 +109,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 |    1    | #1 Search bar: city search & geocoding    | Easy–Medium | [x]  |
 |    2    | #3 Settings: units + persisted preference | Easy        | [x]  |
 |    3    | #4 Pull-to-refresh + last-updated         | Easy        | [x]  |
-|    4    | #2 Saved locations / favorites            | Medium      | [x]  |
+|    4    | #2 Recent searches                        | Medium      | [x]  |
 |    5    | #5 Hourly forecast                        | Medium      | [x]  |
 |    6    | #8 Dynamic theming                        | Easy–Medium | [ ]  |
 |    7    | #6 Offline support                        | Medium      | [x]  |
