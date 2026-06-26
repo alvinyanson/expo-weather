@@ -6,15 +6,18 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ## Progress
 
-`5 / 10 implemented`
+`8 / 11 implemented`
 
 ---
 
 ## What the app does today
 
-- **Home** (`src/app/index.tsx`): auto-detects location → shows current temp/condition, plus a search bar whose `searchQuery` state is wired to a `TextInput` but **does nothing** (no submit handler, no geocoding).
-- **Details** (`src/app/details.tsx`): current humidity/wind/UV + 8-day forecast list.
-- **Stack**: TanStack Query (caching), Axios client, `expo-location`, Open-Meteo. Tests via Vitest. Reanimated + Gesture Handler are installed but essentially unused. No persistence, no settings, no offline story.
+- **Home** (`src/app/index.tsx`): auto-detects location, functional search bar with geocoding, and displays current weather conditions.
+- **Details** (`src/app/details.tsx`): current humidity/wind/UV + 8-day forecast list, along with an hourly forecast view.
+- **Settings** (`src/app/settings.tsx`): manage user preferences like temperature/wind units and handle account authentication.
+- **Features**: Saved locations, pull-to-refresh, offline caching, and error boundaries.
+- **Auth**: Firebase Authentication supporting Google Sign-In and Anonymous login.
+- **Stack**: TanStack Query (offline caching), Axios client, `expo-location`, Open-Meteo, Firebase, AsyncStorage for local storage. Tests via Vitest.
 
 ---
 
@@ -31,7 +34,7 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 - [x] **Implemented**
 - **Why:** The natural follow-up to search, pin multiple cities and switch between them. This is _the_ defining feature of every production weather app.
-- **Roadmap:** **Local storage** (AsyncStorage or MMKV), currently the app has zero persistence, a notable roadmap gap · Lists
+- **Roadmap:** **Local storage** (AsyncStorage), currently the app has zero persistence, a notable roadmap gap · Lists
 - **Complexity:** Medium
 
 ### 3. Settings: units (°C/°F, km/h vs mph) + persisted preference
@@ -85,10 +88,17 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 
 ### 10. Error boundary + graceful permission-denied flow
 
-- [ ] **Implemented**
+- [x] **Implemented**
 - **Why:** Currently a denied location permission throws a raw `Error.message`. A React error boundary plus a dedicated "enable location / search manually" empty-state is production hygiene.
 - **Roadmap:** Error handling · Debugging · Permissions
 - **Complexity:** Easy
+
+### 11. Authentication (Firebase Google & Anonymous)
+
+- [x] **Implemented**
+- **Why:** Allows users to have personalized settings and saved locations synced across devices, or try the app anonymously.
+- **Roadmap:** Authentication · Firebase
+- **Complexity:** Medium
 
 ---
 
@@ -105,7 +115,8 @@ A progress tracker for the Expo Weather app, mapped to the [roadmap.sh/react-nat
 |    7    | #6 Offline support                        | Medium      | [x]  |
 |    8    | #7 Animated transitions                   | Medium      | [ ]  |
 |    9    | #9 Weather alerts / push                  | Hard        | [ ]  |
-| Anytime | #10 Error boundary (slot in as needed)    | Easy        | [ ]  |
+| Anytime | #10 Error boundary (slot in as needed)    | Easy        | [x]  |
+| Anytime | #11 Authentication (Firebase)             | Medium      | [x]  |
 
 ---
 

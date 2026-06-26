@@ -1,56 +1,81 @@
-# Welcome to your Expo app 👋
+# Expo Weather App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native weather app I've been working on. It lets you check current conditions, view an 8-day forecast, and save your favorite locations. I've also baked in offline support so it works without a connection, plus Firebase authentication to keep your settings synced.
 
-## Get started
+_Note: I regularly update this app with new features, and I'll make sure this README stays up-to-date too._
 
-1. Install dependencies
+## Screenshots
 
+|                                         Home                                         |                                          Details                                           |                                         Authentication                                         |                                           Settings                                           |                                             Notifications                                              |
+| :----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |
+| &nbsp;&nbsp;<img src="docs/ui/home.png" width="120" alt="Home Screen" />&nbsp;&nbsp; | &nbsp;&nbsp;<img src="docs/ui/details.png" width="120" alt="Details Screen" />&nbsp;&nbsp; | &nbsp;&nbsp;<img src="docs/ui/auth.png" width="120" alt="Authentication Screen" />&nbsp;&nbsp; | &nbsp;&nbsp;<img src="docs/ui/settings.png" width="120" alt="Settings Screen" />&nbsp;&nbsp; | &nbsp;&nbsp;<img src="docs/ui/notifications.png" width="120" alt="Notifications Screen" />&nbsp;&nbsp; |
+
+## Features
+
+- **Current Weather & Forecasts**: View the latest conditions, an 8-day forecast, and hourly breakdowns.
+- **Location Search & Geocoding**: Search for cities worldwide and instantly view their weather.
+- **Saved Locations**: Pin your favorite cities for quick access.
+- **Offline Caching**: View previously loaded weather data even without an active internet connection.
+- **Authentication**: Seamlessly log in with Google or use an anonymous account, powered by Firebase.
+- **Customizable Preferences**: Toggle between temperature units (°C/°F).
+- **Pull-to-Refresh**: Easily fetch the most up-to-date weather data.
+- **Error Handling**: Graceful degradation and user-friendly error boundaries.
+
+## Tech Stack
+
+- **Framework**: [React Native](https://reactnative.dev) & [Expo](https://expo.dev/)
+- **Data Fetching & Caching**: [TanStack Query](https://tanstack.com/query/v5) with Offline Persister
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Storage**: AsyncStorage
+- **Authentication**: Firebase (Google Sign-In & Anonymous Auth)
+- **API**: [Open-Meteo](https://open-meteo.com/) for accurate, free weather data
+- **Testing**: [Vitest](https://vitest.dev/)
+- **Linting & Formatting**: [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) and Prettier
+
+## Getting Started
+
+### Prerequisites
+
+Ensure you have [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io/) installed. You'll also need an emulator or physical device for testing.
+
+### Installation
+
+1. Clone the repository and navigate into the project directory.
+
+2. Install the dependencies:
    ```bash
    pnpm install
    ```
 
-2. Start the app
+### Running the App
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Start the Expo development server:
 
 ```bash
-pnpm run reset-project
+pnpm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+In the terminal output, you can press:
 
-### Other setup steps
+- `a` to open on an Android emulator.
+- `i` to open on an iOS simulator.
 
-- Linting is handled by [oxlint](https://oxc.rs/docs/guide/usage/linter.html) (config in `.oxlintrc.json`). Run `pnpm lint` to check or `pnpm lint:fix` to auto-fix. Formatting is handled separately by Prettier (`pnpm format`).
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+_Note: This application requires native modules (e.g. Firebase) and does not support Expo Go. You must use a development build or run via native projects._
 
-## Learn more
+Alternatively, you can build and run directly via native projects:
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+pnpm run android
+pnpm run ios
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Available Scripts
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **`pnpm start`**: Starts the Expo development server.
+- **`pnpm run android`**: Compiles and runs the app on an Android device/emulator.
+- **`pnpm run ios`**: Compiles and runs the app on an iOS simulator.
+- **`pnpm test`**: Runs the test suite using Vitest.
+- **`pnpm run test:watch`**: Runs the tests in watch mode.
+- **`pnpm run lint`**: Lints the codebase with Oxlint.
+- **`pnpm run lint:fix`**: Automatically fixes linting issues.
+- **`pnpm run format`**: Formats the code using Prettier.
