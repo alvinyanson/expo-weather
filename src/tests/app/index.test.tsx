@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { Alert } from 'react-native';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import HomeScreen from '@/app/index';
 
 const { pushMock, backMock } = vi.hoisted(() => ({ pushMock: vi.fn(), backMock: vi.fn() }));
@@ -9,11 +10,13 @@ vi.mock('expo-router', () => ({
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
+const mockSaveLocation = vi.fn();
 vi.mock('@/hooks', () => ({
   useFetchLocation: vi.fn(),
   useFetchWeather: vi.fn(),
   useDebounce: vi.fn((val) => val), // mock debounce to return value immediately
   useSearchLocation: vi.fn(),
+  useSavedLocations: vi.fn(() => ({ saveLocation: mockSaveLocation, isSaving: false })),
 }));
 
 const mockAddSearch = vi.fn();
@@ -156,5 +159,42 @@ describe('HomeScreen', () => {
       pathname: '/details',
       params: { lat: 35.6895, lon: 139.6917, city: 'Tokyo' },
     });
+  });
+
+  it('renders the Save Location button once weather is loaded', () => {
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+    mockSearchHook.mockReturnValue(searchHookState());
+
+    render(<HomeScreen />);
+
+    expect(screen.getByText('Save Location')).toBeTruthy();
+  });
+
+  it('saves the current location and confirms success', async () => {
+    mockSaveLocation.mockResolvedValue('doc-1');
+    const alertSpy = vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+    mockSearchHook.mockReturnValue(searchHookState());
+
+    render(<HomeScreen />);
+    fireEvent.click(screen.getByText('Save Location'));
+
+    expect(mockSaveLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith('Saved', 'Location saved successfully.');
+    });
+  });
+
+  it('navigates to the saved locations screen', () => {
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+    mockSearchHook.mockReturnValue(searchHookState());
+
+    render(<HomeScreen />);
+    fireEvent.click(screen.getByLabelText('Saved locations'));
+
+    expect(pushMock).toHaveBeenCalledWith('/saved');
   });
 });

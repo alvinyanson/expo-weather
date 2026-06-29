@@ -58,6 +58,22 @@ export const SearchHeader = () => {
           {isSearching && <ActivityIndicator size="small" color="white" />}
         </View>
         <Pressable
+          onPress={() => router.push('/saved')}
+          style={({ pressed }) => [
+            styles.settingsButton,
+            { marginRight: 10 },
+            pressed && { opacity: 0.7 },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Saved locations"
+        >
+          <SymbolView
+            name={{ ios: 'bookmark', android: 'bookmark_border' }}
+            size={24}
+            tintColor="white"
+          />
+        </Pressable>
+        <Pressable
           onPress={() => router.push('/settings')}
           style={({ pressed }) => [styles.settingsButton, pressed && { opacity: 0.7 }]}
         >

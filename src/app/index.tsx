@@ -1,9 +1,17 @@
-import { useFetchLocation, useFetchWeather } from '@/hooks';
+import { useFetchLocation, useFetchWeather, useSavedLocations } from '@/hooks';
 import { theme } from '@/theme';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { ActivityIndicator, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 import { SearchHeader } from '@/components/SearchHeader';
 import { CurrentWeather } from '@/components/CurrentWeather';
@@ -28,6 +36,8 @@ export default function HomeScreen() {
     refetch: refetchWeather,
   } = useFetchWeather(gpsLocation);
 
+  const { saveLocation, isSaving } = useSavedLocations();
+
   const handlePressWeather = () => {
     router.push({
       pathname: '/details',
@@ -35,6 +45,20 @@ export default function HomeScreen() {
         ? { lat: gpsLocation.latitude, lon: gpsLocation.longitude, city: gpsLocation.city }
         : {},
     });
+  };
+
+  const handleSaveLocation = async () => {
+    if (!gpsLocation) return;
+    try {
+      await saveLocation({
+        city: gpsLocation.city,
+        lat: gpsLocation.latitude,
+        lon: gpsLocation.longitude,
+      });
+      Alert.alert('Saved', 'Location saved successfully.');
+    } catch {
+      Alert.alert('Save failed', 'Could not save the location. Please try again.');
+    }
   };
 
   const isLoading = isLoadingLocation || isLoadingWeather;
@@ -88,6 +112,28 @@ export default function HomeScreen() {
 
           {weather && <HourlyForecast weather={weather} />}
 
+          {weather && gpsLocation && (
+            <Pressable
+              style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
+              onPress={handleSaveLocation}
+              disabled={isSaving}
+              android_ripple={{ color: theme.colors.ripple }}
+            >
+              {isSaving ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <>
+                  <SymbolView
+                    name={{ ios: 'bookmark.fill', android: 'bookmark' }}
+                    size={18}
+                    tintColor="white"
+                  />
+                  <Text style={styles.saveButtonText}>Save Location</Text>
+                </>
+              )}
+            </Pressable>
+          )}
+
           <View style={styles.footer}>
             <Text style={styles.footerText}>Tap for more details</Text>
           </View>
@@ -107,6 +153,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+  saveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.spacing.sm,
+    alignSelf: 'center',
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.round,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
+    minWidth: 180,
+    minHeight: 48,
+  },
+  saveButtonPressed: {
+    opacity: 0.7,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: theme.typography.sizes.md,
   },
   footer: {
     alignItems: 'center',

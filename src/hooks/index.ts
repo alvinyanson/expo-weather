@@ -1,5 +1,6 @@
 export * from './useFetchLocation';
 export * from './useFetchWeather';
+export * from './useSavedLocations';
 export * from './useDebounce';
 export * from './useSearchLocation';
 export * from './useNotifications';

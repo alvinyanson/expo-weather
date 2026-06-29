@@ -1,10 +1,18 @@
-import { useFetchLocation, useFetchWeather } from '@/hooks';
+import { useFetchLocation, useFetchWeather, useSavedLocations } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 import { formatTime } from '@/utils/formatters';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useCallback } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View, StatusBar } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+} from 'react-native';
 
 import { DetailsHeader } from '@/components/DetailsHeader';
 import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
@@ -39,6 +47,22 @@ export default function DetailsScreen() {
   } = useFetchWeather(targetLocation);
 
   const lastUpdated = dataUpdatedAt ? formatTime(dataUpdatedAt) : '';
+
+  const { saveLocation, isSaving } = useSavedLocations();
+
+  const handleSaveLocation = async () => {
+    if (!targetLocation) return;
+    try {
+      await saveLocation({
+        city: targetLocation.city,
+        lat: targetLocation.latitude,
+        lon: targetLocation.longitude,
+      });
+      Alert.alert('Saved', 'Location saved successfully.');
+    } catch {
+      Alert.alert('Save failed', 'Could not save the location. Please try again.');
+    }
+  };
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -88,6 +112,8 @@ export default function DetailsScreen() {
         weather={weather}
         lastUpdated={lastUpdated}
         onBack={() => router.back()}
+        onSave={handleSaveLocation}
+        isSaving={isSaving}
       />
 
       <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />

@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { Alert } from 'react-native';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import DetailsScreen from '@/app/details';
 
 const { backMock } = vi.hoisted(() => ({ backMock: vi.fn() }));
@@ -10,9 +11,11 @@ vi.mock('expo-router', () => ({
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
+const mockSaveLocation = vi.fn();
 vi.mock('@/hooks', () => ({
   useFetchLocation: vi.fn(),
   useFetchWeather: vi.fn(),
+  useSavedLocations: vi.fn(() => ({ saveLocation: mockSaveLocation, isSaving: false })),
 }));
 
 import { useFetchLocation, useFetchWeather } from '@/hooks';
@@ -41,7 +44,11 @@ const hookState = (overrides = {}) =>
     ...overrides,
   }) as never;
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+  vi.restoreAllMocks();
+});
 
 describe('DetailsScreen', () => {
   it('shows a loading state while data is fetching', () => {
@@ -77,5 +84,20 @@ describe('DetailsScreen', () => {
     expect(screen.getByText('12 km/h')).toBeTruthy(); // wind
     expect(screen.getByText('7')).toBeTruthy(); // uv index max rounded
     expect(screen.getByText('8-Day Forecast')).toBeTruthy();
+  });
+
+  it('saves the displayed location from the header and confirms success', async () => {
+    mockSaveLocation.mockResolvedValue('doc-1');
+    const alertSpy = vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+
+    render(<DetailsScreen />);
+    fireEvent.click(screen.getByLabelText('Save location'));
+
+    expect(mockSaveLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith('Saved', 'Location saved successfully.');
+    });
   });
 });

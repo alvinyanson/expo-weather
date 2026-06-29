@@ -1,6 +1,6 @@
 import { weatherCodeToCondition } from '@/utils/weatherMapper';
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
 import { theme } from '@/theme';
 
@@ -9,9 +9,19 @@ interface DetailsHeaderProps {
   weather: WeatherResponse;
   lastUpdated: string;
   onBack: () => void;
+  /** When provided, a save (bookmark) action is shown in the header's right slot. */
+  onSave?: () => void;
+  isSaving?: boolean;
 }
 
-export const DetailsHeader = ({ city, weather, lastUpdated, onBack }: DetailsHeaderProps) => {
+export const DetailsHeader = ({
+  city,
+  weather,
+  lastUpdated,
+  onBack,
+  onSave,
+  isSaving = false,
+}: DetailsHeaderProps) => {
   return (
     <View style={styles.header}>
       <Pressable
@@ -32,7 +42,28 @@ export const DetailsHeader = ({ city, weather, lastUpdated, onBack }: DetailsHea
         </Text>
         {lastUpdated ? <Text style={styles.lastUpdatedText}>Updated {lastUpdated}</Text> : null}
       </View>
-      <View style={{ width: 48 }} />
+      {onSave ? (
+        <Pressable
+          onPress={onSave}
+          disabled={isSaving}
+          accessibilityRole="button"
+          accessibilityLabel="Save location"
+          style={({ pressed }) => [styles.saveButton, pressed && styles.buttonPressed]}
+          android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+        >
+          {isSaving ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <SymbolView
+              name={{ ios: 'bookmark', android: 'bookmark_border' }}
+              size={24}
+              tintColor="white"
+            />
+          )}
+        </Pressable>
+      ) : (
+        <View style={{ width: 48 }} />
+      )}
     </View>
   );
 };
@@ -46,6 +77,13 @@ const styles = StyleSheet.create({
     height: 60,
   },
   backButton: {
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 24,
+  },
+  saveButton: {
     width: 48,
     height: 48,
     justifyContent: 'center',

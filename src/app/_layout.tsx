@@ -4,6 +4,7 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ErrorBoundaryProps, Stack } from 'expo-router';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useNetworkMonitor } from '@/hooks/useNetworkMonitor';
 import { useAuthListener } from '@/hooks/useAuthListener';
@@ -53,6 +54,7 @@ function RootApp() {
           <Stack.Screen name="index" />
           <Stack.Screen name="details" />
           <Stack.Screen name="settings" />
+          <Stack.Screen name="saved" />
         </Stack.Protected>
 
         <Stack.Protected guard={!isAuthenticated}>
@@ -65,14 +67,16 @@ function RootApp() {
 
 export default function RootLayout() {
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{ persister: asyncStoragePersister }}
-    >
-      <SafeAreaProvider>
-        <RootApp />
-      </SafeAreaProvider>
-    </PersistQueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister: asyncStoragePersister }}
+      >
+        <SafeAreaProvider>
+          <RootApp />
+        </SafeAreaProvider>
+      </PersistQueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 
