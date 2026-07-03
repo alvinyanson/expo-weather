@@ -2,6 +2,9 @@ name: Android Production Build
 
 on:
   workflow_dispatch: {}
+  push:
+    branches:
+      - main
 
 jobs:
   build_android_production:
