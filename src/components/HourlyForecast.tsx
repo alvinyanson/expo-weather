@@ -1,5 +1,9 @@
 import { WeatherResponse } from '@/interfaces';
-import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
+import {
+  weatherCodeToCondition,
+  weatherCodeToSymbol,
+  getIconTintColor,
+} from '@/utils/weatherMapper';
 import { formatHourlyTime, formatRound } from '@/utils/formatters';
 import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
@@ -48,7 +52,7 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
               <SymbolView
                 name={weatherCodeToSymbol(item.weatherCode)}
                 size={28}
-                tintColor="white"
+                tintColor={getIconTintColor(item.weatherCode)}
                 type="monochrome"
                 style={styles.hourlyIcon}
               />

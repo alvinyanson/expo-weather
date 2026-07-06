@@ -1,4 +1,4 @@
-import { weatherCodeToSymbol } from '@/utils/weatherMapper';
+import { weatherCodeToSymbol, getIconTintColor } from '@/utils/weatherMapper';
 import { formatDayName, formatRound } from '@/utils/formatters';
 import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
@@ -29,7 +29,7 @@ export const DailyForecastList = ({
         <SymbolView
           name={weatherCodeToSymbol(weather.daily.weather_code[index])}
           size={24}
-          tintColor="white"
+          tintColor={getIconTintColor(weather.daily.weather_code[index])}
           style={styles.forecastIcon}
         />
         <View style={styles.tempRange}>

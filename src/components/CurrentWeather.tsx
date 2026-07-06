@@ -1,5 +1,9 @@
 import { WeatherResponse } from '@/interfaces';
-import { weatherCodeToCondition, weatherCodeToSymbol } from '@/utils/weatherMapper';
+import {
+  weatherCodeToCondition,
+  weatherCodeToSymbol,
+  getIconTintColor,
+} from '@/utils/weatherMapper';
 import { formatDateFull, formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -20,26 +24,28 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
         <Text style={styles.dateText}>Today, {formatDateFull()}</Text>
       </View>
 
-      <Pressable
-        style={({ pressed }) => [styles.heroContainer, pressed && styles.heroPressed]}
-        onPress={onPress}
-        android_ripple={{ color: theme.colors.ripple, borderless: false }}
-      >
-        <SymbolView
-          name={weatherCodeToSymbol(weather.current.weather_code)}
-          size={120}
-          tintColor="white"
-          type="monochrome"
-          style={styles.heroIcon}
-        />
-        <Text style={styles.temperatureText}>
-          {formatRound(weather.current.temperature_2m)}
-          {tempUnit}
-        </Text>
-        <Text style={styles.conditionText}>
-          {weatherCodeToCondition(weather.current.weather_code)}
-        </Text>
-      </Pressable>
+      <View style={styles.heroWrapper}>
+        <Pressable
+          style={({ pressed }) => [styles.heroContainer, pressed && styles.heroPressed]}
+          onPress={onPress}
+          android_ripple={{ color: theme.colors.ripple, borderless: false }}
+        >
+          <SymbolView
+            name={weatherCodeToSymbol(weather.current.weather_code)}
+            size={120}
+            tintColor={getIconTintColor(weather.current.weather_code)}
+            type="monochrome"
+            style={styles.heroIcon}
+          />
+          <Text style={styles.temperatureText}>
+            {formatRound(weather.current.temperature_2m)}
+            {tempUnit}
+          </Text>
+          <Text style={styles.conditionText}>
+            {weatherCodeToCondition(weather.current.weather_code)}
+          </Text>
+        </Pressable>
+      </View>
     </>
   );
 };
@@ -60,13 +66,16 @@ const styles = StyleSheet.create({
     color: theme.colors.textMuted,
     marginTop: 5,
   },
-  heroContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  heroWrapper: {
     marginHorizontal: 30,
     marginVertical: 40,
     borderRadius: 24,
+    overflow: 'hidden',
+  },
+  heroContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 20,
   },
   heroPressed: {
     opacity: 0.8,

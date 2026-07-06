@@ -1,4 +1,4 @@
-import { weatherCodeToSymbol } from '@/utils/weatherMapper';
+import { weatherCodeToSymbol, getIconTintColor } from '@/utils/weatherMapper';
 import { formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
@@ -22,7 +22,7 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
         <SymbolView
           name={weatherCodeToSymbol(weather.current.weather_code)}
           size={60}
-          tintColor="white"
+          tintColor={getIconTintColor(weather.current.weather_code)}
         />
       </View>
       <View style={styles.divider} />

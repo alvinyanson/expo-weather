@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from 'react-native';
 
 import { SearchHeader } from '@/components/SearchHeader';
@@ -19,6 +20,9 @@ import { HourlyForecast } from '@/components/HourlyForecast';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+
   const temperatureUnit = useSettingsStore((state) => state.temperatureUnit);
   const tempUnit = temperatureUnit === 'celsius' ? '°C' : '°F';
 
@@ -100,44 +104,50 @@ export default function HomeScreen() {
           <Text style={styles.loadingText}>Fetching weather data...</Text>
         </View>
       ) : (
-        <>
-          {weather && (
-            <CurrentWeather
-              city={gpsLocation?.city}
-              weather={weather}
-              tempUnit={tempUnit}
-              onPress={handlePressWeather}
-            />
-          )}
-
-          {weather && <HourlyForecast weather={weather} />}
-
-          {weather && gpsLocation && (
-            <Pressable
-              style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
-              onPress={handleSaveLocation}
-              disabled={isSaving}
-              android_ripple={{ color: theme.colors.ripple }}
-            >
-              {isSaving ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <>
-                  <SymbolView
-                    name={{ ios: 'bookmark.fill', android: 'bookmark' }}
-                    size={18}
-                    tintColor="white"
-                  />
-                  <Text style={styles.saveButtonText}>Save Location</Text>
-                </>
-              )}
-            </Pressable>
-          )}
-
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Tap for more details</Text>
+        <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
+          <View style={isTablet ? styles.tabletColumnLeft : undefined}>
+            {weather && (
+              <CurrentWeather
+                city={gpsLocation?.city}
+                weather={weather}
+                tempUnit={tempUnit}
+                onPress={handlePressWeather}
+              />
+            )}
           </View>
-        </>
+
+          <View style={isTablet ? styles.tabletColumnRight : undefined}>
+            {weather && <HourlyForecast weather={weather} />}
+
+            {weather && gpsLocation && (
+              <View style={styles.saveButtonWrapper}>
+                <Pressable
+                  style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
+                  onPress={handleSaveLocation}
+                  disabled={isSaving}
+                  android_ripple={{ color: theme.colors.ripple }}
+                >
+                  {isSaving ? (
+                    <ActivityIndicator size="small" color="white" />
+                  ) : (
+                    <>
+                      <SymbolView
+                        name={{ ios: 'bookmark.fill', android: 'bookmark' }}
+                        size={18}
+                        tintColor="white"
+                      />
+                      <Text style={styles.saveButtonText}>Save Location</Text>
+                    </>
+                  )}
+                </Pressable>
+              </View>
+            )}
+
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Tap for more details</Text>
+            </View>
+          </View>
+        </View>
       )}
     </View>
   );
@@ -154,17 +164,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  tabletContentContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  mobileContentContainer: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  tabletColumnLeft: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  tabletColumnRight: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: 20,
+  },
+  saveButtonWrapper: {
+    alignSelf: 'center',
+    borderRadius: theme.borderRadius.round,
+    overflow: 'hidden',
+    marginBottom: theme.spacing.lg,
+  },
   saveButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: theme.spacing.sm,
-    alignSelf: 'center',
     backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.round,
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    marginBottom: theme.spacing.lg,
     minWidth: 180,
     minHeight: 48,
   },

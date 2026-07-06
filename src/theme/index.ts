@@ -1,12 +1,18 @@
 export const theme = {
   colors: {
     // Solid colors
-    primary: '#1A237E', // Main navy blue
-    secondary: '#5C6BC0', // Accents and buttons
-    accent: '#81D4FA', // Light blue highlights
-    error: '#FFCDD2', // Light pink for error messages on dark backgrounds
-    danger: '#E53935', // Red for offline indicator
-    background: '#1A237E', // App background
+    primary: '#2A4365', // Deep blue, matches well with sky blue
+    secondary: '#2B6CB0', // Mid-dark blue for buttons/accents
+    accent: '#F6AD55', // Warm orange to complement the blue background
+    error: '#FEB2B2', // Soft red/pink that contrasts well
+    danger: '#E53E3E', // Strong red
+
+    background: '#5494D6', // App background (Sunny sky blue)
+
+    // Icon colors
+    iconSun: '#FFD700', // Yellow
+    iconSunset: '#FFA500', // Orange
+
     text: '#FFFFFF', // Default white text
     textDark: '#1A237E', // Dark text for buttons/inputs
 

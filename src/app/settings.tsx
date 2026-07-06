@@ -108,18 +108,15 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <Pressable
-          style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
-          onPress={sendTestNotification}
-          android_ripple={{ color: theme.colors.ripple }}
-        >
-          <SymbolView
-            name={{ ios: 'bell.badge.fill', android: 'notifications_active' }}
-            size={20}
-            tintColor={theme.colors.primary}
-          />
-          <Text style={styles.testButtonText}>Test Notification</Text>
-        </Pressable>
+        <View style={styles.testButtonWrapper}>
+          <Pressable
+            style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
+            onPress={sendTestNotification}
+            android_ripple={{ color: theme.colors.ripple }}
+          >
+            <Text style={styles.testButtonText}>Test Notification</Text>
+          </Pressable>
+        </View>
 
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
@@ -128,18 +125,15 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <Pressable
-          style={({ pressed }) => [styles.signOutButton, pressed && styles.buttonPressed]}
-          onPress={signOut}
-          android_ripple={{ color: theme.colors.ripple }}
-        >
-          <SymbolView
-            name={{ ios: 'rectangle.portrait.and.arrow.right', android: 'logout' }}
-            size={20}
-            tintColor={theme.colors.error}
-          />
-          <Text style={styles.signOutButtonText}>Sign Out</Text>
-        </Pressable>
+        <View style={styles.signOutButtonWrapper}>
+          <Pressable
+            style={({ pressed }) => [styles.signOutButton, pressed && styles.buttonPressed]}
+            onPress={signOut}
+            android_ripple={{ color: theme.colors.ripple }}
+          >
+            <Text style={styles.signOutButtonText}>Sign Out</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -218,35 +212,41 @@ const styles = StyleSheet.create({
   toggleTextActive: {
     color: theme.colors.primary,
   },
+  testButtonWrapper: {
+    borderRadius: 8,
+    marginTop: 30,
+    overflow: 'hidden',
+  },
   testButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
     backgroundColor: 'white',
-    borderRadius: 8,
     paddingVertical: 14,
-    marginTop: 30,
   },
   testButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: theme.colors.primary,
   },
+  signOutButtonWrapper: {
+    borderRadius: 8,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: theme.colors.borderError,
+    overflow: 'hidden',
+  },
   signOutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    borderRadius: 8,
     paddingVertical: 14,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: theme.colors.borderError,
   },
   signOutButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: theme.colors.error,
+    color: 'white',
   },
 });

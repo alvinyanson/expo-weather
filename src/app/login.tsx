@@ -45,7 +45,7 @@ export default function LoginScreen() {
         <SymbolView
           name={{ ios: 'cloud.sun.fill', android: 'wb_sunny' }}
           size={96}
-          tintColor="white"
+          tintColor={theme.colors.iconSun}
           type="monochrome"
         />
         <Text style={styles.title}>Expo Weather</Text>
@@ -55,38 +55,42 @@ export default function LoginScreen() {
       <View style={styles.actions}>
         {error && <Text style={styles.errorText}>{error}</Text>}
 
-        <Pressable
-          style={({ pressed }) => [styles.googleButton, pressed && styles.pressed]}
-          onPress={handleGoogle}
-          disabled={busy}
-          android_ripple={{ color: theme.colors.rippleDark }}
-        >
-          {pending === 'google' ? (
-            <ActivityIndicator size="small" color={theme.colors.primary} />
-          ) : (
-            <>
-              <SymbolView
-                name={{ ios: 'g.circle.fill', android: 'account_circle' }}
-                size={22}
-                tintColor={theme.colors.primary}
-              />
-              <Text style={styles.googleButtonText}>Continue with Google</Text>
-            </>
-          )}
-        </Pressable>
+        <View style={styles.googleButtonWrapper}>
+          <Pressable
+            style={({ pressed }) => [styles.googleButton, pressed && styles.pressed]}
+            onPress={handleGoogle}
+            disabled={busy}
+            android_ripple={{ color: theme.colors.rippleDark }}
+          >
+            {pending === 'google' ? (
+              <ActivityIndicator size="small" color={theme.colors.primary} />
+            ) : (
+              <>
+                <SymbolView
+                  name={{ ios: 'g.circle.fill', android: 'account_circle' }}
+                  size={22}
+                  tintColor={theme.colors.primary}
+                />
+                <Text style={styles.googleButtonText}>Continue with Google</Text>
+              </>
+            )}
+          </Pressable>
+        </View>
 
-        <Pressable
-          style={({ pressed }) => [styles.guestButton, pressed && styles.pressed]}
-          onPress={handleGuest}
-          disabled={busy}
-          android_ripple={{ color: theme.colors.surface }}
-        >
-          {pending === 'guest' ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Text style={styles.guestButtonText}>Continue as Guest</Text>
-          )}
-        </Pressable>
+        <View style={styles.guestButtonWrapper}>
+          <Pressable
+            style={({ pressed }) => [styles.guestButton, pressed && styles.pressed]}
+            onPress={handleGuest}
+            disabled={busy}
+            android_ripple={{ color: theme.colors.surface }}
+          >
+            {pending === 'guest' ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.guestButtonText}>Continue as Guest</Text>
+            )}
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -125,13 +129,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 6,
   },
+  googleButtonWrapper: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
     backgroundColor: 'white',
-    borderRadius: 12,
     height: 52,
   },
   googleButtonText: {
@@ -139,13 +146,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: theme.colors.primary,
   },
+  guestButtonWrapper: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    overflow: 'hidden',
+  },
   guestButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 12,
     height: 52,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
   },
   guestButtonText: {
     fontSize: 16,

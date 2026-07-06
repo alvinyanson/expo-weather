@@ -12,6 +12,7 @@ import {
   Text,
   View,
   StatusBar,
+  useWindowDimensions,
 } from 'react-native';
 
 import { DetailsHeader } from '@/components/DetailsHeader';
@@ -21,6 +22,9 @@ import { DailyForecastList } from '@/components/DailyForecastList';
 export default function DetailsScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
+
   const temperatureUnit = useSettingsStore((state) => state.temperatureUnit);
   const windSpeedUnit = useSettingsStore((state) => state.windSpeedUnit);
 
@@ -116,14 +120,20 @@ export default function DetailsScreen() {
         isSaving={isSaving}
       />
 
-      <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />
+      <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
+        <View style={isTablet ? styles.tabletColumnLeft : styles.mobileColumn}>
+          <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />
+        </View>
 
-      <DailyForecastList
-        weather={weather}
-        tempUnit={tempUnit}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-      />
+        <View style={isTablet ? styles.tabletColumnRight : styles.mobileColumn}>
+          <DailyForecastList
+            weather={weather}
+            tempUnit={tempUnit}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -154,5 +164,24 @@ const styles = StyleSheet.create({
   retryText: {
     color: 'white',
     fontWeight: '600',
+  },
+  tabletContentContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    gap: 20,
+  },
+  mobileContentContainer: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  tabletColumnLeft: {
+    flex: 1,
+  },
+  tabletColumnRight: {
+    flex: 1,
+  },
+  mobileColumn: {
+    flex: 1,
   },
 });

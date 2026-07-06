@@ -1,7 +1,21 @@
 import { SymbolView } from 'expo-symbols';
 import { ComponentProps } from 'react';
+import { theme } from '@/theme';
 
 export type SymbolName = ComponentProps<typeof SymbolView>['name'];
+
+export const getIconTintColor = (code: number | undefined): string => {
+  if (code === undefined) return 'white';
+
+  switch (code) {
+    case 0:
+    case 1:
+    case 2:
+      return theme.colors.iconSun;
+    default:
+      return 'white';
+  }
+};
 
 export const weatherCodeToSymbol = (code: number): SymbolName => {
   // WMO Weather interpretation codes (WW)

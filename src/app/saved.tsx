@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import { useSavedLocations } from '@/hooks';
 import { SavedLocationItem } from '@/components/SavedLocationItem';
@@ -17,6 +18,8 @@ import { theme } from '@/theme';
 
 export default function SavedLocationsScreen() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
+  const isTablet = width >= 768;
   const { savedLocations, isLoading, error, refetch, deleteLocation } = useSavedLocations();
 
   const confirmDelete = (location: SavedLocation) => {
@@ -81,10 +84,17 @@ export default function SavedLocationsScreen() {
 
     return (
       <FlatList
+        key={isTablet ? 'tablet' : 'mobile'}
         data={savedLocations}
         keyExtractor={(item) => item.id}
+        numColumns={isTablet ? 2 : 1}
+        columnWrapperStyle={isTablet ? styles.columnWrapper : undefined}
         contentContainerStyle={styles.listContent}
-        renderItem={({ item }) => <SavedLocationItem location={item} onDelete={confirmDelete} />}
+        renderItem={({ item }) => (
+          <View style={isTablet ? styles.gridItem : undefined}>
+            <SavedLocationItem location={item} onDelete={confirmDelete} />
+          </View>
+        )}
       />
     );
   };
@@ -182,5 +192,12 @@ const styles = StyleSheet.create({
   retryText: {
     color: 'white',
     fontWeight: '600',
+  },
+  columnWrapper: {
+    gap: 20,
+  },
+  gridItem: {
+    flex: 1,
+    maxWidth: '50%',
   },
 });
