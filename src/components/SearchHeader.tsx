@@ -48,7 +48,7 @@ export const SearchHeader = () => {
           />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search city..."
+            placeholder="Search city"
             placeholderTextColor={theme.colors.textHint}
             value={searchQuery}
             onChangeText={setSearchQuery}
