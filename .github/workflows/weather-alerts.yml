@@ -2,8 +2,8 @@ name: Send Daily Weather Alerts
 
 on:
   schedule:
-    # Runs daily at 10:00 AM PHT (2:00 AM UTC)
-    - cron: '0 2 * * *'
+    # Runs daily at 2:00 PM PHT (6:00 AM UTC)
+    - cron: '0 6 * * *'
   # Allows manual triggering from the GitHub Actions tab
   workflow_dispatch:
 
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
 
       - name: Install Dependencies
         run: npm install firebase-admin axios

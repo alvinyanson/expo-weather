@@ -8,6 +8,49 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+function weatherCodeToCondition(code) {
+  switch (code) {
+    case 0:
+      return 'Clear Sky ☀️';
+    case 1:
+    case 2:
+    case 3:
+      return 'Partly Cloudy ⛅';
+    case 45:
+    case 48:
+      return 'Foggy 🌫️';
+    case 51:
+    case 53:
+    case 55:
+    case 56:
+    case 57:
+      return 'Light Drizzle 🌧️';
+    case 61:
+    case 63:
+    case 65:
+    case 66:
+    case 67:
+      return 'Rainy 🌧️';
+    case 71:
+    case 73:
+    case 75:
+    case 77:
+    case 85:
+    case 86:
+      return 'Snowy ❄️';
+    case 80:
+    case 81:
+    case 82:
+      return 'Rain Showers 🌦️';
+    case 95:
+    case 96:
+    case 99:
+      return 'Thunderstorm ⛈️';
+    default:
+      return 'Cloudy ☁️';
+  }
+}
+
 async function checkWeatherAndNotify() {
   const usersSnapshot = await db.collection('users').get();
 
@@ -23,22 +66,34 @@ async function checkWeatherAndNotify() {
         params: {
           latitude,
           longitude,
-          hourly: 'precipitation_probability',
+          hourly: 'precipitation_probability,temperature_2m,weather_code',
           forecast_hours: 2,
         },
       });
 
-      // precipitation_probability is an array: index 0 is current hour, index 1 is next hour
       const nextHourRainProb = weatherResponse.data?.hourly?.precipitation_probability?.[1] || 0;
+      const nextHourTemp = Math.round(weatherResponse.data?.hourly?.temperature_2m?.[1] || 0);
+      const nextHourCode = weatherResponse.data?.hourly?.weather_code?.[1] || 0;
+      const nextHourCondition = weatherCodeToCondition(nextHourCode);
 
-      // 2. Force send push notification for testing (normally: nextHourRainProb >= 30)
+      let title, body;
+
+      // 2. Decide notification text based on rain probability
+      if (nextHourRainProb >= 30) {
+        title = 'Rain Alert 🌧️';
+        body = `It is likely to rain in the next hour (${nextHourRainProb}% chance). Expect ${nextHourTemp}°C and ${nextHourCondition}. Don't forget your umbrella!`;
+      } else {
+        title = 'Daily Weather Update ☀️';
+        body = `Weather for the next hour: ${nextHourTemp}°C and ${nextHourCondition}. Rain probability: ${nextHourRainProb}%. Have a great day!`;
+      }
+
       await axios.post('https://exp.host/--/api/v2/push/send', {
         to: pushToken,
-        title: 'Rain Alert (Test) 🌧️',
-        body: `This is a test notification. Next hour rain probability is ${nextHourRainProb}%.`,
+        title,
+        body,
         sound: 'default',
       });
-      console.log(`Sent test rain alert to user ${doc.id}`);
+      console.log(`Sent weather update to user ${doc.id}`);
     } catch (err) {
       console.error(`Failed to process user ${doc.id}:`, err.message);
     }
