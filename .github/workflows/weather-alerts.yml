@@ -1,0 +1,28 @@
+name: Send Daily Weather Alerts
+
+on:
+  schedule:
+    # Runs daily at 10:00 AM PHT (2:00 AM UTC)
+    - cron: '0 2 * * *'
+  # Allows manual triggering from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  send-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install firebase-admin axios
+
+      - name: Run Weather Alert Script
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node scripts/send-weather-alerts.js
