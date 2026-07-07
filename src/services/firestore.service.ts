@@ -8,6 +8,7 @@ import {
   query,
   where,
   serverTimestamp,
+  setDoc,
 } from '@react-native-firebase/firestore';
 import type { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import type { SavedLocation, SaveLocationInput } from '@/interfaces';
@@ -68,4 +69,43 @@ export const getSavedLocations = async (userId: string): Promise<SavedLocation[]
 export const deleteSavedLocation = async (id: string): Promise<void> => {
   const db = getFirestore();
   await deleteDoc(doc(db, COLLECTION, id));
+};
+
+/**
+ * Saves/updates the user's push token and coordinate details in their user document.
+ */
+export const saveUserPushToken = async (
+  userId: string,
+  token: string,
+  latitude: number,
+  longitude: number,
+): Promise<void> => {
+  const db = getFirestore();
+  await setDoc(
+    doc(db, 'users', userId),
+    {
+      pushToken: token,
+      latitude,
+      longitude,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+};
+
+/**
+ * Clears/removes the push token and location details from the user's document in Firestore.
+ */
+export const clearUserPushToken = async (userId: string): Promise<void> => {
+  const db = getFirestore();
+  await setDoc(
+    doc(db, 'users', userId),
+    {
+      pushToken: null,
+      latitude: null,
+      longitude: null,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
 };

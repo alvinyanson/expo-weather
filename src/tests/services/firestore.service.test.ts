@@ -7,8 +7,15 @@ import {
   query,
   serverTimestamp,
   where,
+  setDoc,
 } from '@react-native-firebase/firestore';
-import { deleteSavedLocation, getSavedLocations, saveLocation } from '@/services/firestore.service';
+import {
+  deleteSavedLocation,
+  getSavedLocations,
+  saveLocation,
+  saveUserPushToken,
+  clearUserPushToken,
+} from '@/services/firestore.service';
 
 vi.mock('@react-native-firebase/firestore', () => ({
   getFirestore: vi.fn(() => ({ __db: true })),
@@ -20,11 +27,13 @@ vi.mock('@react-native-firebase/firestore', () => ({
   query: vi.fn((...args) => ({ __query: args })),
   where: vi.fn((field, op, value) => ({ __where: [field, op, value] })),
   serverTimestamp: vi.fn(() => '__SERVER_TS__'),
+  setDoc: vi.fn(),
 }));
 
 const mockAddDoc = vi.mocked(addDoc);
 const mockGetDocs = vi.mocked(getDocs);
 const mockDeleteDoc = vi.mocked(deleteDoc);
+const mockSetDoc = vi.mocked(setDoc);
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -93,18 +102,18 @@ describe('getSavedLocations', () => {
     ]);
   });
 
-  it('sorts results newest-first in memory, pending timestamps on top', async () => {
-    const makeDoc = (id: string, createdAt: number | null) => ({
-      id,
-      data: () => ({
-        city: id,
-        lat: 0,
-        lon: 0,
-        userId: 'user-1',
-        createdAt: createdAt === null ? null : { toMillis: () => createdAt },
-      }),
-    });
+  const makeDoc = (id: string, createdAt: number | null) => ({
+    id,
+    data: () => ({
+      city: id,
+      lat: 0,
+      lon: 0,
+      userId: 'user-1',
+      createdAt: createdAt === null ? null : { toMillis: () => createdAt },
+    }),
+  });
 
+  it('sorts results newest-first in memory, pending timestamps on top', async () => {
     mockGetDocs.mockResolvedValue({
       docs: [makeDoc('older', 1000), makeDoc('newer', 2000), makeDoc('pending', null)],
     } as never);
@@ -150,5 +159,59 @@ describe('deleteSavedLocation', () => {
     mockDeleteDoc.mockRejectedValue(new Error('not-found'));
 
     await expect(deleteSavedLocation('missing')).rejects.toThrow('not-found');
+  });
+});
+
+describe('saveUserPushToken', () => {
+  it('updates the user push token and coordinates with merge: true', async () => {
+    mockSetDoc.mockResolvedValue(undefined as never);
+
+    await saveUserPushToken('user-123', 'token-abc', 14.6, 120.98);
+
+    expect(doc).toHaveBeenCalledWith({ __db: true }, 'users', 'user-123');
+    expect(mockSetDoc).toHaveBeenCalledWith(
+      { __doc: 'users/user-123' },
+      {
+        pushToken: 'token-abc',
+        latitude: 14.6,
+        longitude: 120.98,
+        updatedAt: '__SERVER_TS__',
+      },
+      { merge: true },
+    );
+  });
+
+  it('propagates Firestore errors', async () => {
+    mockSetDoc.mockRejectedValue(new Error('permission-denied'));
+
+    await expect(saveUserPushToken('user-123', 'token-abc', 14.6, 120.98)).rejects.toThrow(
+      'permission-denied',
+    );
+  });
+});
+
+describe('clearUserPushToken', () => {
+  it('clears/nullifies the push token and coordinates with merge: true', async () => {
+    mockSetDoc.mockResolvedValue(undefined as never);
+
+    await clearUserPushToken('user-123');
+
+    expect(doc).toHaveBeenCalledWith({ __db: true }, 'users', 'user-123');
+    expect(mockSetDoc).toHaveBeenCalledWith(
+      { __doc: 'users/user-123' },
+      {
+        pushToken: null,
+        latitude: null,
+        longitude: null,
+        updatedAt: '__SERVER_TS__',
+      },
+      { merge: true },
+    );
+  });
+
+  it('propagates Firestore errors', async () => {
+    mockSetDoc.mockRejectedValue(new Error('permission-denied'));
+
+    await expect(clearUserPushToken('user-123')).rejects.toThrow('permission-denied');
   });
 });

@@ -9,6 +9,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useNetworkMonitor } from '@/hooks/useNetworkMonitor';
 import { useAuthListener } from '@/hooks/useAuthListener';
 import { useAuth } from '@/hooks/useAuth';
+import { useNotificationListeners } from '@/hooks/useNotificationListeners';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { theme } from '@/theme';
 
@@ -27,6 +28,7 @@ const asyncStoragePersister = createAsyncStoragePersister({
 function RootApp() {
   useNetworkMonitor();
   useAuthListener();
+  useNotificationListeners();
   const { isAuthenticated, initializing } = useAuth();
 
   // Hold on a loader until Firebase reports the initial auth state, otherwise

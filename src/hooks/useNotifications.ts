@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { Alert, Platform } from 'react-native';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import apiClient from '@/services/api.client';
+import { useSettingsStore } from '@/store/useSettingsStore';
 
 // Expo push service endpoint. Passing an absolute URL to apiClient bypasses its
 // (Open-Meteo) baseURL while still reusing the shared error interceptor.
@@ -71,25 +72,18 @@ async function registerForPushNotificationsAsync(): Promise<string | undefined> 
 }
 
 export function useNotifications() {
-  const [expoPushToken, setExpoPushToken] = useState<string | undefined>(undefined);
+  const { expoPushToken, setExpoPushToken } = useSettingsStore();
 
-  useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then(setExpoPushToken)
-      .catch((error: unknown) => console.warn('Push registration error:', error));
-
-    const receivedListener = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received:', notification.request.content.title);
-    });
-    const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log('Notification response:', response.notification.request.content.title);
-    });
-
-    return () => {
-      receivedListener.remove();
-      responseListener.remove();
-    };
-  }, []);
+  const register = useCallback(async () => {
+    try {
+      const token = await registerForPushNotificationsAsync();
+      if (token) setExpoPushToken(token);
+      return token;
+    } catch (error) {
+      console.warn('Push registration error:', error);
+      return undefined;
+    }
+  }, [setExpoPushToken]);
 
   // Sends a remote push notification to this device via the Expo push service,
   // using the registered push token.
@@ -121,5 +115,5 @@ export function useNotifications() {
     }
   }, [expoPushToken]);
 
-  return { expoPushToken, sendTestNotification };
+  return { expoPushToken, sendTestNotification, register };
 }

@@ -15,13 +15,18 @@ vi.mock('@react-native-async-storage/async-storage', () => {
 
 describe('useSettingsStore', () => {
   beforeEach(() => {
-    useSettingsStore.setState({ temperatureUnit: 'celsius', windSpeedUnit: 'kmh' });
+    useSettingsStore.setState({
+      temperatureUnit: 'celsius',
+      windSpeedUnit: 'kmh',
+      notificationsEnabled: false,
+    });
     vi.clearAllMocks();
   });
 
   it('has default units', () => {
     expect(useSettingsStore.getState().temperatureUnit).toBe('celsius');
     expect(useSettingsStore.getState().windSpeedUnit).toBe('kmh');
+    expect(useSettingsStore.getState().notificationsEnabled).toBe(false);
   });
 
   it('can set temperatureUnit', () => {
@@ -34,5 +39,10 @@ describe('useSettingsStore', () => {
     useSettingsStore.getState().setWindSpeedUnit('mph');
     expect(useSettingsStore.getState().temperatureUnit).toBe('celsius');
     expect(useSettingsStore.getState().windSpeedUnit).toBe('mph');
+  });
+
+  it('can set notificationsEnabled', () => {
+    useSettingsStore.getState().setNotificationsEnabled(true);
+    expect(useSettingsStore.getState().notificationsEnabled).toBe(true);
   });
 });

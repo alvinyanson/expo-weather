@@ -2,7 +2,9 @@ import { Alert } from 'react-native';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import HomeScreen from '@/app/index';
 
-const { pushMock, backMock } = vi.hoisted(() => ({ pushMock: vi.fn(), backMock: vi.fn() }));
+const { pushMock, backMock } = vi.hoisted(() => {
+  return { pushMock: vi.fn(), backMock: vi.fn() };
+});
 
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: pushMock, back: backMock }),
@@ -10,14 +12,111 @@ vi.mock('expo-router', () => ({
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
-const mockSaveLocation = vi.fn();
-vi.mock('@/hooks', () => ({
-  useFetchLocation: vi.fn(),
-  useFetchWeather: vi.fn(),
-  useDebounce: vi.fn((val) => val), // mock debounce to return value immediately
-  useSearchLocation: vi.fn(),
-  useSavedLocations: vi.fn(() => ({ saveLocation: mockSaveLocation, isSaving: false })),
+vi.mock('@react-native-firebase/auth', () => ({
+  default: () => ({
+    onAuthStateChanged: vi.fn(),
+  }),
 }));
+
+vi.mock('@react-native-firebase/firestore', () => ({
+  getFirestore: vi.fn(() => ({})),
+  collection: vi.fn(),
+  doc: vi.fn(),
+  setDoc: vi.fn(),
+  serverTimestamp: vi.fn(),
+}));
+
+vi.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: {
+    configure: vi.fn(),
+    signIn: vi.fn(),
+    signOut: vi.fn(),
+  },
+}));
+
+vi.mock('expo-notifications', () => ({
+  setNotificationHandler: vi.fn(),
+  addNotificationReceivedListener: vi.fn(() => ({ remove: vi.fn() })),
+  addNotificationResponseReceivedListener: vi.fn(() => ({ remove: vi.fn() })),
+  getPermissionsAsync: vi.fn(() => Promise.resolve({ status: 'granted' })),
+  requestPermissionsAsync: vi.fn(() => Promise.resolve({ status: 'granted' })),
+  getExpoPushTokenAsync: vi.fn(() => Promise.resolve({ data: 'token-123' })),
+  AndroidImportance: {
+    MAX: 4,
+  },
+}));
+
+vi.mock('expo-constants', () => ({
+  default: {
+    expoConfig: {
+      extra: {
+        eas: {
+          projectId: 'mock-project-id',
+        },
+      },
+    },
+  },
+}));
+
+vi.mock('../../hooks/useNotifications', () => ({
+  useNotifications: vi.fn(() => ({ expoPushToken: 'token-123', sendTestNotification: vi.fn() })),
+}));
+
+vi.mock('../../hooks/useAuth', () => ({
+  useAuth: vi.fn(() => ({ user: { uid: 'user-123' } })),
+}));
+
+vi.mock('../../hooks/useFetchLocation', () => ({
+  useFetchLocation: vi.fn(() => ({
+    data: { latitude: 1, longitude: 2, city: 'Manila' },
+    isLoading: false,
+    error: null,
+    refetch: vi.fn(),
+  })),
+}));
+
+vi.mock('expo-location', () => ({
+  requestForegroundPermissionsAsync: vi.fn(() => Promise.resolve({ status: 'granted' })),
+  getCurrentPositionAsync: vi.fn(() => Promise.resolve({ coords: { latitude: 1, longitude: 2 } })),
+  getLastKnownPositionAsync: vi.fn(() =>
+    Promise.resolve({ coords: { latitude: 1, longitude: 2 } }),
+  ),
+  reverseGeocodeAsync: vi.fn(() => Promise.resolve([{ city: 'Manila' }])),
+  Accuracy: {
+    Balanced: 3,
+  },
+}));
+
+const mockSaveUserPushToken = vi.fn();
+vi.mock('@/services', async () => {
+  const actual = await vi.importActual<typeof import('@/services')>('@/services');
+  return {
+    ...actual,
+    saveUserPushToken: (...args: any[]) => mockSaveUserPushToken(...args),
+  };
+});
+
+vi.mock('@react-native-async-storage/async-storage', () => ({
+  default: {
+    getItem: vi.fn(() => Promise.resolve(null)),
+    setItem: vi.fn(() => Promise.resolve()),
+  },
+}));
+
+const mockSaveLocation = vi.fn();
+vi.mock('@/hooks', async () => {
+  const actual = await vi.importActual<typeof import('@/hooks')>('@/hooks');
+  return {
+    ...actual,
+    useFetchLocation: vi.fn(),
+    useFetchWeather: vi.fn(),
+    useDebounce: vi.fn((val) => val), // mock debounce to return value immediately
+    useSearchLocation: vi.fn(),
+    useSavedLocations: vi.fn(() => ({ saveLocation: mockSaveLocation, isSaving: false })),
+    useAuth: vi.fn(() => ({ user: { uid: 'user-123' } })),
+    useNotifications: vi.fn(() => ({ expoPushToken: 'token-123' })),
+  };
+});
 
 const mockAddSearch = vi.fn();
 vi.mock('@/store/useSearchStore', () => ({
@@ -28,6 +127,7 @@ vi.mock('@/store/useSearchStore', () => ({
 }));
 
 import { useFetchLocation, useFetchWeather, useSearchLocation } from '@/hooks';
+import { useSettingsStore } from '@/store/useSettingsStore';
 
 const mockLocationHook = vi.mocked(useFetchLocation);
 const mockWeatherHook = vi.mocked(useFetchWeather);
@@ -78,6 +178,7 @@ const searchHookState = (overrides = {}) =>
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  useSettingsStore.setState({ notificationsEnabled: false });
 });
 
 describe('HomeScreen', () => {
@@ -196,5 +297,23 @@ describe('HomeScreen', () => {
     fireEvent.click(screen.getByLabelText('Saved locations'));
 
     expect(pushMock).toHaveBeenCalledWith('/saved');
+  });
+
+  it('runs background sync if notifications are enabled and location is fetched', async () => {
+    useSettingsStore.setState({ notificationsEnabled: true });
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+    mockSearchHook.mockReturnValue(searchHookState());
+
+    render(<HomeScreen />);
+
+    await waitFor(() => {
+      expect(mockSaveUserPushToken).toHaveBeenCalledWith(
+        'user-123',
+        'token-123',
+        location.latitude,
+        location.longitude,
+      );
+    });
   });
 });

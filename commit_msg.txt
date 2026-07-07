@@ -1,0 +1,7 @@
+[feat]: Refactor notification architecture and introduce background push token sync
+- Implement background push token sync logic in `useSyncPushToken` custom hook
+- Centralize notification listener registration into a global `useNotificationListeners` hook called from `_layout.tsx` to eliminate duplicate background handlers
+- Decouple the Expo push token state from local hook state into the global Zustand `useSettingsStore`
+- Extract settings screen toggle notification logic into a dedicated `useToggleNotifications` hook
+- Update `useNotifications` to act as a pure utility hook utilizing the global settings store
+- Remove unnecessary `__DEV__` assignment from `index.test.tsx` and adjust tests to accommodate the decoupled architecture

@@ -1,4 +1,4 @@
-import { useFetchLocation, useFetchWeather, useSavedLocations } from '@/hooks';
+import { useFetchLocation, useFetchWeather, useSavedLocations, useSyncPushToken } from '@/hooks';
 import { theme } from '@/theme';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useRouter } from 'expo-router';
@@ -41,6 +41,9 @@ export default function HomeScreen() {
   } = useFetchWeather(gpsLocation);
 
   const { saveLocation, isSaving } = useSavedLocations();
+
+  // Synchronize notifications token and coordinates in the background
+  useSyncPushToken();
 
   const handlePressWeather = () => {
     router.push({

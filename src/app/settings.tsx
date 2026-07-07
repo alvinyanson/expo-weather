@@ -1,7 +1,15 @@
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { useAuth, useNotifications } from '@/hooks';
+import {
+  ActivityIndicator,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from 'react-native';
+import { useAuth, useToggleNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 
@@ -9,7 +17,14 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { temperatureUnit, windSpeedUnit, setTemperatureUnit, setWindSpeedUnit } =
     useSettingsStore();
-  const { sendTestNotification } = useNotifications();
+
+  const {
+    notificationsEnabled,
+    isUpdatingNotifications,
+    handleToggleNotifications,
+    sendTestNotification,
+  } = useToggleNotifications();
+
   const { user, signOut } = useAuth();
 
   // On sign-out the auth listener clears the store and the root layout
@@ -108,15 +123,38 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <View style={styles.testButtonWrapper}>
-          <Pressable
-            style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
-            onPress={sendTestNotification}
-            android_ripple={{ color: theme.colors.ripple }}
-          >
-            <Text style={styles.testButtonText}>Test Notification</Text>
-          </Pressable>
+        <View style={styles.settingRow}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.settingLabel}>Weather Alerts</Text>
+            <Text style={styles.settingDescription}>
+              Get notified of weather updates at current location
+            </Text>
+          </View>
+          <View style={styles.toggleContainer}>
+            {isUpdatingNotifications ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Switch
+                value={notificationsEnabled}
+                onValueChange={handleToggleNotifications}
+                trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
+                thumbColor={notificationsEnabled ? 'white' : '#f4f3f4'}
+              />
+            )}
+          </View>
         </View>
+
+        {notificationsEnabled && (
+          <View style={styles.testButtonWrapper}>
+            <Pressable
+              style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
+              onPress={sendTestNotification}
+              android_ripple={{ color: theme.colors.ripple }}
+            >
+              <Text style={styles.testButtonText}>Test Notification</Text>
+            </Pressable>
+          </View>
+        )}
 
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
