@@ -12,6 +12,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNotificationListeners } from '@/hooks/useNotificationListeners';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { theme } from '@/theme';
+import * as SplashScreen from 'expo-splash-screen';
+import { ObserveRoot, useObserve } from 'expo-observe';
+import { useEffect } from 'react';
+
+SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +35,14 @@ function RootApp() {
   useAuthListener();
   useNotificationListeners();
   const { isAuthenticated, initializing } = useAuth();
+  const { markInteractive } = useObserve();
+
+  useEffect(() => {
+    if (!initializing) {
+      SplashScreen.hideAsync();
+      markInteractive();
+    }
+  }, [initializing, markInteractive]);
 
   // Hold on a loader until Firebase reports the initial auth state, otherwise
   // the login screen would flash before a persisted session is restored.
@@ -67,7 +80,7 @@ function RootApp() {
   );
 }
 
-export default function RootLayout() {
+function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PersistQueryClientProvider
@@ -81,6 +94,8 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default ObserveRoot.wrap(RootLayout);
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
