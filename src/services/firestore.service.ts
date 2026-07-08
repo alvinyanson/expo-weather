@@ -60,7 +60,7 @@ export const getSavedLocations = async (userId: string): Promise<SavedLocation[]
   const snapshot = await getDocs(q);
   return snapshot.docs
     .map((d) => mapDoc(d.id, d.data() as SavedLocationDoc))
-    .toSorted((a, b) => (b.createdAt ?? Infinity) - (a.createdAt ?? Infinity));
+    .sort((a, b) => (b.createdAt ?? Infinity) - (a.createdAt ?? Infinity));
 };
 
 /**
