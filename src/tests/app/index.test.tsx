@@ -104,6 +104,7 @@ vi.mock('@react-native-async-storage/async-storage', () => ({
 }));
 
 const mockSaveLocation = vi.fn();
+const mockDeleteLocation = vi.fn();
 vi.mock('@/hooks', async () => {
   const actual = await vi.importActual<typeof import('@/hooks')>('@/hooks');
   return {
@@ -112,7 +113,12 @@ vi.mock('@/hooks', async () => {
     useFetchWeather: vi.fn(),
     useDebounce: vi.fn((val) => val), // mock debounce to return value immediately
     useSearchLocation: vi.fn(),
-    useSavedLocations: vi.fn(() => ({ saveLocation: mockSaveLocation, isSaving: false })),
+    useSavedLocations: vi.fn(() => ({
+      savedLocations: [],
+      saveLocation: mockSaveLocation,
+      deleteLocation: mockDeleteLocation,
+      isSaving: false,
+    })),
     useAuth: vi.fn(() => ({ user: { uid: 'user-123' } })),
     useNotifications: vi.fn(() => ({ expoPushToken: 'token-123' })),
   };
@@ -244,6 +250,7 @@ describe('HomeScreen', () => {
     render(<HomeScreen />);
 
     const searchInput = screen.getByPlaceholderText('Search city...');
+    fireEvent.focus(searchInput);
     fireEvent.change(searchInput, { target: { value: 'Tok' } });
 
     // The mock debounce returns immediately, so useSearchLocation gets 'Tok' and we mocked its return data

@@ -52,19 +52,35 @@ export default function DetailsScreen() {
 
   const lastUpdated = dataUpdatedAt ? formatTime(dataUpdatedAt) : '';
 
-  const { saveLocation, isSaving } = useSavedLocations();
+  const { savedLocations, saveLocation, deleteLocation } = useSavedLocations();
+
+  const matchingSaved = targetLocation
+    ? savedLocations.find(
+        (loc) =>
+          loc.city.toLowerCase() === targetLocation.city.toLowerCase() ||
+          (Math.abs(loc.lat - targetLocation.latitude) < 0.01 &&
+            Math.abs(loc.lon - targetLocation.longitude) < 0.01),
+      )
+    : undefined;
+
+  const isSaved = !!matchingSaved;
 
   const handleSaveLocation = async () => {
     if (!targetLocation) return;
     try {
-      await saveLocation({
-        city: targetLocation.city,
-        lat: targetLocation.latitude,
-        lon: targetLocation.longitude,
-      });
-      Alert.alert('Saved', 'Location saved successfully.');
+      if (isSaved && matchingSaved) {
+        await deleteLocation(matchingSaved.id);
+        Alert.alert('Deleted', 'Location removed from saved list.');
+      } else {
+        await saveLocation({
+          city: targetLocation.city,
+          lat: targetLocation.latitude,
+          lon: targetLocation.longitude,
+        });
+        Alert.alert('Saved', 'Location saved successfully.');
+      }
     } catch {
-      Alert.alert('Save failed', 'Could not save the location. Please try again.');
+      Alert.alert('Error', 'Could not update saved location. Please try again.');
     }
   };
 
@@ -117,7 +133,7 @@ export default function DetailsScreen() {
         lastUpdated={lastUpdated}
         onBack={() => router.back()}
         onSave={handleSaveLocation}
-        isSaving={isSaving}
+        isSaved={isSaved}
       />
 
       <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>

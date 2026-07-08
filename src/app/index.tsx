@@ -41,10 +41,21 @@ export default function HomeScreen() {
     refetch: refetchWeather,
   } = useFetchWeather(gpsLocation);
 
-  const { saveLocation, isSaving } = useSavedLocations();
+  const { savedLocations, saveLocation, deleteLocation } = useSavedLocations();
 
   // Synchronize notifications token and coordinates in the background
   useSyncPushToken();
+
+  const matchingSaved = gpsLocation
+    ? savedLocations.find(
+        (loc) =>
+          loc.city.toLowerCase() === gpsLocation.city.toLowerCase() ||
+          (Math.abs(loc.lat - gpsLocation.latitude) < 0.01 &&
+            Math.abs(loc.lon - gpsLocation.longitude) < 0.01),
+      )
+    : undefined;
+
+  const isSaved = !!matchingSaved;
 
   const handlePressWeather = () => {
     router.push({
@@ -58,14 +69,19 @@ export default function HomeScreen() {
   const handleSaveLocation = async () => {
     if (!gpsLocation) return;
     try {
-      await saveLocation({
-        city: gpsLocation.city,
-        lat: gpsLocation.latitude,
-        lon: gpsLocation.longitude,
-      });
-      Alert.alert('Saved', 'Location saved successfully.');
+      if (isSaved && matchingSaved) {
+        await deleteLocation(matchingSaved.id);
+        Alert.alert('Deleted', 'Location removed from saved list.');
+      } else {
+        await saveLocation({
+          city: gpsLocation.city,
+          lat: gpsLocation.latitude,
+          lon: gpsLocation.longitude,
+        });
+        Alert.alert('Saved', 'Location saved successfully.');
+      }
     } catch {
-      Alert.alert('Save failed', 'Could not save the location. Please try again.');
+      Alert.alert('Error', 'Could not update saved location. Please try again.');
     }
   };
 
@@ -116,23 +132,27 @@ export default function HomeScreen() {
           {weather && gpsLocation && (
             <View style={styles.saveButtonWrapper}>
               <Pressable
-                style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
+                style={({ pressed }) => [
+                  styles.saveButton,
+                  isSaved && styles.saveButtonSaved,
+                  pressed && styles.saveButtonPressed,
+                ]}
                 onPress={handleSaveLocation}
-                disabled={isSaving}
                 android_ripple={{ color: theme.colors.ripple }}
               >
-                {isSaving ? (
-                  <ActivityIndicator size="small" color="white" />
-                ) : (
-                  <>
-                    <SymbolView
-                      name={{ ios: 'bookmark.fill', android: 'bookmark' }}
-                      size={18}
-                      tintColor="white"
-                    />
-                    <Text style={styles.saveButtonText}>Save Location</Text>
-                  </>
-                )}
+                <>
+                  <SymbolView
+                    name={{
+                      ios: isSaved ? 'bookmark.fill' : 'bookmark',
+                      android: isSaved ? 'bookmark' : 'bookmark_border',
+                    }}
+                    size={18}
+                    tintColor={isSaved ? theme.colors.accent : 'white'}
+                  />
+                  <Text style={[styles.saveButtonText, isSaved && styles.saveButtonTextSaved]}>
+                    {isSaved ? 'Saved' : 'Save Location'}
+                  </Text>
+                </>
               </Pressable>
             </View>
           )}
@@ -223,6 +243,11 @@ const styles = StyleSheet.create({
     minWidth: 180,
     minHeight: 48,
   },
+  saveButtonSaved: {
+    backgroundColor: 'rgba(246, 173, 85, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(246, 173, 85, 0.3)',
+  },
   saveButtonPressed: {
     opacity: 0.7,
   },
@@ -230,6 +255,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: theme.typography.sizes.md,
+  },
+  saveButtonTextSaved: {
+    color: theme.colors.accent,
   },
   footer: {
     alignItems: 'center',

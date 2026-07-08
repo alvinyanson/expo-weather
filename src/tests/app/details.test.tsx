@@ -12,10 +12,16 @@ vi.mock('expo-router', () => ({
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
 const mockSaveLocation = vi.fn();
+const mockDeleteLocation = vi.fn();
 vi.mock('@/hooks', () => ({
   useFetchLocation: vi.fn(),
   useFetchWeather: vi.fn(),
-  useSavedLocations: vi.fn(() => ({ saveLocation: mockSaveLocation, isSaving: false })),
+  useSavedLocations: vi.fn(() => ({
+    savedLocations: [],
+    saveLocation: mockSaveLocation,
+    deleteLocation: mockDeleteLocation,
+    isSaving: false,
+  })),
 }));
 
 import { useFetchLocation, useFetchWeather } from '@/hooks';

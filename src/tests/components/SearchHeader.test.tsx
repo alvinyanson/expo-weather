@@ -53,6 +53,7 @@ describe('SearchHeader', () => {
     render(<SearchHeader />);
 
     const searchInput = screen.getByPlaceholderText('Search city...');
+    fireEvent.focus(searchInput);
     fireEvent.change(searchInput, { target: { value: 'Tok' } });
 
     expect(screen.getByText('Tokyo, Japan')).toBeTruthy();

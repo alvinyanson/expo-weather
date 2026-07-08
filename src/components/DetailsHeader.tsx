@@ -1,6 +1,6 @@
 import { weatherCodeToCondition } from '@/utils/weatherMapper';
 import { SymbolView } from 'expo-symbols';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
 import { theme } from '@/theme';
 
@@ -11,7 +11,7 @@ interface DetailsHeaderProps {
   onBack: () => void;
   /** When provided, a save (bookmark) action is shown in the header's right slot. */
   onSave?: () => void;
-  isSaving?: boolean;
+  isSaved?: boolean;
 }
 
 export const DetailsHeader = ({
@@ -20,7 +20,7 @@ export const DetailsHeader = ({
   lastUpdated,
   onBack,
   onSave,
-  isSaving = false,
+  isSaved = false,
 }: DetailsHeaderProps) => {
   return (
     <View style={styles.header}>
@@ -45,21 +45,19 @@ export const DetailsHeader = ({
       {onSave ? (
         <Pressable
           onPress={onSave}
-          disabled={isSaving}
           accessibilityRole="button"
           accessibilityLabel="Save location"
           style={({ pressed }) => [styles.saveButton, pressed && styles.buttonPressed]}
           android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
         >
-          {isSaving ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <SymbolView
-              name={{ ios: 'bookmark', android: 'bookmark_border' }}
-              size={24}
-              tintColor="white"
-            />
-          )}
+          <SymbolView
+            name={{
+              ios: isSaved ? 'bookmark.fill' : 'bookmark',
+              android: isSaved ? 'bookmark' : 'bookmark_border',
+            }}
+            size={24}
+            tintColor={isSaved ? theme.colors.accent : 'white'}
+          />
         </Pressable>
       ) : (
         <View style={{ width: 48 }} />

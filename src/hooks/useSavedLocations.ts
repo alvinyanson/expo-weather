@@ -12,21 +12,71 @@ export const useSavedLocations = () => {
     queryKey,
     queryFn: () => getSavedLocations(uid!),
     enabled: !!uid,
+    staleTime: 1000 * 60 * 30, // 30 minutes
   });
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey });
-
-  const saveMutation = useMutation<string, Error, SaveLocationInput>({
+  const saveMutation = useMutation<
+    string,
+    Error,
+    SaveLocationInput,
+    { previousLocations?: SavedLocation[] }
+  >({
     mutationFn: (location) => {
       if (!uid) throw new Error('You must be signed in to save a location.');
       return saveLocation(uid, location);
     },
-    onSuccess: invalidate,
+    onMutate: async (newLocation) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousLocations = queryClient.getQueryData<SavedLocation[]>(queryKey);
+
+      const optimisticLocation: SavedLocation = {
+        id: `temp-${Date.now()}`,
+        city: newLocation.city,
+        lat: newLocation.lat,
+        lon: newLocation.lon,
+        createdAt: Date.now(),
+        userId: uid || '',
+      };
+
+      queryClient.setQueryData<SavedLocation[]>(queryKey, (old) => [
+        ...(old || []),
+        optimisticLocation,
+      ]);
+
+      return { previousLocations };
+    },
+    onError: (err, newLocation, context) => {
+      if (context?.previousLocations) {
+        queryClient.setQueryData(queryKey, context.previousLocations);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
   });
 
-  const deleteMutation = useMutation<void, Error, string>({
+  const deleteMutation = useMutation<void, Error, string, { previousLocations?: SavedLocation[] }>({
     mutationFn: deleteSavedLocation,
-    onSuccess: invalidate,
+    onMutate: async (deletedId) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousLocations = queryClient.getQueryData<SavedLocation[]>(queryKey);
+
+      queryClient.setQueryData<SavedLocation[]>(queryKey, (old) =>
+        (old || []).filter((loc) => loc.id !== deletedId),
+      );
+
+      return { previousLocations };
+    },
+    onError: (err, deletedId, context) => {
+      if (context?.previousLocations) {
+        queryClient.setQueryData(queryKey, context.previousLocations);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
   });
 
   return {

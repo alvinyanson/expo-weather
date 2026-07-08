@@ -13,5 +13,6 @@ export const useFetchWeather = (location?: LocationData) => {
     queryFn: () =>
       fetchWeather(location!.latitude, location!.longitude, temperatureUnit, windSpeedUnit),
     enabled: !!location,
+    staleTime: 1000 * 60 * 10, // 10 minutes
   });
 };
