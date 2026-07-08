@@ -3,10 +3,10 @@ import { Alert } from 'react-native';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import SavedLocationsScreen from '@/app/saved';
 
-const { backMock } = vi.hoisted(() => ({ backMock: vi.fn() }));
+const { backMock, pushMock } = vi.hoisted(() => ({ backMock: vi.fn(), pushMock: vi.fn() }));
 
 vi.mock('expo-router', () => ({
-  useRouter: () => ({ back: backMock, push: vi.fn() }),
+  useRouter: () => ({ back: backMock, push: pushMock }),
 }));
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
@@ -144,6 +144,19 @@ describe('SavedLocationsScreen', () => {
         'Delete failed',
         'Could not delete the location. Please try again.',
       );
+    });
+  });
+
+  it('navigates to details screen on item press', () => {
+    mockHook.mockReturnValue(baseHook({ savedLocations: sampleLocations }));
+
+    render(<SavedLocationsScreen />);
+
+    fireEvent.click(screen.getByText('Manila'));
+
+    expect(pushMock).toHaveBeenCalledWith({
+      pathname: '/details',
+      params: { lat: 14.6, lon: 120.98, city: 'Manila' },
     });
   });
 });

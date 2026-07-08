@@ -1,5 +1,5 @@
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import type { SavedLocation } from '@/interfaces';
@@ -9,6 +9,7 @@ import { theme } from '@/theme';
 interface SavedLocationItemProps {
   location: SavedLocation;
   onDelete: (location: SavedLocation) => void;
+  onPress: () => void;
 }
 
 const ACTION_WIDTH = 88;
@@ -47,7 +48,7 @@ const RightAction = ({
   );
 };
 
-export const SavedLocationItem = ({ location, onDelete }: SavedLocationItemProps) => {
+export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocationItemProps) => {
   const savedAt = location.createdAt
     ? `${formatDateFull(location.createdAt)} · ${formatTime(location.createdAt)}`
     : null;
@@ -68,10 +69,14 @@ export const SavedLocationItem = ({ location, onDelete }: SavedLocationItemProps
         />
       )}
     >
-      <View style={styles.card}>
+      <Pressable
+        style={({ pressed }) => [styles.card, pressed && styles.buttonPressed]}
+        onPress={onPress}
+        android_ripple={{ color: theme.colors.ripple }}
+      >
         <Text style={styles.city}>{location.city}</Text>
         {savedAt ? <Text style={styles.savedAt}>Saved {savedAt}</Text> : null}
-      </View>
+      </Pressable>
     </ReanimatedSwipeable>
   );
 };

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Pressable,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -95,6 +96,68 @@ export default function HomeScreen() {
     );
   }
 
+  const renderContent = () => {
+    const content = (
+      <>
+        <View style={isTablet ? styles.tabletColumnLeft : undefined}>
+          {weather && (
+            <CurrentWeather
+              city={gpsLocation?.city}
+              weather={weather}
+              tempUnit={tempUnit}
+              onPress={handlePressWeather}
+            />
+          )}
+        </View>
+
+        <View style={isTablet ? styles.tabletColumnRight : undefined}>
+          {weather && <HourlyForecast weather={weather} />}
+
+          {weather && gpsLocation && (
+            <View style={styles.saveButtonWrapper}>
+              <Pressable
+                style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
+                onPress={handleSaveLocation}
+                disabled={isSaving}
+                android_ripple={{ color: theme.colors.ripple }}
+              >
+                {isSaving ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <>
+                    <SymbolView
+                      name={{ ios: 'bookmark.fill', android: 'bookmark' }}
+                      size={18}
+                      tintColor="white"
+                    />
+                    <Text style={styles.saveButtonText}>Save Location</Text>
+                  </>
+                )}
+              </Pressable>
+            </View>
+          )}
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Tap for more details</Text>
+          </View>
+        </View>
+      </>
+    );
+
+    if (isTablet) {
+      return <View style={styles.tabletContentContainer}>{content}</View>;
+    }
+
+    return (
+      <ScrollView
+        contentContainerStyle={styles.mobileContentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {content}
+      </ScrollView>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
@@ -107,50 +170,7 @@ export default function HomeScreen() {
           <Text style={styles.loadingText}>Fetching weather data...</Text>
         </View>
       ) : (
-        <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
-          <View style={isTablet ? styles.tabletColumnLeft : undefined}>
-            {weather && (
-              <CurrentWeather
-                city={gpsLocation?.city}
-                weather={weather}
-                tempUnit={tempUnit}
-                onPress={handlePressWeather}
-              />
-            )}
-          </View>
-
-          <View style={isTablet ? styles.tabletColumnRight : undefined}>
-            {weather && <HourlyForecast weather={weather} />}
-
-            {weather && gpsLocation && (
-              <View style={styles.saveButtonWrapper}>
-                <Pressable
-                  style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
-                  onPress={handleSaveLocation}
-                  disabled={isSaving}
-                  android_ripple={{ color: theme.colors.ripple }}
-                >
-                  {isSaving ? (
-                    <ActivityIndicator size="small" color="white" />
-                  ) : (
-                    <>
-                      <SymbolView
-                        name={{ ios: 'bookmark.fill', android: 'bookmark' }}
-                        size={18}
-                        tintColor="white"
-                      />
-                      <Text style={styles.saveButtonText}>Save Location</Text>
-                    </>
-                  )}
-                </Pressable>
-              </View>
-            )}
-
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>Tap for more details</Text>
-            </View>
-          </View>
-        </View>
+        renderContent()
       )}
     </View>
   );
@@ -174,7 +194,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mobileContentContainer: {
-    flex: 1,
+    flexGrow: 1,
     flexDirection: 'column',
   },
   tabletColumnLeft: {

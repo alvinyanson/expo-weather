@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import { useAuth } from '@/hooks/useAuth';
 import { theme } from '@/theme';
@@ -38,7 +46,7 @@ export default function LoginScreen() {
   const busy = pending !== null;
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
       <View style={styles.hero}>
@@ -92,13 +100,13 @@ export default function LoginScreen() {
           </Pressable>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: theme.colors.background,
     justifyContent: 'space-between',
     paddingHorizontal: 30,

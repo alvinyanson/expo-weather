@@ -121,11 +121,11 @@ export default function DetailsScreen() {
       />
 
       <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
-        <View style={isTablet ? styles.tabletColumnLeft : styles.mobileColumn}>
+        <View style={isTablet ? styles.tabletColumnLeft : undefined}>
           <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />
         </View>
 
-        <View style={isTablet ? styles.tabletColumnRight : styles.mobileColumn}>
+        <View style={isTablet ? styles.tabletColumnRight : styles.mobileColumnRight}>
           <DailyForecastList
             weather={weather}
             tempUnit={tempUnit}
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   tabletColumnRight: {
     flex: 1,
   },
-  mobileColumn: {
+  mobileColumnRight: {
     flex: 1,
   },
 });

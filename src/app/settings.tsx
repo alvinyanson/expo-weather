@@ -3,6 +3,7 @@ import { SymbolView } from 'expo-symbols';
 import {
   ActivityIndicator,
   Pressable,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Switch,
@@ -52,7 +53,7 @@ export default function SettingsScreen() {
         <View style={{ width: 48 }} />
       </View>
 
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
             <Text style={styles.settingLabel}>Temperature Unit</Text>
@@ -172,7 +173,7 @@ export default function SettingsScreen() {
             <Text style={styles.signOutButtonText}>Sign Out</Text>
           </Pressable>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -206,6 +207,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+    flexGrow: 1,
   },
   settingRow: {
     flexDirection: 'row',

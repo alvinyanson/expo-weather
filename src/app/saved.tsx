@@ -40,6 +40,13 @@ export default function SavedLocationsScreen() {
     ]);
   };
 
+  const handlePressLocation = (location: SavedLocation) => {
+    router.push({
+      pathname: '/details',
+      params: { lat: location.lat, lon: location.lon, city: location.city },
+    });
+  };
+
   const renderBody = () => {
     if (isLoading) {
       return (
@@ -92,7 +99,11 @@ export default function SavedLocationsScreen() {
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
           <View style={isTablet ? styles.gridItem : undefined}>
-            <SavedLocationItem location={item} onDelete={confirmDelete} />
+            <SavedLocationItem
+              location={item}
+              onDelete={confirmDelete}
+              onPress={() => handlePressLocation(item)}
+            />
           </View>
         )}
       />

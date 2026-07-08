@@ -20,7 +20,7 @@ export const theme = {
     surface: 'rgba(255, 255, 255, 0.15)', // Default card background
     surfaceHighlight: 'rgba(255, 255, 255, 0.25)', // Active/hover cards
     surfaceSubtle: 'rgba(255, 255, 255, 0.05)', // Very faint backgrounds
-    overlay: 'rgba(25, 35, 126, 0.95)', // Modal/search overlay
+    overlay: 'rgba(42, 67, 101, 0.95)', // Modal/search overlay
 
     // Translucent borders
     border: 'rgba(255, 255, 255, 0.2)', // Default border

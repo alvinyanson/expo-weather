@@ -38,6 +38,14 @@ export const SearchHeader = () => {
 
   return (
     <View style={styles.searchContainer}>
+      {showRecent && (
+        <Pressable
+          style={styles.backdrop}
+          onPress={() => {
+            Keyboard.dismiss();
+          }}
+        />
+      )}
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={[styles.searchCapsule, { flex: 1, marginRight: 10 }]}>
           <SymbolView
@@ -86,7 +94,7 @@ export const SearchHeader = () => {
       </View>
 
       {/* Search Results Dropdown */}
-      {searchQuery.length >= 2 && searchResults && searchResults.length > 0 && (
+      {showRecent && searchQuery.length >= 2 && searchResults && searchResults.length > 0 && (
         <View style={styles.dropdownContainer}>
           <FlatList
             data={searchResults}
@@ -170,13 +178,18 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif-light',
   },
   dropdownContainer: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    right: 20,
     backgroundColor: theme.colors.overlay,
     borderRadius: 15,
-    marginTop: 5,
     maxHeight: 200,
     borderWidth: 1,
     borderColor: theme.colors.border,
     overflow: 'hidden',
+    zIndex: 100,
+    elevation: 5,
   },
   dropdownItem: {
     padding: 15,
@@ -198,5 +211,13 @@ const styles = StyleSheet.create({
   },
   recentIcon: {
     marginRight: 10,
+  },
+  backdrop: {
+    position: 'absolute',
+    top: -500,
+    left: -500,
+    right: -500,
+    bottom: -2000,
+    backgroundColor: 'transparent',
   },
 });
