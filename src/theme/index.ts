@@ -6,6 +6,7 @@ export const theme = {
     accent: '#F6AD55', // Warm orange to complement the blue background
     error: '#FEB2B2', // Soft red/pink that contrasts well
     danger: '#E53E3E', // Strong red
+    success: '#48BB78', // Green for success feedback
 
     background: '#5494D6', // App background (Sunny sky blue)
 

@@ -15,6 +15,8 @@ import { theme } from '@/theme';
 import * as SplashScreen from 'expo-splash-screen';
 import { ObserveRoot, useObserve } from 'expo-observe';
 import { useEffect } from 'react';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@/components/CustomToast';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -76,6 +78,7 @@ function RootApp() {
           <Stack.Screen name="login" />
         </Stack.Protected>
       </Stack>
+      <Toast position="bottom" config={toastConfig} />
     </SafeAreaView>
   );
 }

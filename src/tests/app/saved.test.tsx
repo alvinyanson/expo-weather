@@ -1,6 +1,6 @@
 import { Fragment, createElement } from 'react';
-import { Alert } from 'react-native';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import Toast from 'react-native-toast-message';
 import SavedLocationsScreen from '@/app/saved';
 
 const { backMock, pushMock } = vi.hoisted(() => ({ backMock: vi.fn(), pushMock: vi.fn() }));
@@ -103,27 +103,25 @@ describe('SavedLocationsScreen', () => {
     const deleteLocation = vi.fn().mockResolvedValue(undefined);
     mockHook.mockReturnValue(baseHook({ savedLocations: sampleLocations, deleteLocation }));
 
-    const alertSpy = vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+    const toastSpy = vi.spyOn(Toast, 'show');
 
     render(<SavedLocationsScreen />);
 
     fireEvent.click(screen.getByLabelText('Delete Manila'));
 
-    // Confirmation dialog shown
-    expect(alertSpy).toHaveBeenCalledWith(
-      'Delete this saved location?',
-      'This action cannot be undone.',
-      expect.any(Array),
-    );
+    // Confirmation dialog shown (BottomSheet title)
+    expect(screen.getByText('Delete Saved Location?')).toBeTruthy();
 
-    // Invoke the "Delete" button from the confirmation dialog
-    const buttons = alertSpy.mock.calls[0][2] as Array<{ text: string; onPress?: () => void }>;
-    const deleteButton = buttons.find((b) => b.text === 'Delete');
-    await deleteButton?.onPress?.();
+    // Click confirm delete button
+    fireEvent.click(screen.getByTestId('confirm-delete-button'));
 
     expect(deleteLocation).toHaveBeenCalledWith('1');
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith('Location deleted', 'Manila was removed.');
+      expect(toastSpy).toHaveBeenCalledWith({
+        type: 'success',
+        text1: 'Location deleted',
+        text2: 'Manila was removed.',
+      });
     });
   });
 
@@ -131,19 +129,20 @@ describe('SavedLocationsScreen', () => {
     const deleteLocation = vi.fn().mockRejectedValue(new Error('boom'));
     mockHook.mockReturnValue(baseHook({ savedLocations: sampleLocations, deleteLocation }));
 
-    const alertSpy = vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+    const toastSpy = vi.spyOn(Toast, 'show');
 
     render(<SavedLocationsScreen />);
     fireEvent.click(screen.getByLabelText('Delete Manila'));
 
-    const buttons = alertSpy.mock.calls[0][2] as Array<{ text: string; onPress?: () => void }>;
-    await buttons.find((b) => b.text === 'Delete')?.onPress?.();
+    // Click confirm delete button
+    fireEvent.click(screen.getByTestId('confirm-delete-button'));
 
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith(
-        'Delete failed',
-        'Could not delete the location. Please try again.',
-      );
+      expect(toastSpy).toHaveBeenCalledWith({
+        type: 'error',
+        text1: 'Delete failed',
+        text2: 'Could not delete the location. Please try again.',
+      });
     });
   });
 

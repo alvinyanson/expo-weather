@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './useAuth';
 import { useNotifications } from './useNotifications';
@@ -17,7 +17,11 @@ export function useToggleNotifications() {
   const handleToggleNotifications = useCallback(
     async (value: boolean) => {
       if (!user) {
-        Alert.alert('Error', 'You must be logged in.');
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'You must be logged in.',
+        });
         return;
       }
 
@@ -30,18 +34,22 @@ export function useToggleNotifications() {
           }
 
           if (!token) {
-            Alert.alert(
-              'Push Token Not Available',
-              'Please ensure you have granted notification permissions in your device settings.',
-            );
+            Toast.show({
+              type: 'error',
+              text1: 'Push Token Not Available',
+              text2:
+                'Please ensure you have granted notification permissions in your device settings.',
+            });
             return;
           }
 
           if (!gpsLocation) {
-            Alert.alert(
-              'Location Not Available',
-              'Please ensure you have granted location permissions to get weather alerts for your current location.',
-            );
+            Toast.show({
+              type: 'error',
+              text1: 'Location Not Available',
+              text2:
+                'Please ensure you have granted location permissions to get weather alerts for your current location.',
+            });
             return;
           }
 
@@ -63,7 +71,11 @@ export function useToggleNotifications() {
         }
       } catch (error) {
         console.error('Failed to update notification settings:', error);
-        Alert.alert('Error', 'Failed to update notification settings. Please try again.');
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Failed to update notification settings. Please try again.',
+        });
       } finally {
         setIsUpdatingNotifications(false);
       }

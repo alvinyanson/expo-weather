@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
+import Toast from 'react-native-toast-message';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import apiClient from '@/services/api.client';
@@ -46,7 +47,11 @@ async function ensureNotificationPermission(): Promise<boolean> {
   const { status } = await Notifications.requestPermissionsAsync();
   if (status === 'granted') return true;
 
-  Alert.alert('Permission required', 'Enable notifications in settings to receive alerts.');
+  Toast.show({
+    type: 'info',
+    text1: 'Permission required',
+    text2: 'Enable notifications in settings to receive alerts.',
+  });
   return false;
 }
 
@@ -89,13 +94,21 @@ export function useNotifications() {
   // using the registered push token.
   const sendTestNotification = useCallback(async () => {
     if (!expoPushToken) {
-      Alert.alert('Not ready', 'Push token is not available yet.');
+      Toast.show({
+        type: 'error',
+        text1: 'Not ready',
+        text2: 'Push token is not available yet.',
+      });
       return;
     }
 
     if (!EXPO_PUSH_ENDPOINT) {
       console.warn('EXPO_PUBLIC_EXPO_PUSH_ENDPOINT is not configured.');
-      Alert.alert('Error', 'Push service is not configured.');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Push service is not configured.',
+      });
       return;
     }
 
@@ -111,7 +124,11 @@ export function useNotifications() {
       await apiClient.post(EXPO_PUSH_ENDPOINT, message);
     } catch (error) {
       console.warn('Failed to send test notification:', error);
-      Alert.alert('Error', 'Could not send the test notification.');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Could not send the test notification.',
+      });
     }
   }, [expoPushToken]);
 

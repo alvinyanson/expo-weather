@@ -6,7 +6,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState, useCallback } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Pressable,
   StyleSheet,
   Text,
@@ -14,6 +13,7 @@ import {
   StatusBar,
   useWindowDimensions,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { DetailsHeader } from '@/components/DetailsHeader';
 import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
@@ -70,17 +70,29 @@ export default function DetailsScreen() {
     try {
       if (isSaved && matchingSaved) {
         await deleteLocation(matchingSaved.id);
-        Alert.alert('Deleted', 'Location removed from saved list.');
+        Toast.show({
+          type: 'success',
+          text1: 'Deleted',
+          text2: 'Location removed from saved list.',
+        });
       } else {
         await saveLocation({
           city: targetLocation.city,
           lat: targetLocation.latitude,
           lon: targetLocation.longitude,
         });
-        Alert.alert('Saved', 'Location saved successfully.');
+        Toast.show({
+          type: 'success',
+          text1: 'Saved',
+          text2: 'Location saved successfully.',
+        });
       }
     } catch {
-      Alert.alert('Error', 'Could not update saved location. Please try again.');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Could not update saved location. Please try again.',
+      });
     }
   };
 

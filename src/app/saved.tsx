@@ -1,8 +1,8 @@
+import { useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Pressable,
   StatusBar,
@@ -11,6 +11,8 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
+import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet';
+import Toast from 'react-native-toast-message';
 import { useSavedLocations } from '@/hooks';
 import { SavedLocationItem } from '@/components/SavedLocationItem';
 import type { SavedLocation } from '@/interfaces';
@@ -22,22 +24,32 @@ export default function SavedLocationsScreen() {
   const isTablet = width >= 768;
   const { savedLocations, isLoading, error, refetch, deleteLocation } = useSavedLocations();
 
+  const sheetRef = useRef<BottomSheet>(null);
+  const [locationToDelete, setLocationToDelete] = useState<SavedLocation | null>(null);
+
   const confirmDelete = (location: SavedLocation) => {
-    Alert.alert('Delete this saved location?', 'This action cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await deleteLocation(location.id);
-            Alert.alert('Location deleted', `${location.city} was removed.`);
-          } catch {
-            Alert.alert('Delete failed', 'Could not delete the location. Please try again.');
-          }
-        },
-      },
-    ]);
+    setLocationToDelete(location);
+    sheetRef.current?.expand();
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!locationToDelete) return;
+    try {
+      await deleteLocation(locationToDelete.id);
+      sheetRef.current?.close();
+      Toast.show({
+        type: 'success',
+        text1: 'Location deleted',
+        text2: `${locationToDelete.city} was removed.`,
+      });
+    } catch {
+      sheetRef.current?.close();
+      Toast.show({
+        type: 'error',
+        text1: 'Delete failed',
+        text2: 'Could not delete the location. Please try again.',
+      });
+    }
   };
 
   const handlePressLocation = (location: SavedLocation) => {
@@ -130,6 +142,39 @@ export default function SavedLocationsScreen() {
       </View>
 
       <View style={styles.content}>{renderBody()}</View>
+
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={['25%']}
+        index={-1}
+        enablePanDownToClose
+        onClose={() => setLocationToDelete(null)}
+        backgroundStyle={styles.sheetBackground}
+        handleIndicatorStyle={styles.sheetIndicator}
+      >
+        <BottomSheetView style={styles.sheetContent}>
+          <Text style={styles.sheetTitle}>Delete Saved Location?</Text>
+          <Text style={styles.sheetSubtitle}>
+            Are you sure you want to remove {locationToDelete?.city}? This action cannot be undone.
+          </Text>
+          <View style={styles.sheetButtons}>
+            <Pressable
+              testID="cancel-delete-button"
+              style={[styles.sheetButton, styles.sheetCancelButton]}
+              onPress={() => sheetRef.current?.close()}
+            >
+              <Text style={styles.sheetCancelText}>Cancel</Text>
+            </Pressable>
+            <Pressable
+              testID="confirm-delete-button"
+              style={[styles.sheetButton, styles.sheetDeleteButton]}
+              onPress={handleConfirmDelete}
+            >
+              <Text style={styles.sheetDeleteText}>Delete</Text>
+            </Pressable>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
     </View>
   );
 }
@@ -210,5 +255,60 @@ const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
     maxWidth: '50%',
+  },
+  sheetBackground: {
+    backgroundColor: theme.colors.overlay,
+    borderTopLeftRadius: theme.borderRadius.xl,
+    borderTopRightRadius: theme.borderRadius.xl,
+  },
+  sheetIndicator: {
+    backgroundColor: 'white',
+  },
+  sheetContent: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.md,
+    alignItems: 'center',
+  },
+  sheetTitle: {
+    fontSize: theme.typography.sizes.lg,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: theme.spacing.sm,
+  },
+  sheetSubtitle: {
+    fontSize: theme.typography.sizes.sm,
+    color: theme.colors.textMuted,
+    textAlign: 'center',
+    marginBottom: theme.spacing.lg,
+    lineHeight: 20,
+  },
+  sheetButtons: {
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+    width: '100%',
+    justifyContent: 'center',
+  },
+  sheetButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: theme.borderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sheetCancelButton: {
+    backgroundColor: theme.colors.surface,
+  },
+  sheetDeleteButton: {
+    backgroundColor: theme.colors.danger,
+  },
+  sheetCancelText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: theme.typography.sizes.md,
+  },
+  sheetDeleteText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: theme.typography.sizes.md,
   },
 });

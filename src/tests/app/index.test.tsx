@@ -1,5 +1,5 @@
-import { Alert } from 'react-native';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import Toast from 'react-native-toast-message';
 import HomeScreen from '@/app/index';
 
 const { pushMock, backMock } = vi.hoisted(() => {
@@ -281,7 +281,7 @@ describe('HomeScreen', () => {
 
   it('saves the current location and confirms success', async () => {
     mockSaveLocation.mockResolvedValue('doc-1');
-    const alertSpy = vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+    const toastSpy = vi.spyOn(Toast, 'show');
     mockLocationHook.mockReturnValue(hookState({ data: location }));
     mockWeatherHook.mockReturnValue(hookState({ data: weather }));
     mockSearchHook.mockReturnValue(searchHookState());
@@ -291,7 +291,11 @@ describe('HomeScreen', () => {
 
     expect(mockSaveLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
     await waitFor(() => {
-      expect(alertSpy).toHaveBeenCalledWith('Saved', 'Location saved successfully.');
+      expect(toastSpy).toHaveBeenCalledWith({
+        type: 'success',
+        text1: 'Saved',
+        text2: 'Location saved successfully.',
+      });
     });
   });
 
