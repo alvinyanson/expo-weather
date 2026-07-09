@@ -11,6 +11,7 @@ import {
 import { SymbolView } from 'expo-symbols';
 import { useAuth } from '@/hooks/useAuth';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 
 type Pending = 'google' | 'guest' | null;
 
@@ -27,7 +28,7 @@ export default function LoginScreen() {
     try {
       await signInWithGoogle();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Google sign-in failed');
+      setError(e instanceof Error ? e.message : t('googleFail'));
       setPending(null);
     }
   };
@@ -38,7 +39,7 @@ export default function LoginScreen() {
     try {
       await signInAnonymously();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Guest sign-in failed');
+      setError(e instanceof Error ? e.message : t('guestFail'));
       setPending(null);
     }
   };
@@ -56,8 +57,8 @@ export default function LoginScreen() {
           tintColor={theme.colors.iconSun}
           type="monochrome"
         />
-        <Text style={styles.title}>Expo Weather</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
+        <Text style={styles.title}>{t('appName')}</Text>
+        <Text style={styles.subtitle}>{t('loginSubtitle')}</Text>
       </View>
 
       <View style={styles.actions}>
@@ -79,7 +80,7 @@ export default function LoginScreen() {
                   size={22}
                   tintColor={theme.colors.primary}
                 />
-                <Text style={styles.googleButtonText}>Continue with Google</Text>
+                <Text style={styles.googleButtonText}>{t('continueGoogle')}</Text>
               </>
             )}
           </Pressable>
@@ -95,7 +96,7 @@ export default function LoginScreen() {
             {pending === 'guest' ? (
               <ActivityIndicator size="small" color="white" />
             ) : (
-              <Text style={styles.guestButtonText}>Continue as Guest</Text>
+              <Text style={styles.guestButtonText}>{t('continueGuest')}</Text>
             )}
           </Pressable>
         </View>

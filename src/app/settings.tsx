@@ -13,11 +13,18 @@ import {
 import { useAuth, useToggleNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { temperatureUnit, windSpeedUnit, setTemperatureUnit, setWindSpeedUnit } =
-    useSettingsStore();
+  const {
+    temperatureUnit,
+    windSpeedUnit,
+    setTemperatureUnit,
+    setWindSpeedUnit,
+    language,
+    setLanguage,
+  } = useSettingsStore();
 
   const {
     notificationsEnabled,
@@ -31,8 +38,8 @@ export default function SettingsScreen() {
   // On sign-out the auth listener clears the store and the root layout
   // redirects to the login screen.
   const accountLabel = user?.isAnonymous
-    ? 'Guest'
-    : (user?.email ?? user?.displayName ?? 'Signed in');
+    ? t('guestValue')
+    : (user?.email ?? user?.displayName ?? t('signedInValue'));
 
   return (
     <View style={styles.container}>
@@ -49,16 +56,16 @@ export default function SettingsScreen() {
             tintColor="white"
           />
         </Pressable>
-        <Text style={styles.headerTitle}>Settings</Text>
+        <Text style={styles.headerTitle}>{t('settingsTitle')}</Text>
         <View style={{ width: 48 }} />
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
-            <Text style={styles.settingLabel}>Temperature Unit</Text>
+            <Text style={styles.settingLabel}>{t('tempUnitLabel')}</Text>
             <Text style={styles.settingDescription}>
-              {temperatureUnit === 'celsius' ? 'Celsius (°C)' : 'Fahrenheit (°F)'}
+              {temperatureUnit === 'celsius' ? t('celsiusDesc') : t('fahrenheitDesc')}
             </Text>
           </View>
           <View style={styles.toggleContainer}>
@@ -99,9 +106,9 @@ export default function SettingsScreen() {
 
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
-            <Text style={styles.settingLabel}>Wind Speed Unit</Text>
+            <Text style={styles.settingLabel}>{t('windUnitLabel')}</Text>
             <Text style={styles.settingDescription}>
-              {windSpeedUnit === 'kmh' ? 'Kilometers per hour' : 'Miles per hour'}
+              {windSpeedUnit === 'kmh' ? t('kmhDesc') : t('mphDesc')}
             </Text>
           </View>
           <View style={styles.toggleContainer}>
@@ -126,10 +133,47 @@ export default function SettingsScreen() {
 
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
-            <Text style={styles.settingLabel}>Weather Alerts</Text>
+            <Text style={styles.settingLabel}>{t('languageLabel')}</Text>
             <Text style={styles.settingDescription}>
-              Get notified of weather updates at current location
+              {language === 'system'
+                ? t('systemLanguage')
+                : language === 'en'
+                  ? t('englishLanguage')
+                  : t('japaneseLanguage')}
             </Text>
+          </View>
+          <View style={styles.toggleContainer}>
+            <Pressable
+              style={[styles.toggleButton, language === 'system' && styles.toggleButtonActive]}
+              onPress={() => setLanguage('system')}
+            >
+              <Text style={[styles.toggleText, language === 'system' && styles.toggleTextActive]}>
+                Sys
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.toggleButton, language === 'en' && styles.toggleButtonActive]}
+              onPress={() => setLanguage('en')}
+            >
+              <Text style={[styles.toggleText, language === 'en' && styles.toggleTextActive]}>
+                EN
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.toggleButton, language === 'ja' && styles.toggleButtonActive]}
+              onPress={() => setLanguage('ja')}
+            >
+              <Text style={[styles.toggleText, language === 'ja' && styles.toggleTextActive]}>
+                JA
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.settingRow}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.settingLabel}>{t('alertsLabel')}</Text>
+            <Text style={styles.settingDescription}>{t('alertsDesc')}</Text>
           </View>
           <View style={styles.toggleContainer}>
             {isUpdatingNotifications ? (
@@ -152,14 +196,14 @@ export default function SettingsScreen() {
               onPress={sendTestNotification}
               android_ripple={{ color: theme.colors.ripple }}
             >
-              <Text style={styles.testButtonText}>Test Notification</Text>
+              <Text style={styles.testButtonText}>{t('testNotification')}</Text>
             </Pressable>
           </View>
         )}
 
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
-            <Text style={styles.settingLabel}>Account</Text>
+            <Text style={styles.settingLabel}>{t('accountLabel')}</Text>
             <Text style={styles.settingDescription}>{accountLabel}</Text>
           </View>
         </View>
@@ -170,7 +214,7 @@ export default function SettingsScreen() {
             onPress={signOut}
             android_ripple={{ color: theme.colors.ripple }}
           >
-            <Text style={styles.signOutButtonText}>Sign Out</Text>
+            <Text style={styles.signOutButtonText}>{t('signOut')}</Text>
           </Pressable>
         </View>
       </ScrollView>

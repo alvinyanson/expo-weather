@@ -8,19 +8,27 @@ import { formatHourlyTime, formatRound } from '@/utils/formatters';
 import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { useSettingsStore } from '@/store/useSettingsStore';
+import { t } from '@/services/i18n';
 
 interface HourlyForecastProps {
   weather: WeatherResponse;
 }
 
 export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
+  const windSpeedUnit = useSettingsStore((state) => state.windSpeedUnit);
+  const windUnit = windSpeedUnit === 'kmh' ? 'km/h' : 'mph';
+
   if (!weather.hourly) return null;
 
   return (
     <View style={styles.hourlyContainer}>
       <Text style={styles.hourlySummary}>
-        {weatherCodeToCondition(weather.current.weather_code)} conditions will continue for the rest
-        of the day. Wind gusts are up to {formatRound(weather.current.wind_speed_10m)} km/h.
+        {t('hourlySummary', {
+          condition: weatherCodeToCondition(weather.current.weather_code),
+          windSpeed: formatRound(weather.current.wind_speed_10m),
+          windUnit: windUnit,
+        })}
       </Text>
       <View style={styles.hourlyDivider} />
       <FlatList
@@ -42,7 +50,7 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
         renderItem={({ item, index }) => {
           let timeString = '';
           if (index === 0) {
-            timeString = 'Now';
+            timeString = t('nowText');
           } else {
             timeString = formatHourlyTime(item.time);
           }

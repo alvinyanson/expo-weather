@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Constants from 'expo-constants';
+import { t } from '@/services/i18n';
 import * as Notifications from 'expo-notifications';
 import apiClient from '@/services/api.client';
 import { useSettingsStore } from '@/store/useSettingsStore';
@@ -49,8 +50,8 @@ async function ensureNotificationPermission(): Promise<boolean> {
 
   Toast.show({
     type: 'info',
-    text1: 'Permission required',
-    text2: 'Enable notifications in settings to receive alerts.',
+    text1: t('toastPermissionRequiredTitle'),
+    text2: t('toastPermissionRequiredBody'),
   });
   return false;
 }
@@ -96,8 +97,8 @@ export function useNotifications() {
     if (!expoPushToken) {
       Toast.show({
         type: 'error',
-        text1: 'Not ready',
-        text2: 'Push token is not available yet.',
+        text1: t('toastNotReadyTitle'),
+        text2: t('toastNotReadyBody'),
       });
       return;
     }
@@ -106,8 +107,8 @@ export function useNotifications() {
       console.warn('EXPO_PUBLIC_EXPO_PUSH_ENDPOINT is not configured.');
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Push service is not configured.',
+        text1: t('toastErrorTitle'),
+        text2: t('toastPushNotConfigured'),
       });
       return;
     }
@@ -115,8 +116,8 @@ export function useNotifications() {
     const message: ExpoPushMessage = {
       to: expoPushToken,
       sound: 'default',
-      title: 'Test Notification',
-      body: 'Your notifications are set up and working!',
+      title: t('testNotificationTitle'),
+      body: t('testNotificationBody'),
       data: { source: 'settings-test' },
     };
 
@@ -126,8 +127,8 @@ export function useNotifications() {
       console.warn('Failed to send test notification:', error);
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Could not send the test notification.',
+        text1: t('toastErrorTitle'),
+        text2: t('toastTestSendFailed'),
       });
     }
   }, [expoPushToken]);

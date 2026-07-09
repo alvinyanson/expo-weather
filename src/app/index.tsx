@@ -14,6 +14,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { t } from '@/services/i18n';
 
 import { SearchHeader } from '@/components/SearchHeader';
 import { CurrentWeather } from '@/components/CurrentWeather';
@@ -73,8 +74,8 @@ export default function HomeScreen() {
         await deleteLocation(matchingSaved.id);
         Toast.show({
           type: 'success',
-          text1: 'Deleted',
-          text2: 'Location removed from saved list.',
+          text1: t('toastDeletedTitle'),
+          text2: t('toastDeletedBody'),
         });
       } else {
         await saveLocation({
@@ -84,15 +85,15 @@ export default function HomeScreen() {
         });
         Toast.show({
           type: 'success',
-          text1: 'Saved',
-          text2: 'Location saved successfully.',
+          text1: t('toastSavedTitle'),
+          text2: t('toastSavedBody'),
         });
       }
     } catch {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Could not update saved location. Please try again.',
+        text1: t('toastErrorTitle'),
+        text2: t('toastErrorBody'),
       });
     }
   };
@@ -117,7 +118,7 @@ export default function HomeScreen() {
               refetchWeather();
             }}
           >
-            <Text style={styles.retryText}>Retry</Text>
+            <Text style={styles.retryText}>{t('retryText')}</Text>
           </Pressable>
         </View>
       </View>
@@ -162,7 +163,7 @@ export default function HomeScreen() {
                     tintColor={isSaved ? theme.colors.accent : 'white'}
                   />
                   <Text style={[styles.saveButtonText, isSaved && styles.saveButtonTextSaved]}>
-                    {isSaved ? 'Saved' : 'Save Location'}
+                    {isSaved ? t('savedLocationBtn') : t('saveLocationBtn')}
                   </Text>
                 </>
               </Pressable>
@@ -170,7 +171,7 @@ export default function HomeScreen() {
           )}
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Tap for more details</Text>
+            <Text style={styles.footerText}>{t('tapDetails')}</Text>
           </View>
         </View>
       </>
@@ -199,7 +200,7 @@ export default function HomeScreen() {
       {isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="white" />
-          <Text style={styles.loadingText}>Fetching weather data...</Text>
+          <Text style={styles.loadingText}>{t('fetchingWeather')}</Text>
         </View>
       ) : (
         renderContent()

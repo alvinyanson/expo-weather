@@ -4,6 +4,7 @@ import { SymbolView } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 
 interface WeatherSummaryCardProps {
   weather: WeatherResponse;
@@ -28,17 +29,17 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
       <View style={styles.divider} />
       <View style={styles.summaryDetails}>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Humidity</Text>
+          <Text style={styles.detailLabel}>{t('humidityLabel')}</Text>
           <Text style={styles.detailValue}>{weather.current.relative_humidity_2m}%</Text>
         </View>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Wind</Text>
+          <Text style={styles.detailLabel}>{t('windLabel')}</Text>
           <Text style={styles.detailValue}>
             {weather.current.wind_speed_10m} {windUnit}
           </Text>
         </View>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>UV Index</Text>
+          <Text style={styles.detailLabel}>{t('uvIndexLabel')}</Text>
           <Text style={styles.detailValue}>{formatRound(weather.daily.uv_index_max[0])}</Text>
         </View>
       </View>

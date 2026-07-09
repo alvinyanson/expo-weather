@@ -44,7 +44,15 @@
           }
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "android": ["en", "ja"]
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useNetworkStore } from '@/store/useNetworkStore';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 
 export function OfflineIndicator() {
   const isConnected = useNetworkStore((state) => state.isConnected);
@@ -23,7 +24,7 @@ export function OfflineIndicator() {
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
       <View style={styles.innerContainer}>
-        <Text style={styles.text}>Offline. Displaying cached data.</Text>
+        <Text style={styles.text}>{t('offlineText')}</Text>
       </View>
     </Animated.View>
   );

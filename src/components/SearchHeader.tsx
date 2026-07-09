@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 import {
   ActivityIndicator,
   FlatList,
@@ -56,7 +57,7 @@ export const SearchHeader = () => {
           />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search city..."
+            placeholder={t('searchPlaceholder')}
             placeholderTextColor={theme.colors.textHint}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -73,7 +74,7 @@ export const SearchHeader = () => {
             pressed && { opacity: 0.7 },
           ]}
           accessibilityRole="button"
-          accessibilityLabel="Saved locations"
+          accessibilityLabel={t('savedLocationsLabel')}
         >
           <SymbolView
             name={{ ios: 'bookmark', android: 'bookmark_border' }}
@@ -116,7 +117,7 @@ export const SearchHeader = () => {
       {/* Recent Searches Preview */}
       {showRecent && searchQuery.length === 0 && recentSearches.length > 0 && (
         <View style={styles.dropdownContainer}>
-          <Text style={styles.recentSearchesTitle}>Recent Searches</Text>
+          <Text style={styles.recentSearchesTitle}>{t('recentSearchesTitle')}</Text>
           <FlatList
             data={recentSearches}
             keyExtractor={(item) => item.id.toString() + 'recent'}

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { t } from '@/services/i18n';
 import { useAuth } from './useAuth';
 import { useNotifications } from './useNotifications';
 import { useFetchLocation } from './useFetchLocation';
@@ -19,8 +20,8 @@ export function useToggleNotifications() {
       if (!user) {
         Toast.show({
           type: 'error',
-          text1: 'Error',
-          text2: 'You must be logged in.',
+          text1: t('toastErrorTitle'),
+          text2: t('toastMustBeLoggedIn'),
         });
         return;
       }
@@ -36,9 +37,8 @@ export function useToggleNotifications() {
           if (!token) {
             Toast.show({
               type: 'error',
-              text1: 'Push Token Not Available',
-              text2:
-                'Please ensure you have granted notification permissions in your device settings.',
+              text1: t('toastNoPushTokenTitle'),
+              text2: t('toastNoPushTokenBody'),
             });
             return;
           }
@@ -46,9 +46,8 @@ export function useToggleNotifications() {
           if (!gpsLocation) {
             Toast.show({
               type: 'error',
-              text1: 'Location Not Available',
-              text2:
-                'Please ensure you have granted location permissions to get weather alerts for your current location.',
+              text1: t('toastNoLocationTitle'),
+              text2: t('toastNoLocationBody'),
             });
             return;
           }
@@ -73,8 +72,8 @@ export function useToggleNotifications() {
         console.error('Failed to update notification settings:', error);
         Toast.show({
           type: 'error',
-          text1: 'Error',
-          text2: 'Failed to update notification settings. Please try again.',
+          text1: t('toastErrorTitle'),
+          text2: t('toastUpdateSettingsError'),
         });
       } finally {
         setIsUpdatingNotifications(false);

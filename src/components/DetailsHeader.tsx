@@ -3,6 +3,7 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 
 interface DetailsHeaderProps {
   city: string;
@@ -40,13 +41,15 @@ export const DetailsHeader = ({
         <Text style={styles.headerCondition}>
           {weatherCodeToCondition(weather.current.weather_code)}
         </Text>
-        {lastUpdated ? <Text style={styles.lastUpdatedText}>Updated {lastUpdated}</Text> : null}
+        {lastUpdated ? (
+          <Text style={styles.lastUpdatedText}>{t('updatedPrefix', { time: lastUpdated })}</Text>
+        ) : null}
       </View>
       {onSave ? (
         <Pressable
           onPress={onSave}
           accessibilityRole="button"
-          accessibilityLabel="Save location"
+          accessibilityLabel={t('saveLocationLabel')}
           style={({ pressed }) => [styles.saveButton, pressed && styles.buttonPressed]}
           android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
         >

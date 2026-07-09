@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet';
 import Toast from 'react-native-toast-message';
+import { t } from '@/services/i18n';
 import { useSavedLocations } from '@/hooks';
 import { SavedLocationItem } from '@/components/SavedLocationItem';
 import type { SavedLocation } from '@/interfaces';
@@ -39,15 +40,15 @@ export default function SavedLocationsScreen() {
       sheetRef.current?.close();
       Toast.show({
         type: 'success',
-        text1: 'Location deleted',
-        text2: `${locationToDelete.city} was removed.`,
+        text1: t('toastConfirmDeletedTitle'),
+        text2: t('toastConfirmDeletedBody', { city: locationToDelete.city }),
       });
     } catch {
       sheetRef.current?.close();
       Toast.show({
         type: 'error',
-        text1: 'Delete failed',
-        text2: 'Could not delete the location. Please try again.',
+        text1: t('toastDeleteFailedTitle'),
+        text2: t('toastDeleteFailedBody'),
       });
     }
   };
@@ -64,7 +65,7 @@ export default function SavedLocationsScreen() {
       return (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="white" />
-          <Text style={styles.message}>Loading saved locations...</Text>
+          <Text style={styles.message}>{t('loadingSaved')}</Text>
         </View>
       );
     }
@@ -79,7 +80,7 @@ export default function SavedLocationsScreen() {
           />
           <Text style={styles.message}>{error.message}</Text>
           <Pressable style={styles.retryButton} onPress={() => refetch()}>
-            <Text style={styles.retryText}>Retry</Text>
+            <Text style={styles.retryText}>{t('retryText')}</Text>
           </Pressable>
         </View>
       );
@@ -93,10 +94,8 @@ export default function SavedLocationsScreen() {
             size={48}
             tintColor={theme.colors.textHint}
           />
-          <Text style={styles.emptyTitle}>No saved locations yet.</Text>
-          <Text style={styles.emptySubtitle}>
-            Save a location from the home screen to see it here.
-          </Text>
+          <Text style={styles.emptyTitle}>{t('emptySavedTitle')}</Text>
+          <Text style={styles.emptySubtitle}>{t('emptySavedSubtitle')}</Text>
         </View>
       );
     }
@@ -137,7 +136,7 @@ export default function SavedLocationsScreen() {
             tintColor="white"
           />
         </Pressable>
-        <Text style={styles.headerTitle}>Saved Locations</Text>
+        <Text style={styles.headerTitle}>{t('savedLocationsTitle')}</Text>
         <View style={{ width: 48 }} />
       </View>
 
@@ -153,9 +152,9 @@ export default function SavedLocationsScreen() {
         handleIndicatorStyle={styles.sheetIndicator}
       >
         <BottomSheetView style={styles.sheetContent}>
-          <Text style={styles.sheetTitle}>Delete Saved Location?</Text>
+          <Text style={styles.sheetTitle}>{t('deleteSheetTitle')}</Text>
           <Text style={styles.sheetSubtitle}>
-            Are you sure you want to remove {locationToDelete?.city}? This action cannot be undone.
+            {t('deleteSheetSubtitle', { city: locationToDelete?.city })}
           </Text>
           <View style={styles.sheetButtons}>
             <Pressable
@@ -163,14 +162,14 @@ export default function SavedLocationsScreen() {
               style={[styles.sheetButton, styles.sheetCancelButton]}
               onPress={() => sheetRef.current?.close()}
             >
-              <Text style={styles.sheetCancelText}>Cancel</Text>
+              <Text style={styles.sheetCancelText}>{t('cancel')}</Text>
             </Pressable>
             <Pressable
               testID="confirm-delete-button"
               style={[styles.sheetButton, styles.sheetDeleteButton]}
               onPress={handleConfirmDelete}
             >
-              <Text style={styles.sheetDeleteText}>Delete</Text>
+              <Text style={styles.sheetDeleteText}>{t('deleteLabel')}</Text>
             </Pressable>
           </View>
         </BottomSheetView>

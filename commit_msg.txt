@@ -1,9 +1,10 @@
-[REFACTOR]: Refactor layouts, overlay behaviors, navigation, and theme colors
-
-- Refactor HomeScreen layout on mobile to wrap inside a vertical ScrollView, preventing elements from clipping on smaller screens.
-- Refactor SettingsScreen and LoginScreen layouts to wrap contents in ScrollViews for keyboard and screen-height overflow safety.
-- Re-position SearchHeader dropdown as an absolute overlay and add a tap-outside-to-dismiss backdrop to prevent layout shift.
-- Replace ES2023 .toSorted() with everywhere-compatible .sort() in firestore service to resolve crash on physical devices.
-- Make SavedLocationItem components pressable and implement navigation to DetailsScreen on tap, updating unit tests in saved.test.tsx.
-- Correct overlay background color in theme configuration to match new deep blue theme.
-- Fix gap between WeatherSummaryCard and DailyForecastList on mobile by removing flex: 1 layout on top card.
+[FEAT]: Implement English and Japanese localization for Android platform
+- Installed expo-localization and i18n-js dependencies
+- Created a centralized i18n service in src/services/i18n.ts with translations for English and Japanese
+- Configured app.json with android-specific supportedLocales for per-app language settings
+- Modified date/time formatters in utils/formatters.ts to dynamically read the system locale using Hermes Intl API
+- Localized weather condition names and descriptions in utils/weatherMapper.ts
+- Extracted and localized all hardcoded user-facing strings, buttons, toast messages, and descriptions across screens and components
+- Added a language selection setting in SettingsScreen with state management in useSettingsStore
+- Configured the root layout RootApp with a dynamic language-bound key to force instant re-render of the entire tree when language is changed
+- Mocked expo-localization and configured global __DEV__ environment variable in vitest setup.ts to pass all unit tests

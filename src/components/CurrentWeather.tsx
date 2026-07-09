@@ -8,6 +8,7 @@ import { formatDateFull, formatRound } from '@/utils/formatters';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 
 interface CurrentWeatherProps {
   city?: string;
@@ -21,7 +22,10 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
     <>
       <View style={styles.locationHeader}>
         <Text style={styles.cityName}>{city}</Text>
-        <Text style={styles.dateText}>Today, {formatDateFull()}</Text>
+        <Text style={styles.dateText}>
+          {t('todayPrefix')}
+          {formatDateFull()}
+        </Text>
       </View>
 
       <View style={styles.heroWrapper}>

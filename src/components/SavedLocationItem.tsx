@@ -5,6 +5,7 @@ import Reanimated, { type SharedValue, useAnimatedStyle } from 'react-native-rea
 import type { SavedLocation } from '@/interfaces';
 import { formatDateFull, formatTime } from '@/utils/formatters';
 import { theme } from '@/theme';
+import { t } from '@/services/i18n';
 
 interface SavedLocationItemProps {
   location: SavedLocation;
@@ -33,7 +34,7 @@ const RightAction = ({
       <Pressable
         onPress={onPress}
         accessibilityRole="button"
-        accessibilityLabel={`Delete ${city}`}
+        accessibilityLabel={t('deleteAccessLabel', { city })}
         style={({ pressed }) => [styles.deleteAction, pressed && styles.buttonPressed]}
         android_ripple={{ color: theme.colors.ripple }}
       >
@@ -42,7 +43,7 @@ const RightAction = ({
           size={22}
           tintColor={theme.colors.text}
         />
-        <Text style={styles.deleteText}>Delete</Text>
+        <Text style={styles.deleteText}>{t('deleteLabel')}</Text>
       </Pressable>
     </Reanimated.View>
   );
@@ -75,7 +76,7 @@ export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocation
         android_ripple={{ color: theme.colors.ripple }}
       >
         <Text style={styles.city}>{location.city}</Text>
-        {savedAt ? <Text style={styles.savedAt}>Saved {savedAt}</Text> : null}
+        {savedAt ? <Text style={styles.savedAt}>{t('savedPrefix', { savedAt })}</Text> : null}
       </Pressable>
     </ReanimatedSwipeable>
   );

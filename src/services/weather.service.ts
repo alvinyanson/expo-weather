@@ -1,11 +1,12 @@
 import * as Location from 'expo-location';
 import { LocationData, WeatherResponse } from '@/interfaces';
 import apiClient from './api.client';
+import { t } from './i18n';
 
 export const fetchCoordinates = async (): Promise<{ latitude: number; longitude: number }> => {
   const { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== 'granted') {
-    throw new Error('Permission to access location was denied');
+    throw new Error(t('errLocationDenied'));
   }
 
   let location;
@@ -20,7 +21,7 @@ export const fetchCoordinates = async (): Promise<{ latitude: number; longitude:
   }
 
   if (!location) {
-    throw new Error('Could not determine your location. Please check your GPS settings.');
+    throw new Error(t('errLocationGpsCheck'));
   }
 
   return {
@@ -32,10 +33,10 @@ export const fetchCoordinates = async (): Promise<{ latitude: number; longitude:
 export const fetchLocation = async (): Promise<LocationData> => {
   const { latitude, longitude } = await fetchCoordinates();
 
-  let city = 'Unknown Location';
+  let city = t('unknownLocation');
   try {
     const [address] = await Location.reverseGeocodeAsync({ latitude, longitude });
-    city = address?.city || address?.region || address?.district || 'Unknown Location';
+    city = address?.city || address?.region || address?.district || t('unknownLocation');
   } catch (e) {
     console.error('[Location Error] Reverse geocode failed', e);
   }

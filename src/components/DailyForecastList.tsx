@@ -4,6 +4,7 @@ import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
 import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
+import { t } from '@/services/i18n';
 
 interface DailyForecastListProps {
   weather: WeatherResponse;
@@ -49,10 +50,10 @@ export const DailyForecastList = ({
   return (
     <View style={styles.forecastContainer}>
       <View style={styles.forecastHeader}>
-        <Text style={styles.forecastTitle}>8-Day Forecast</Text>
+        <Text style={styles.forecastTitle}>{t('forecastTitle')}</Text>
         <View style={styles.forecastLabels}>
-          <Text style={styles.forecastLabelMax}>Max</Text>
-          <Text style={styles.forecastLabelMin}>Min</Text>
+          <Text style={styles.forecastLabelMax}>{t('forecastMax')}</Text>
+          <Text style={styles.forecastLabelMin}>{t('forecastMin')}</Text>
         </View>
       </View>
       <FlatList

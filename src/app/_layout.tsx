@@ -17,6 +17,9 @@ import { ObserveRoot, useObserve } from 'expo-observe';
 import { useEffect } from 'react';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/components/CustomToast';
+import { t } from '@/services/i18n';
+
+import { useSettingsStore } from '@/store/useSettingsStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,6 +41,7 @@ function RootApp() {
   useNotificationListeners();
   const { isAuthenticated, initializing } = useAuth();
   const { markInteractive } = useObserve();
+  const language = useSettingsStore((state) => state.language);
 
   useEffect(() => {
     if (!initializing) {
@@ -57,7 +61,7 @@ function RootApp() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+    <SafeAreaView key={language} style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <OfflineIndicator />
       <Stack
         screenOptions={{
@@ -113,7 +117,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       <Text
         style={{ color: theme.colors.text, fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}
       >
-        We ran into a problem.
+        {t('errorBoundaryTitle')}
       </Text>
       <Text
         style={{
@@ -124,7 +128,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
           marginBottom: 20,
         }}
       >
-        We're sorry, but the application encountered an unexpected error.
+        {t('errorBoundarySubtitle')}
       </Text>
       <Text
         style={{
@@ -137,7 +141,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       >
         {error.message}
       </Text>
-      <Button title="Try Again" onPress={retry} color={theme.colors.secondary} />
+      <Button title={t('retryText')} onPress={retry} color={theme.colors.secondary} />
     </SafeAreaView>
   );
 }

@@ -14,6 +14,7 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { t } from '@/services/i18n';
 
 import { DetailsHeader } from '@/components/DetailsHeader';
 import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
@@ -72,8 +73,8 @@ export default function DetailsScreen() {
         await deleteLocation(matchingSaved.id);
         Toast.show({
           type: 'success',
-          text1: 'Deleted',
-          text2: 'Location removed from saved list.',
+          text1: t('toastDeletedTitle'),
+          text2: t('toastDeletedBody'),
         });
       } else {
         await saveLocation({
@@ -83,15 +84,15 @@ export default function DetailsScreen() {
         });
         Toast.show({
           type: 'success',
-          text1: 'Saved',
-          text2: 'Location saved successfully.',
+          text1: t('toastSavedTitle'),
+          text2: t('toastSavedBody'),
         });
       }
     } catch {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Could not update saved location. Please try again.',
+        text1: t('toastErrorTitle'),
+        text2: t('toastErrorBody'),
       });
     }
   };
@@ -111,9 +112,9 @@ export default function DetailsScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.center}>
-          <Text style={styles.loadingText}>No weather data available.</Text>
+          <Text style={styles.loadingText}>{t('noWeatherData')}</Text>
           <Pressable style={styles.retryButton} onPress={() => router.back()}>
-            <Text style={styles.retryText}>Go Back</Text>
+            <Text style={styles.retryText}>{t('goBack')}</Text>
           </Pressable>
         </View>
       </View>
@@ -125,7 +126,7 @@ export default function DetailsScreen() {
       <View style={styles.container}>
         <View style={styles.center}>
           <ActivityIndicator size="large" color="white" />
-          <Text style={styles.loadingText}>Loading details...</Text>
+          <Text style={styles.loadingText}>{t('loadingDetails')}</Text>
         </View>
       </View>
     );
