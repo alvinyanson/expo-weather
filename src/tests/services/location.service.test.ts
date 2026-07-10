@@ -41,8 +41,8 @@ describe('Location Service', () => {
       },
     });
     expect(results).toHaveLength(1);
-    expect(results[0].name).toBe('Manila');
-    expect(results[0].country).toBe('Philippines');
+    expect(results[0]!.name).toBe('Manila');
+    expect(results[0]!.country).toBe('Philippines');
   });
 
   it('should return empty array when API returns no results', async () => {

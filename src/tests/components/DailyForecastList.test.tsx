@@ -45,9 +45,7 @@ describe('DailyForecastList', () => {
     const onRefresh = vi.fn();
     const { container } = render(
       <DailyForecastList
-        weather={{}}
-        as
-        any
+        weather={{} as any}
         tempUnit="°C"
         refreshing={false}
         onRefresh={onRefresh}

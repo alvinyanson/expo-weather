@@ -1,4 +1,4 @@
-import React from 'react';
+import { ComponentProps } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import { theme } from '@/theme';
@@ -12,7 +12,7 @@ const CustomToast = ({
   text2?: string;
   type: 'success' | 'error' | 'info';
 }) => {
-  let iconName: { ios: string; android: string };
+  let iconName: ComponentProps<typeof SymbolView>['name'];
   let iconColor: string;
 
   if (type === 'success') {

@@ -13,6 +13,8 @@ interface WeatherSummaryCardProps {
 }
 
 export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSummaryCardProps) => {
+  const uvIndex = weather.daily.uv_index_max[0] ?? 0;
+
   return (
     <View style={styles.summaryCard}>
       <View style={styles.summaryMain}>
@@ -40,7 +42,7 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
         </View>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>{t('uvIndexLabel')}</Text>
-          <Text style={styles.detailValue}>{formatRound(weather.daily.uv_index_max[0])}</Text>
+          <Text style={styles.detailValue}>{formatRound(uvIndex)}</Text>
         </View>
       </View>
     </View>

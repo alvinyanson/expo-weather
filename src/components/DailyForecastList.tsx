@@ -22,24 +22,38 @@ export const DailyForecastList = ({
   if (!weather?.daily) return null;
 
   const renderForecastItem = ({ index }: { item: number; index: number }) => {
-    const dayName = formatDayName(weather.daily.time[index]);
+    const time = weather.daily.time[index];
+    const code = weather.daily.weather_code[index];
+    const maxTemp = weather.daily.temperature_2m_max[index];
+    const minTemp = weather.daily.temperature_2m_min[index];
+
+    if (
+      time === undefined ||
+      code === undefined ||
+      maxTemp === undefined ||
+      minTemp === undefined
+    ) {
+      return null;
+    }
+
+    const dayName = formatDayName(time);
 
     return (
       <View style={styles.forecastRow}>
         <Text style={styles.forecastDay}>{dayName}</Text>
         <SymbolView
-          name={weatherCodeToSymbol(weather.daily.weather_code[index])}
+          name={weatherCodeToSymbol(code)}
           size={24}
-          tintColor={getIconTintColor(weather.daily.weather_code[index])}
+          tintColor={getIconTintColor(code)}
           style={styles.forecastIcon}
         />
         <View style={styles.tempRange}>
           <Text style={styles.maxTemp}>
-            {formatRound(weather.daily.temperature_2m_max[index])}
+            {formatRound(maxTemp)}
             {tempUnit}
           </Text>
           <Text style={styles.minTemp}>
-            {formatRound(weather.daily.temperature_2m_min[index])}
+            {formatRound(minTemp)}
             {tempUnit}
           </Text>
         </View>
@@ -59,7 +73,7 @@ export const DailyForecastList = ({
       <FlatList
         data={weather.daily.weather_code}
         renderItem={renderForecastItem}
-        keyExtractor={(_, index) => weather.daily.time[index]}
+        keyExtractor={(_, index) => weather.daily.time[index] ?? String(index)}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.forecastList}
         refreshControl={

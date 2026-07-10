@@ -135,7 +135,7 @@ describe('getSavedLocations', () => {
 
     const [location] = await getSavedLocations('user-1');
 
-    expect(location.createdAt).toBeNull();
+    expect(location!.createdAt).toBeNull();
   });
 
   it('propagates Firestore errors', async () => {

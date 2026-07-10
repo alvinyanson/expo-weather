@@ -59,7 +59,7 @@ describe('useSearchStore', () => {
 
     const searches = useSearchStore.getState().recentSearches;
     expect(searches).toHaveLength(10);
-    expect(searches[0].id).toBe(15);
-    expect(searches[9].id).toBe(6);
+    expect(searches[0]!.id).toBe(15);
+    expect(searches[9]!.id).toBe(6);
   });
 });
