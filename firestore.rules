@@ -1,0 +1,24 @@
+rules_version = '2';
+    service cloud.firestore {
+      match /databases/{database}/documents {
+        match /saved_locations/{docId} {
+          // Read/update/delete only your own documents.
+          allow read, update, delete: if request.auth != null
+            && resource.data.userId == request.auth.uid;
+
+          // Create only documents owned by you, with the expected shape.
+          allow create: if request.auth != null
+            && request.resource.data.userId == request.auth.uid
+            && request.resource.data.keys().hasAll(['city', 'lat', 'lon', 'userId', 'createdAt'])
+            && request.resource.data.city is string
+            && request.resource.data.lat is number
+            && request.resource.data.lon is number;
+        }
+
+        // Rule for the users collection to store push tokens and current coordinates
+        match /users/{userId} {
+          // Allow read/write only if the authenticated user matches the userId of the document
+          allow read, write: if request.auth != null && request.auth.uid == userId;
+        }
+      }
+    }
