@@ -18,8 +18,17 @@ import { useEffect } from 'react';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/components/CustomToast';
 import { t } from '@/services/i18n';
+import crashlytics from '@react-native-firebase/crashlytics';
 
 import { useSettingsStore } from '@/store/useSettingsStore';
+
+const defaultErrorHandler = ErrorUtils.getGlobalHandler();
+ErrorUtils.setGlobalHandler((error, isFatal) => {
+  crashlytics().recordError(error);
+  if (defaultErrorHandler) {
+    defaultErrorHandler(error, isFatal);
+  }
+});
 
 SplashScreen.preventAutoHideAsync();
 
@@ -105,6 +114,10 @@ function RootLayout() {
 export default ObserveRoot.wrap(RootLayout);
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  useEffect(() => {
+    crashlytics().recordError(error);
+  }, [error]);
+
   return (
     <SafeAreaView
       style={{
