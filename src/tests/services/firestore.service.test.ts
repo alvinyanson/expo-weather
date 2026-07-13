@@ -39,6 +39,17 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+const makeDoc = (id: string, createdAt: number | null) => ({
+  id,
+  data: () => ({
+    city: id,
+    lat: 0,
+    lon: 0,
+    userId: 'user-1',
+    createdAt: createdAt === null ? null : { toMillis: () => createdAt },
+  }),
+});
+
 describe('saveLocation', () => {
   it('writes the location scoped to the user with a server timestamp and returns the new id', async () => {
     mockAddDoc.mockResolvedValue({ id: 'doc-123' } as never);
@@ -100,17 +111,6 @@ describe('getSavedLocations', () => {
         createdAt: 1700000000000,
       },
     ]);
-  });
-
-  const makeDoc = (id: string, createdAt: number | null) => ({
-    id,
-    data: () => ({
-      city: id,
-      lat: 0,
-      lon: 0,
-      userId: 'user-1',
-      createdAt: createdAt === null ? null : { toMillis: () => createdAt },
-    }),
   });
 
   it('sorts results newest-first in memory, pending timestamps on top', async () => {

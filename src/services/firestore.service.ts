@@ -58,9 +58,12 @@ export const getSavedLocations = async (userId: string): Promise<SavedLocation[]
   const db = getFirestore();
   const q = query(collection(db, COLLECTION), where('userId', '==', userId));
   const snapshot = await getDocs(q);
-  return snapshot.docs
-    .map((d) => mapDoc(d.id, d.data() as SavedLocationDoc))
-    .sort((a, b) => (b.createdAt ?? Infinity) - (a.createdAt ?? Infinity));
+  const results = snapshot.docs.map((d) => mapDoc(d.id, d.data() as SavedLocationDoc));
+  Array.prototype.sort.call(
+    results,
+    (a: SavedLocation, b: SavedLocation) => (b.createdAt ?? Infinity) - (a.createdAt ?? Infinity),
+  );
+  return results;
 };
 
 /**

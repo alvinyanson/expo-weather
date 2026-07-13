@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import NetInfo from '@react-native-community/netinfo';
+import { addEventListener } from '@react-native-community/netinfo';
 import { onlineManager } from '@tanstack/react-query';
 import { useNetworkStore } from '@/store/useNetworkStore';
 
@@ -8,7 +8,7 @@ export function useNetworkMonitor() {
 
   useEffect(() => {
     // Listen to network changes for our global state
-    const unsubscribe = NetInfo.addEventListener((state) => {
+    const unsubscribe = addEventListener((state) => {
       // isConnected can be true even if isInternetReachable is false (e.g. connected to router without internet)
       // So we check both. If isInternetReachable is null, we assume connected if isConnected is true.
       const connected = state.isConnected && state.isInternetReachable !== false;
@@ -17,7 +17,7 @@ export function useNetworkMonitor() {
 
     // Tell React Query how to monitor online status
     onlineManager.setEventListener((setOnline) => {
-      return NetInfo.addEventListener((state) => {
+      return addEventListener((state) => {
         setOnline(!!state.isConnected && state.isInternetReachable !== false);
       });
     });

@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 import React from 'react';
 
 // Define global __DEV__ for react-native/expo packages in testing environment
-(globalThis as any).__DEV__ = true;
+vi.stubGlobal('__DEV__', true);
 
 vi.mock('expo-localization', () => ({
   getLocales: () => [{ languageCode: 'en', languageTag: 'en-US' }],
@@ -29,13 +29,12 @@ vi.mock('@expo/ui/community/bottom-sheet', () => {
   });
   MockBottomSheet.displayName = 'MockBottomSheet';
 
-  const MockBottomSheetView = ({ children }: any) => {
-    return React.createElement('div', { 'data-testid': 'mock-bottom-sheet-view' }, children);
-  };
-  MockBottomSheetView.displayName = 'MockBottomSheetView';
-
   return {
     default: MockBottomSheet,
-    BottomSheetView: MockBottomSheetView,
+    BottomSheetView: Object.assign(
+      ({ children }: any) =>
+        React.createElement('div', { 'data-testid': 'mock-bottom-sheet-view' }, children),
+      { displayName: 'MockBottomSheetView' },
+    ),
   };
 });
