@@ -1,6 +1,5 @@
 import { Fragment, createElement } from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import Toast from 'react-native-toast-message';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import SavedLocationsScreen from '@/app/saved';
 
 const { backMock, pushMock } = vi.hoisted(() => ({ backMock: vi.fn(), pushMock: vi.fn() }));
@@ -48,6 +47,8 @@ const baseHook = (overrides = {}) =>
     isSaving: false,
     deleteLocation: vi.fn(),
     isDeleting: false,
+    toggleSavedLocation: vi.fn(),
+    confirmDeleteLocation: vi.fn(),
     ...overrides,
   }) as never;
 
@@ -99,11 +100,9 @@ describe('SavedLocationsScreen', () => {
     expect(refetch).toHaveBeenCalled();
   });
 
-  it('asks for confirmation and deletes on confirm', async () => {
-    const deleteLocation = vi.fn().mockResolvedValue(undefined);
-    mockHook.mockReturnValue(baseHook({ savedLocations: sampleLocations, deleteLocation }));
-
-    const toastSpy = vi.spyOn(Toast, 'show');
+  it('asks for confirmation and delegates to confirmDeleteLocation on confirm', async () => {
+    const confirmDeleteLocation = vi.fn();
+    mockHook.mockReturnValue(baseHook({ savedLocations: sampleLocations, confirmDeleteLocation }));
 
     render(<SavedLocationsScreen />);
 
@@ -115,35 +114,7 @@ describe('SavedLocationsScreen', () => {
     // Click confirm delete button
     fireEvent.click(screen.getByTestId('confirm-delete-button'));
 
-    expect(deleteLocation).toHaveBeenCalledWith('1');
-    await waitFor(() => {
-      expect(toastSpy).toHaveBeenCalledWith({
-        type: 'success',
-        text1: 'Location deleted',
-        text2: 'Manila was removed.',
-      });
-    });
-  });
-
-  it('surfaces an error if deletion fails', async () => {
-    const deleteLocation = vi.fn().mockRejectedValue(new Error('boom'));
-    mockHook.mockReturnValue(baseHook({ savedLocations: sampleLocations, deleteLocation }));
-
-    const toastSpy = vi.spyOn(Toast, 'show');
-
-    render(<SavedLocationsScreen />);
-    fireEvent.click(screen.getByLabelText('Delete Manila'));
-
-    // Click confirm delete button
-    fireEvent.click(screen.getByTestId('confirm-delete-button'));
-
-    await waitFor(() => {
-      expect(toastSpy).toHaveBeenCalledWith({
-        type: 'error',
-        text1: 'Delete failed',
-        text2: 'Could not delete the location. Please try again.',
-      });
-    });
+    expect(confirmDeleteLocation).toHaveBeenCalledWith(sampleLocations[0], expect.any(Function));
   });
 
   it('navigates to details screen on item press', () => {

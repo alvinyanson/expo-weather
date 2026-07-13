@@ -13,7 +13,6 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import Toast from 'react-native-toast-message';
 import { t } from '@/services/i18n';
 
 import { SearchHeader } from '@/components/SearchHeader';
@@ -42,7 +41,7 @@ export default function HomeScreen() {
     refetch: refetchWeather,
   } = useFetchWeather(gpsLocation);
 
-  const { savedLocations, saveLocation, deleteLocation } = useSavedLocations();
+  const { savedLocations, toggleSavedLocation } = useSavedLocations();
 
   // Synchronize notifications token and coordinates in the background
   useSyncPushToken();
@@ -67,33 +66,12 @@ export default function HomeScreen() {
     });
   };
 
-  const handleSaveLocation = async () => {
-    if (!gpsLocation) return;
-    try {
-      if (isSaved && matchingSaved) {
-        await deleteLocation(matchingSaved.id);
-        Toast.show({
-          type: 'success',
-          text1: t('toastDeletedTitle'),
-          text2: t('toastDeletedBody'),
-        });
-      } else {
-        await saveLocation({
-          city: gpsLocation.city,
-          lat: gpsLocation.latitude,
-          lon: gpsLocation.longitude,
-        });
-        Toast.show({
-          type: 'success',
-          text1: t('toastSavedTitle'),
-          text2: t('toastSavedBody'),
-        });
-      }
-    } catch {
-      Toast.show({
-        type: 'error',
-        text1: t('toastErrorTitle'),
-        text2: t('toastErrorBody'),
+  const handleSaveLocation = () => {
+    if (gpsLocation) {
+      toggleSavedLocation({
+        lat: gpsLocation.latitude,
+        lon: gpsLocation.longitude,
+        city: gpsLocation.city,
       });
     }
   };

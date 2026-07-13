@@ -63,8 +63,8 @@ const translations = {
     loadingSaved: 'Loading saved locations...',
     emptySavedTitle: 'No saved locations yet.',
     emptySavedSubtitle: 'Save a location from the home screen to see it here.',
-    deleteSheetTitle: 'Delete Saved Location?',
-    deleteSheetSubtitle: 'Are you sure you want to remove %{city}? This action cannot be undone.',
+    deleteModalTitle: 'Delete Saved Location?',
+    deleteModalSubtitle: 'Are you sure you want to remove %{city}? This action cannot be undone.',
     cancel: 'Cancel',
 
     // settings
@@ -196,8 +196,8 @@ const translations = {
     loadingSaved: '保存済みの場所を読み込み中...',
     emptySavedTitle: '保存済みの場所はまだありません。',
     emptySavedSubtitle: 'ホーム画面から場所を保存すると、ここに表示されます。',
-    deleteSheetTitle: '保存済みの場所を削除しますか？',
-    deleteSheetSubtitle: '本当に%{city}を削除しますか？この操作は取り消せません。',
+    deleteModalTitle: '保存済みの場所を削除しますか？',
+    deleteModalSubtitle: '本当に%{city}を削除しますか？この操作は取り消せません。',
     cancel: 'キャンセル',
 
     // settings

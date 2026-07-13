@@ -1,5 +1,4 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import Toast from 'react-native-toast-message';
 import HomeScreen from '@/app/index';
 
 const { pushMock, backMock } = vi.hoisted(() => {
@@ -103,8 +102,7 @@ vi.mock('@react-native-async-storage/async-storage', () => ({
   },
 }));
 
-const mockSaveLocation = vi.fn();
-const mockDeleteLocation = vi.fn();
+const mockToggleSavedLocation = vi.fn();
 vi.mock('@/hooks', async () => {
   const actual = await vi.importActual<typeof import('@/hooks')>('@/hooks');
   return {
@@ -115,9 +113,7 @@ vi.mock('@/hooks', async () => {
     useSearchLocation: vi.fn(),
     useSavedLocations: vi.fn(() => ({
       savedLocations: [],
-      saveLocation: mockSaveLocation,
-      deleteLocation: mockDeleteLocation,
-      isSaving: false,
+      toggleSavedLocation: mockToggleSavedLocation,
     })),
     useAuth: vi.fn(() => ({ user: { uid: 'user-123' } })),
     useNotifications: vi.fn(() => ({ expoPushToken: 'token-123' })),
@@ -280,8 +276,6 @@ describe('HomeScreen', () => {
   });
 
   it('saves the current location and confirms success', async () => {
-    mockSaveLocation.mockResolvedValue('doc-1');
-    const toastSpy = vi.spyOn(Toast, 'show');
     mockLocationHook.mockReturnValue(hookState({ data: location }));
     mockWeatherHook.mockReturnValue(hookState({ data: weather }));
     mockSearchHook.mockReturnValue(searchHookState());
@@ -289,14 +283,7 @@ describe('HomeScreen', () => {
     render(<HomeScreen />);
     fireEvent.click(screen.getByText('Save Location'));
 
-    expect(mockSaveLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
-    await waitFor(() => {
-      expect(toastSpy).toHaveBeenCalledWith({
-        type: 'success',
-        text1: 'Saved',
-        text2: 'Location saved successfully.',
-      });
-    });
+    expect(mockToggleSavedLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
   });
 
   it('navigates to the saved locations screen', () => {

@@ -1,6 +1,5 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import DetailsScreen from '@/app/details';
-import Toast from 'react-native-toast-message';
 
 const { backMock } = vi.hoisted(() => ({ backMock: vi.fn() }));
 
@@ -11,16 +10,13 @@ vi.mock('expo-router', () => ({
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
-const mockSaveLocation = vi.fn();
-const mockDeleteLocation = vi.fn();
+const mockToggleSavedLocation = vi.fn();
 vi.mock('@/hooks', () => ({
   useFetchLocation: vi.fn(),
   useFetchWeather: vi.fn(),
   useSavedLocations: vi.fn(() => ({
     savedLocations: [],
-    saveLocation: mockSaveLocation,
-    deleteLocation: mockDeleteLocation,
-    isSaving: false,
+    toggleSavedLocation: mockToggleSavedLocation,
   })),
 }));
 
@@ -93,21 +89,12 @@ describe('DetailsScreen', () => {
   });
 
   it('saves the displayed location from the header and confirms success', async () => {
-    mockSaveLocation.mockResolvedValue('doc-1');
-    const toastSpy = vi.spyOn(Toast, 'show');
     mockLocationHook.mockReturnValue(hookState({ data: location }));
     mockWeatherHook.mockReturnValue(hookState({ data: weather }));
 
     render(<DetailsScreen />);
     fireEvent.click(screen.getByLabelText('Save location'));
 
-    expect(mockSaveLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
-    await waitFor(() => {
-      expect(toastSpy).toHaveBeenCalledWith({
-        type: 'success',
-        text1: 'Saved',
-        text2: 'Location saved successfully.',
-      });
-    });
+    expect(mockToggleSavedLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
   });
 });

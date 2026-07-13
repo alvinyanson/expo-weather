@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import {
@@ -10,9 +10,8 @@ import {
   Text,
   View,
   useWindowDimensions,
+  Modal,
 } from 'react-native';
-import BottomSheet, { BottomSheetView } from '@expo/ui/community/bottom-sheet';
-import Toast from 'react-native-toast-message';
 import { t } from '@/services/i18n';
 import { useSavedLocations } from '@/hooks';
 import { SavedLocationItem } from '@/components/SavedLocationItem';
@@ -23,34 +22,18 @@ export default function SavedLocationsScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
-  const { savedLocations, isLoading, error, refetch, deleteLocation } = useSavedLocations();
+  const { savedLocations, isLoading, error, refetch, confirmDeleteLocation } = useSavedLocations();
 
-  const sheetRef = useRef<BottomSheet>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<SavedLocation | null>(null);
 
   const confirmDelete = (location: SavedLocation) => {
     setLocationToDelete(location);
-    sheetRef.current?.expand();
+    setIsModalVisible(true);
   };
 
-  const handleConfirmDelete = async () => {
-    if (!locationToDelete) return;
-    try {
-      await deleteLocation(locationToDelete.id);
-      sheetRef.current?.close();
-      Toast.show({
-        type: 'success',
-        text1: t('toastConfirmDeletedTitle'),
-        text2: t('toastConfirmDeletedBody', { city: locationToDelete.city }),
-      });
-    } catch {
-      sheetRef.current?.close();
-      Toast.show({
-        type: 'error',
-        text1: t('toastDeleteFailedTitle'),
-        text2: t('toastDeleteFailedBody'),
-      });
-    }
+  const handleConfirmDelete = () => {
+    confirmDeleteLocation(locationToDelete, () => setIsModalVisible(false));
   };
 
   const handlePressLocation = (location: SavedLocation) => {
@@ -142,38 +125,38 @@ export default function SavedLocationsScreen() {
 
       <View style={styles.content}>{renderBody()}</View>
 
-      <BottomSheet
-        ref={sheetRef}
-        snapPoints={['25%']}
-        index={-1}
-        enablePanDownToClose
-        onClose={() => setLocationToDelete(null)}
-        backgroundStyle={styles.sheetBackground}
-        handleIndicatorStyle={styles.sheetIndicator}
+      <Modal
+        visible={isModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
       >
-        <BottomSheetView style={styles.sheetContent}>
-          <Text style={styles.sheetTitle}>{t('deleteSheetTitle')}</Text>
-          <Text style={styles.sheetSubtitle}>
-            {t('deleteSheetSubtitle', { city: locationToDelete?.city })}
-          </Text>
-          <View style={styles.sheetButtons}>
-            <Pressable
-              testID="cancel-delete-button"
-              style={[styles.sheetButton, styles.sheetCancelButton]}
-              onPress={() => sheetRef.current?.close()}
-            >
-              <Text style={styles.sheetCancelText}>{t('cancel')}</Text>
-            </Pressable>
-            <Pressable
-              testID="confirm-delete-button"
-              style={[styles.sheetButton, styles.sheetDeleteButton]}
-              onPress={handleConfirmDelete}
-            >
-              <Text style={styles.sheetDeleteText}>{t('deleteLabel')}</Text>
-            </Pressable>
+        <View style={styles.modalOverlay}>
+          <Pressable style={styles.modalBackdrop} onPress={() => setIsModalVisible(false)} />
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{t('deleteModalTitle')}</Text>
+            <Text style={styles.modalSubtitle}>
+              {t('deleteModalSubtitle', { city: locationToDelete?.city })}
+            </Text>
+            <View style={styles.modalButtons}>
+              <Pressable
+                testID="cancel-delete-button"
+                style={[styles.modalButton, styles.modalCancelButton]}
+                onPress={() => setIsModalVisible(false)}
+              >
+                <Text style={styles.modalCancelText}>{t('cancel')}</Text>
+              </Pressable>
+              <Pressable
+                testID="confirm-delete-button"
+                style={[styles.modalButton, styles.modalDeleteButton]}
+                onPress={handleConfirmDelete}
+              >
+                <Text style={styles.modalDeleteText}>{t('deleteLabel')}</Text>
+              </Pressable>
+            </View>
           </View>
-        </BottomSheetView>
-      </BottomSheet>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -255,57 +238,65 @@ const styles = StyleSheet.create({
     flex: 1,
     maxWidth: '50%',
   },
-  sheetBackground: {
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
     backgroundColor: theme.colors.overlay,
     borderTopLeftRadius: theme.borderRadius.xl,
     borderTopRightRadius: theme.borderRadius.xl,
-  },
-  sheetIndicator: {
-    backgroundColor: 'white',
-  },
-  sheetContent: {
     paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    paddingBottom: 64,
     alignItems: 'center',
   },
-  sheetTitle: {
+  modalTitle: {
     fontSize: theme.typography.sizes.lg,
     fontWeight: 'bold',
     color: 'white',
     marginBottom: theme.spacing.sm,
   },
-  sheetSubtitle: {
+  modalSubtitle: {
     fontSize: theme.typography.sizes.sm,
     color: theme.colors.textMuted,
     textAlign: 'center',
     marginBottom: theme.spacing.lg,
     lineHeight: 20,
   },
-  sheetButtons: {
+  modalButtons: {
     flexDirection: 'row',
     gap: theme.spacing.md,
     width: '100%',
     justifyContent: 'center',
   },
-  sheetButton: {
+  modalButton: {
     flex: 1,
     paddingVertical: 12,
     borderRadius: theme.borderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  sheetCancelButton: {
+  modalCancelButton: {
     backgroundColor: theme.colors.surface,
   },
-  sheetDeleteButton: {
+  modalDeleteButton: {
     backgroundColor: theme.colors.danger,
   },
-  sheetCancelText: {
+  modalCancelText: {
     color: 'white',
     fontWeight: '600',
     fontSize: theme.typography.sizes.md,
   },
-  sheetDeleteText: {
+  modalDeleteText: {
     color: 'white',
     fontWeight: '600',
     fontSize: theme.typography.sizes.md,

@@ -18,6 +18,15 @@ vi.mock('react-native-toast-message', () => ({
   },
 }));
 
+vi.mock('@react-native-firebase/crashlytics', () => ({
+  default: () => ({
+    recordError: vi.fn(),
+    log: vi.fn(),
+    setCrashlyticsCollectionEnabled: vi.fn(),
+    crash: vi.fn(),
+  }),
+}));
+
 vi.mock('@expo/ui/community/bottom-sheet', () => {
   const MockBottomSheet = React.forwardRef(({ children }: any, ref: any) => {
     React.useImperativeHandle(ref, () => ({

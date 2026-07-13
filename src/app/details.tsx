@@ -13,7 +13,6 @@ import {
   StatusBar,
   useWindowDimensions,
 } from 'react-native';
-import Toast from 'react-native-toast-message';
 import { t } from '@/services/i18n';
 
 import { DetailsHeader } from '@/components/DetailsHeader';
@@ -53,7 +52,7 @@ export default function DetailsScreen() {
 
   const lastUpdated = dataUpdatedAt ? formatTime(dataUpdatedAt) : '';
 
-  const { savedLocations, saveLocation, deleteLocation } = useSavedLocations();
+  const { savedLocations, toggleSavedLocation } = useSavedLocations();
 
   const matchingSaved = targetLocation
     ? savedLocations.find(
@@ -66,33 +65,12 @@ export default function DetailsScreen() {
 
   const isSaved = !!matchingSaved;
 
-  const handleSaveLocation = async () => {
-    if (!targetLocation) return;
-    try {
-      if (isSaved && matchingSaved) {
-        await deleteLocation(matchingSaved.id);
-        Toast.show({
-          type: 'success',
-          text1: t('toastDeletedTitle'),
-          text2: t('toastDeletedBody'),
-        });
-      } else {
-        await saveLocation({
-          city: targetLocation.city,
-          lat: targetLocation.latitude,
-          lon: targetLocation.longitude,
-        });
-        Toast.show({
-          type: 'success',
-          text1: t('toastSavedTitle'),
-          text2: t('toastSavedBody'),
-        });
-      }
-    } catch {
-      Toast.show({
-        type: 'error',
-        text1: t('toastErrorTitle'),
-        text2: t('toastErrorBody'),
+  const handleSaveLocation = () => {
+    if (targetLocation) {
+      toggleSavedLocation({
+        lat: targetLocation.latitude,
+        lon: targetLocation.longitude,
+        city: targetLocation.city,
       });
     }
   };

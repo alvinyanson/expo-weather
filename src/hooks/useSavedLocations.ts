@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteSavedLocation, getSavedLocations, saveLocation } from '@/services';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { SavedLocation, SaveLocationInput } from '@/interfaces';
+import Toast from 'react-native-toast-message';
+import crashlytics from '@react-native-firebase/crashlytics';
+import { t } from '@/services/i18n';
 
 export const useSavedLocations = () => {
   const uid = useAuthStore((state) => state.user?.uid);
@@ -79,6 +82,63 @@ export const useSavedLocations = () => {
     },
   });
 
+  const toggleSavedLocation = async (
+    targetLocation: { lat: number; lon: number; city: string } | null | undefined,
+  ) => {
+    if (!targetLocation) return;
+    const matchingSaved = list.data?.find(
+      (loc) =>
+        loc.city.toLowerCase() === targetLocation.city.toLowerCase() ||
+        (Math.abs(loc.lat - targetLocation.lat) < 0.01 &&
+          Math.abs(loc.lon - targetLocation.lon) < 0.01),
+    );
+
+    try {
+      if (matchingSaved) {
+        await deleteMutation.mutateAsync(matchingSaved.id);
+        Toast.show({
+          type: 'success',
+          text1: t('toastDeletedTitle'),
+          text2: t('toastDeletedBody'),
+        });
+      } else {
+        await saveMutation.mutateAsync({
+          city: targetLocation.city,
+          lat: targetLocation.lat,
+          lon: targetLocation.lon,
+        });
+        Toast.show({ type: 'success', text1: t('toastSavedTitle'), text2: t('toastSavedBody') });
+      }
+    } catch (e) {
+      crashlytics().recordError(e as Error);
+      Toast.show({ type: 'error', text1: t('toastErrorTitle'), text2: t('toastErrorBody') });
+    }
+  };
+
+  const confirmDeleteLocation = async (
+    locationToDelete: SavedLocation | null | undefined,
+    onSettled?: () => void,
+  ) => {
+    if (!locationToDelete) return;
+    try {
+      await deleteMutation.mutateAsync(locationToDelete.id);
+      onSettled?.();
+      Toast.show({
+        type: 'success',
+        text1: t('toastConfirmDeletedTitle'),
+        text2: t('toastConfirmDeletedBody', { city: locationToDelete.city }),
+      });
+    } catch (e) {
+      onSettled?.();
+      crashlytics().recordError(e as Error);
+      Toast.show({
+        type: 'error',
+        text1: t('toastDeleteFailedTitle'),
+        text2: t('toastDeleteFailedBody'),
+      });
+    }
+  };
+
   return {
     savedLocations: list.data ?? [],
     isLoading: list.isLoading,
@@ -90,5 +150,8 @@ export const useSavedLocations = () => {
 
     deleteLocation: deleteMutation.mutateAsync,
     isDeleting: deleteMutation.isPending,
+
+    toggleSavedLocation,
+    confirmDeleteLocation,
   };
 };
