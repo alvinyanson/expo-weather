@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { t } from '@/services/i18n';
 import { useAuth } from './useAuth';
 import { useNotifications } from './useNotifications';
@@ -54,8 +54,8 @@ export function useToggleNotifications() {
 
           await saveUserPushToken(user.uid, token, gpsLocation.latitude, gpsLocation.longitude);
           setNotificationsEnabled(true);
-          await AsyncStorage.setItem(
-            `@user_push_token_last_saved_${user.uid}`,
+          await SecureStore.setItemAsync(
+            `user_push_token_last_saved_${user.uid}`,
             JSON.stringify({
               userId: user.uid,
               pushToken: token,
@@ -66,7 +66,7 @@ export function useToggleNotifications() {
         } else {
           await clearUserPushToken(user.uid);
           setNotificationsEnabled(false);
-          await AsyncStorage.removeItem(`@user_push_token_last_saved_${user.uid}`);
+          await SecureStore.deleteItemAsync(`user_push_token_last_saved_${user.uid}`);
         }
       } catch (error) {
         console.error('Failed to update notification settings:', error);

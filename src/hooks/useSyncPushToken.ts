@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { useAuth } from './useAuth';
 import { useNotifications } from './useNotifications';
 import { useFetchLocation } from './useFetchLocation';
@@ -23,9 +23,9 @@ export function useSyncPushToken() {
     }
 
     const checkAndSyncPushToken = async () => {
-      const cacheKey = `@user_push_token_last_saved_${user.uid}`;
+      const cacheKey = `user_push_token_last_saved_${user.uid}`;
       try {
-        const cachedString = await AsyncStorage.getItem(cacheKey);
+        const cachedString = await SecureStore.getItemAsync(cacheKey);
         if (cachedString) {
           const cached = JSON.parse(cachedString);
           const latDiff = Math.abs(cached.latitude - gpsLocation.latitude);
@@ -48,7 +48,7 @@ export function useSyncPushToken() {
           gpsLocation.longitude,
         );
 
-        await AsyncStorage.setItem(
+        await SecureStore.setItemAsync(
           cacheKey,
           JSON.stringify({
             userId: user.uid,
