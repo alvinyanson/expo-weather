@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { LocationSearchResult } from '@/store/useSearchStore';
+import { LocationSearchResult } from '@/interfaces';
 
 const GEOCODING_API_URL =
   process.env.EXPO_PUBLIC_GEOCODING_API_URL || 'https://geocoding-api.open-meteo.com/v1/search';

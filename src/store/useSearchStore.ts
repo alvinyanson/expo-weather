@@ -1,15 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export interface LocationSearchResult {
-  id: number;
-  name: string;
-  latitude: number;
-  longitude: number;
-  country?: string;
-  admin1?: string;
-}
+import { LocationSearchResult } from '@/interfaces';
 
 interface SearchStore {
   recentSearches: LocationSearchResult[];

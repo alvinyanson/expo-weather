@@ -1,5 +1,6 @@
 import { useDebounce, useSearchLocation } from '@/hooks';
-import { LocationSearchResult, useSearchStore } from '@/store/useSearchStore';
+import { useSearchStore } from '@/store/useSearchStore';
+import { LocationSearchResult } from '@/interfaces';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
