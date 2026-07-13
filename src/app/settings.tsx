@@ -49,6 +49,8 @@ export default function SettingsScreen() {
           onPress={() => router.back()}
           style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
           android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+          accessibilityRole="button"
+          accessibilityLabel={t('goBack')}
         >
           <SymbolView
             name={{ ios: 'chevron.left', android: 'chevron_left' }}

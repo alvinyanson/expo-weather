@@ -86,6 +86,8 @@ export const SearchHeader = () => {
         <Pressable
           onPress={() => router.push('/settings')}
           style={({ pressed }) => [styles.settingsButton, pressed && { opacity: 0.7 }]}
+          accessibilityRole="button"
+          accessibilityLabel={t('settingsTitle')}
         >
           <SymbolView
             name={{ ios: 'gearshape', android: 'settings' }}

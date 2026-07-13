@@ -74,6 +74,13 @@ export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocation
         style={({ pressed }) => [styles.card, pressed && styles.buttonPressed]}
         onPress={onPress}
         android_ripple={{ color: theme.colors.ripple }}
+        accessibilityRole="button"
+        accessibilityActions={[{ name: 'delete', label: t('deleteLabel') }]}
+        onAccessibilityAction={(event) => {
+          if (event.nativeEvent.actionName === 'delete') {
+            onDelete(location);
+          }
+        }}
       >
         <Text style={styles.city}>{location.city}</Text>
         {savedAt ? <Text style={styles.savedAt}>{t('savedPrefix', { savedAt })}</Text> : null}
