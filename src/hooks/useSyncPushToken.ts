@@ -1,15 +1,14 @@
 import { useEffect } from 'react';
-import * as SecureStore from 'expo-secure-store';
 import { useAuth } from './useAuth';
 import { useNotifications } from './useNotifications';
 import { useFetchLocation } from './useFetchLocation';
 import { useSettingsStore } from '@/store/useSettingsStore';
-import { saveUserPushToken } from '@/services';
+import { syncPushTokenIfNeeded } from '@/services';
 
 /**
  * Custom hook that runs in the background to automatically synchronize
  * the user's push token and GPS coordinates to Firestore, checking
- * for location changes and caching updates in AsyncStorage.
+ * for location changes and caching updates in SecureStore.
  */
 export function useSyncPushToken() {
   const notificationsEnabled = useSettingsStore((state) => state.notificationsEnabled);
@@ -23,39 +22,12 @@ export function useSyncPushToken() {
     }
 
     const checkAndSyncPushToken = async () => {
-      const cacheKey = `user_push_token_last_saved_${user.uid}`;
       try {
-        const cachedString = await SecureStore.getItemAsync(cacheKey);
-        if (cachedString) {
-          const cached = JSON.parse(cachedString);
-          const latDiff = Math.abs(cached.latitude - gpsLocation.latitude);
-          const lonDiff = Math.abs(cached.longitude - gpsLocation.longitude);
-          const isSignificantLocationChange = latDiff > 0.01 || lonDiff > 0.01;
-
-          if (
-            cached.userId === user.uid &&
-            cached.pushToken === expoPushToken &&
-            !isSignificantLocationChange
-          ) {
-            return;
-          }
-        }
-
-        await saveUserPushToken(
+        await syncPushTokenIfNeeded(
           user.uid,
           expoPushToken,
           gpsLocation.latitude,
           gpsLocation.longitude,
-        );
-
-        await SecureStore.setItemAsync(
-          cacheKey,
-          JSON.stringify({
-            userId: user.uid,
-            pushToken: expoPushToken,
-            latitude: gpsLocation.latitude,
-            longitude: gpsLocation.longitude,
-          }),
         );
       } catch (error) {
         console.error('[Notification Sync Error] Failed to sync push token:', error);

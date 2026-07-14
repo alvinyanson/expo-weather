@@ -86,12 +86,12 @@ vi.mock('expo-location', () => ({
   },
 }));
 
-const mockSaveUserPushToken = vi.fn();
+const mockSyncPushTokenIfNeeded = vi.fn();
 vi.mock('@/services', async () => {
   const actual = await vi.importActual<typeof import('@/services')>('@/services');
   return {
     ...actual,
-    saveUserPushToken: (...args: any[]) => mockSaveUserPushToken(...args),
+    syncPushTokenIfNeeded: (...args: any[]) => mockSyncPushTokenIfNeeded(...args),
   };
 });
 
@@ -306,7 +306,7 @@ describe('HomeScreen', () => {
     render(<HomeScreen />);
 
     await waitFor(() => {
-      expect(mockSaveUserPushToken).toHaveBeenCalledWith(
+      expect(mockSyncPushTokenIfNeeded).toHaveBeenCalledWith(
         'user-123',
         'token-123',
         location.latitude,

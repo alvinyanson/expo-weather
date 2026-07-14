@@ -21,7 +21,7 @@ import { DailyForecastList } from '@/components/DailyForecastList';
 
 export default function DetailsScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams();
+  const params = useLocalSearchParams<{ lat?: string; lon?: string; city?: string }>();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
 
@@ -34,11 +34,11 @@ export default function DetailsScreen() {
   const { data: gpsLocation, isLoading: isLoadingLocation } = useFetchLocation();
 
   const targetLocation =
-    params.lat && params.lon
+    params.lat && params.lon && params.city
       ? {
           latitude: Number(params.lat),
           longitude: Number(params.lon),
-          city: params.city as string,
+          city: params.city,
         }
       : gpsLocation;
 
