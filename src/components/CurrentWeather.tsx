@@ -40,6 +40,8 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
             tintColor={getIconTintColor(weather.current.weather_code)}
             type="monochrome"
             style={styles.heroIcon}
+            accessible={false}
+            importantForAccessibility="no"
           />
           <Text style={styles.temperatureText}>
             {formatRound(weather.current.temperature_2m)}

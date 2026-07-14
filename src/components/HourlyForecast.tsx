@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { WeatherResponse } from '@/interfaces';
 import {
   weatherCodeToCondition,
@@ -15,9 +16,31 @@ interface HourlyForecastProps {
   weather: WeatherResponse;
 }
 
+interface HourlyForecastItem {
+  time: string;
+  temperature: number;
+  weatherCode: number;
+  precipitation: number;
+}
+
 export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
   const windSpeedUnit = useSettingsStore((state) => state.windSpeedUnit);
   const windUnit = windSpeedUnit === 'kmh' ? 'km/h' : 'mph';
+
+  const hourlyData = useMemo(() => {
+    if (!weather.hourly) return [];
+    return weather.hourly.time.reduce((acc: HourlyForecastItem[], time, i) => {
+      if (new Date(time).getTime() >= Date.now() - 3600000 && acc.length < 24) {
+        acc.push({
+          time,
+          temperature: weather.hourly.temperature_2m[i],
+          weatherCode: weather.hourly.weather_code[i],
+          precipitation: weather.hourly.precipitation_probability[i],
+        });
+      }
+      return acc;
+    }, []);
+  }, [weather.hourly]);
 
   if (!weather.hourly) return null;
 
@@ -34,17 +57,7 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={weather.hourly.time.reduce((acc, time, i) => {
-          if (new Date(time).getTime() >= Date.now() - 3600000 && acc.length < 24) {
-            acc.push({
-              time,
-              temperature: weather.hourly.temperature_2m[i],
-              weatherCode: weather.hourly.weather_code[i],
-              precipitation: weather.hourly.precipitation_probability[i],
-            });
-          }
-          return acc;
-        }, [] as any[])}
+        data={hourlyData}
         keyExtractor={(item) => item.time}
         contentContainerStyle={styles.hourlyListContent}
         renderItem={({ item, index }) => {
@@ -63,6 +76,8 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
                 tintColor={getIconTintColor(item.weatherCode)}
                 type="monochrome"
                 style={styles.hourlyIcon}
+                accessible={false}
+                importantForAccessibility="no"
               />
               {item.precipitation > 0 ? (
                 <Text style={styles.hourlyPrecipitation}>{item.precipitation}%</Text>

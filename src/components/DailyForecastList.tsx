@@ -46,6 +46,8 @@ export const DailyForecastList = ({
           size={24}
           tintColor={getIconTintColor(code)}
           style={styles.forecastIcon}
+          accessible={false}
+          importantForAccessibility="no"
         />
         <View style={styles.tempRange}>
           <Text style={styles.maxTemp}>

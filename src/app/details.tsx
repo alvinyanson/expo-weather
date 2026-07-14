@@ -3,7 +3,7 @@ import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 import { formatTime } from '@/utils/formatters';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -77,11 +77,11 @@ export default function DetailsScreen() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
     setRefreshing(false);
-  }, [refetch]);
+  };
 
   const isGettingLocation = !params.lat && isLoadingLocation;
   const isLoading = isGettingLocation || (!weather && isFetchingWeather);

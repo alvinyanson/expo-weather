@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Constants from 'expo-constants';
@@ -69,7 +68,6 @@ async function registerForPushNotificationsAsync(): Promise<string | undefined> 
 
   try {
     const { data } = await Notifications.getExpoPushTokenAsync({ projectId });
-    console.log('Expo push token:', data);
     return data;
   } catch (error) {
     console.warn('Failed to get Expo push token:', error);
@@ -80,7 +78,7 @@ async function registerForPushNotificationsAsync(): Promise<string | undefined> 
 export function useNotifications() {
   const { expoPushToken, setExpoPushToken } = useSettingsStore();
 
-  const register = useCallback(async () => {
+  const register = async () => {
     try {
       const token = await registerForPushNotificationsAsync();
       if (token) setExpoPushToken(token);
@@ -89,11 +87,11 @@ export function useNotifications() {
       console.warn('Push registration error:', error);
       return undefined;
     }
-  }, [setExpoPushToken]);
+  };
 
   // Sends a remote push notification to this device via the Expo push service,
   // using the registered push token.
-  const sendTestNotification = useCallback(async () => {
+  const sendTestNotification = async () => {
     if (!expoPushToken) {
       Toast.show({
         type: 'error',
@@ -131,7 +129,7 @@ export function useNotifications() {
         text2: t('toastTestSendFailed'),
       });
     }
-  }, [expoPushToken]);
+  };
 
   return { expoPushToken, sendTestNotification, register };
 }

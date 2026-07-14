@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import * as SecureStore from 'expo-secure-store';
 import { t } from '@/services/i18n';
@@ -15,72 +15,69 @@ export function useToggleNotifications() {
   const { data: gpsLocation } = useFetchLocation();
   const [isUpdatingNotifications, setIsUpdatingNotifications] = useState(false);
 
-  const handleToggleNotifications = useCallback(
-    async (value: boolean) => {
-      if (!user) {
-        Toast.show({
-          type: 'error',
-          text1: t('toastErrorTitle'),
-          text2: t('toastMustBeLoggedIn'),
-        });
-        return;
-      }
+  const handleToggleNotifications = async (value: boolean) => {
+    if (!user) {
+      Toast.show({
+        type: 'error',
+        text1: t('toastErrorTitle'),
+        text2: t('toastMustBeLoggedIn'),
+      });
+      return;
+    }
 
-      setIsUpdatingNotifications(true);
-      try {
-        if (value) {
-          let token = expoPushToken;
-          if (!token) {
-            token = await register();
-          }
-
-          if (!token) {
-            Toast.show({
-              type: 'error',
-              text1: t('toastNoPushTokenTitle'),
-              text2: t('toastNoPushTokenBody'),
-            });
-            return;
-          }
-
-          if (!gpsLocation) {
-            Toast.show({
-              type: 'error',
-              text1: t('toastNoLocationTitle'),
-              text2: t('toastNoLocationBody'),
-            });
-            return;
-          }
-
-          await saveUserPushToken(user.uid, token, gpsLocation.latitude, gpsLocation.longitude);
-          setNotificationsEnabled(true);
-          await SecureStore.setItemAsync(
-            `user_push_token_last_saved_${user.uid}`,
-            JSON.stringify({
-              userId: user.uid,
-              pushToken: token,
-              latitude: gpsLocation.latitude,
-              longitude: gpsLocation.longitude,
-            }),
-          );
-        } else {
-          await clearUserPushToken(user.uid);
-          setNotificationsEnabled(false);
-          await SecureStore.deleteItemAsync(`user_push_token_last_saved_${user.uid}`);
+    setIsUpdatingNotifications(true);
+    try {
+      if (value) {
+        let token = expoPushToken;
+        if (!token) {
+          token = await register();
         }
-      } catch (error) {
-        console.error('Failed to update notification settings:', error);
-        Toast.show({
-          type: 'error',
-          text1: t('toastErrorTitle'),
-          text2: t('toastUpdateSettingsError'),
-        });
-      } finally {
-        setIsUpdatingNotifications(false);
+
+        if (!token) {
+          Toast.show({
+            type: 'error',
+            text1: t('toastNoPushTokenTitle'),
+            text2: t('toastNoPushTokenBody'),
+          });
+          return;
+        }
+
+        if (!gpsLocation) {
+          Toast.show({
+            type: 'error',
+            text1: t('toastNoLocationTitle'),
+            text2: t('toastNoLocationBody'),
+          });
+          return;
+        }
+
+        await saveUserPushToken(user.uid, token, gpsLocation.latitude, gpsLocation.longitude);
+        setNotificationsEnabled(true);
+        await SecureStore.setItemAsync(
+          `user_push_token_last_saved_${user.uid}`,
+          JSON.stringify({
+            userId: user.uid,
+            pushToken: token,
+            latitude: gpsLocation.latitude,
+            longitude: gpsLocation.longitude,
+          }),
+        );
+      } else {
+        await clearUserPushToken(user.uid);
+        setNotificationsEnabled(false);
+        await SecureStore.deleteItemAsync(`user_push_token_last_saved_${user.uid}`);
       }
-    },
-    [user, expoPushToken, gpsLocation, register, setNotificationsEnabled],
-  );
+    } catch (error) {
+      console.error('Failed to update notification settings:', error);
+      Toast.show({
+        type: 'error',
+        text1: t('toastErrorTitle'),
+        text2: t('toastUpdateSettingsError'),
+      });
+    } finally {
+      setIsUpdatingNotifications(false);
+    }
+  };
 
   return {
     notificationsEnabled,
