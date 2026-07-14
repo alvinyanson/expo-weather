@@ -33,8 +33,8 @@ export const theme = {
     rippleDark: 'rgba(0, 0, 0, 0.1)',
 
     // Translucent text
-    textMuted: 'rgba(255, 255, 255, 0.7)', // Secondary text
-    textHint: 'rgba(255, 255, 255, 0.5)', // Placeholders and tertiary text
+    textMuted: 'rgba(255, 255, 255, 0.85)', // Secondary text
+    textHint: 'rgba(255, 255, 255, 0.7)', // Placeholders and tertiary text
   },
   spacing: {
     xs: 4,

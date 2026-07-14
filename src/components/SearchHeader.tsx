@@ -59,6 +59,7 @@ export const SearchHeader = () => {
           <TextInput
             style={styles.searchInput}
             placeholder={t('searchPlaceholder')}
+            accessibilityLabel={t('searchPlaceholder')}
             placeholderTextColor={theme.colors.textHint}
             value={searchQuery}
             onChangeText={setSearchQuery}

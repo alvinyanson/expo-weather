@@ -77,6 +77,8 @@ export default function SettingsScreen() {
                 temperatureUnit === 'celsius' && styles.toggleButtonActive,
               ]}
               onPress={() => setTemperatureUnit('celsius')}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: temperatureUnit === 'celsius' }}
             >
               <Text
                 style={[
@@ -93,6 +95,8 @@ export default function SettingsScreen() {
                 temperatureUnit === 'fahrenheit' && styles.toggleButtonActive,
               ]}
               onPress={() => setTemperatureUnit('fahrenheit')}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: temperatureUnit === 'fahrenheit' }}
             >
               <Text
                 style={[
@@ -117,6 +121,8 @@ export default function SettingsScreen() {
             <Pressable
               style={[styles.toggleButton, windSpeedUnit === 'kmh' && styles.toggleButtonActive]}
               onPress={() => setWindSpeedUnit('kmh')}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: windSpeedUnit === 'kmh' }}
             >
               <Text style={[styles.toggleText, windSpeedUnit === 'kmh' && styles.toggleTextActive]}>
                 km/h
@@ -125,6 +131,8 @@ export default function SettingsScreen() {
             <Pressable
               style={[styles.toggleButton, windSpeedUnit === 'mph' && styles.toggleButtonActive]}
               onPress={() => setWindSpeedUnit('mph')}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: windSpeedUnit === 'mph' }}
             >
               <Text style={[styles.toggleText, windSpeedUnit === 'mph' && styles.toggleTextActive]}>
                 mph
@@ -148,6 +156,8 @@ export default function SettingsScreen() {
             <Pressable
               style={[styles.toggleButton, language === 'system' && styles.toggleButtonActive]}
               onPress={() => setLanguage('system')}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: language === 'system' }}
             >
               <Text style={[styles.toggleText, language === 'system' && styles.toggleTextActive]}>
                 Sys
@@ -156,6 +166,8 @@ export default function SettingsScreen() {
             <Pressable
               style={[styles.toggleButton, language === 'en' && styles.toggleButtonActive]}
               onPress={() => setLanguage('en')}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: language === 'en' }}
             >
               <Text style={[styles.toggleText, language === 'en' && styles.toggleTextActive]}>
                 EN
@@ -164,6 +176,8 @@ export default function SettingsScreen() {
             <Pressable
               style={[styles.toggleButton, language === 'ja' && styles.toggleButtonActive]}
               onPress={() => setLanguage('ja')}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: language === 'ja' }}
             >
               <Text style={[styles.toggleText, language === 'ja' && styles.toggleTextActive]}>
                 JA
