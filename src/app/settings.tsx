@@ -299,7 +299,9 @@ const styles = StyleSheet.create({
   },
   toggleButton: {
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 6,
   },
   toggleButtonActive: {
