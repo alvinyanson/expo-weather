@@ -33,9 +33,9 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
       if (new Date(time).getTime() >= Date.now() - 3600000 && acc.length < 24) {
         acc.push({
           time,
-          temperature: weather.hourly.temperature_2m[i],
-          weatherCode: weather.hourly.weather_code[i],
-          precipitation: weather.hourly.precipitation_probability[i],
+          temperature: weather.hourly.temperature_2m[i] ?? 0,
+          weatherCode: weather.hourly.weather_code[i] ?? 0,
+          precipitation: weather.hourly.precipitation_probability[i] ?? 0,
         });
       }
       return acc;
