@@ -123,6 +123,7 @@ const translations = {
     // Error boundary
     errorBoundaryTitle: 'We ran into a problem.',
     errorBoundarySubtitle: "We're sorry, but the application encountered an unexpected error.",
+    errorBoundaryMessage: 'Please try restarting the app or try again later.',
 
     // Weather Conditions
     weatherClear: 'Clear Sky',
@@ -254,6 +255,7 @@ const translations = {
     // Error boundary
     errorBoundaryTitle: '問題が発生しました。',
     errorBoundarySubtitle: '申し訳ありません。アプリケーションで予期しないエラーが発生しました。',
+    errorBoundaryMessage: 'アプリを再起動するか、後でもう一度お試しください。',
 
     // Weather Conditions
     weatherClear: '快晴',

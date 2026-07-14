@@ -27,8 +27,8 @@ export default function LoginScreen() {
     setPending('google');
     try {
       await signInWithGoogle();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t('googleFail'));
+    } catch {
+      setError(t('googleFail'));
       setPending(null);
     }
   };
@@ -38,8 +38,8 @@ export default function LoginScreen() {
     setPending('guest');
     try {
       await signInAnonymously();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : t('guestFail'));
+    } catch {
+      setError(t('guestFail'));
       setPending(null);
     }
   };

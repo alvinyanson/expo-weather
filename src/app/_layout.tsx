@@ -152,7 +152,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
           marginBottom: 30,
         }}
       >
-        {error.message}
+        {t('errorBoundaryMessage')}
       </Text>
       <Button title={t('retryText')} onPress={retry} color={theme.colors.secondary} />
     </SafeAreaView>
