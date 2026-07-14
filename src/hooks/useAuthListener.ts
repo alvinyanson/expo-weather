@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { authService } from '@/services/auth.service';
+import { setCrashUser } from '@/services/crash.service';
 import { useAuthStore } from '@/store/useAuthStore';
 
 /**
@@ -17,6 +18,7 @@ export function useAuthListener() {
 
     const unsubscribe = authService.subscribe((user) => {
       setUser(user);
+      setCrashUser(user);
       setInitializing(false);
     });
 

@@ -4,6 +4,7 @@ import { useNotifications } from './useNotifications';
 import { useFetchLocation } from './useFetchLocation';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { syncPushTokenIfNeeded } from '@/services';
+import { reportError } from '@/services/crash.service';
 
 /**
  * Custom hook that runs in the background to automatically synchronize
@@ -30,7 +31,7 @@ export function useSyncPushToken() {
           gpsLocation.longitude,
         );
       } catch (error) {
-        console.error('[Notification Sync Error] Failed to sync push token:', error);
+        reportError(error, { where: 'useSyncPushToken', uid: user.uid });
       }
     };
 

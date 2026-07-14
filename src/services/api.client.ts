@@ -1,4 +1,5 @@
 import { create } from 'axios';
+import { logBreadcrumb } from './crash.service';
 
 const apiClient = create({
   baseURL: process.env.EXPO_PUBLIC_OPEN_METEO_API_URL,
@@ -8,19 +9,15 @@ const apiClient = create({
   },
 });
 
-// Foundation for global error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Log error with context for debugging
-    console.error('[API Error]', {
-      url: error.config?.url,
-      method: error.config?.method,
-      status: error.response?.status,
-      message: error.message,
-    });
+    // Breadcrumb only; server/network failures are not app bugs.
+    const method = error.config?.method?.toUpperCase() ?? 'REQUEST';
+    const url = error.config?.url ?? 'unknown';
+    const status = error.response?.status ?? 'network-error';
+    logBreadcrumb(`[API] ${method} ${url} -> ${status}`);
 
-    // Reject with a standard error format or just the error
     return Promise.reject(error);
   },
 );

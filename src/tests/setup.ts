@@ -21,6 +21,8 @@ vi.mock('@react-native-firebase/crashlytics', () => ({
   default: () => ({
     recordError: vi.fn(),
     log: vi.fn(),
+    setUserId: vi.fn(),
+    setAttributes: vi.fn(),
     setCrashlyticsCollectionEnabled: vi.fn(),
     crash: vi.fn(),
   }),

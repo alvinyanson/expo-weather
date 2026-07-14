@@ -6,6 +6,7 @@ import { useNotifications } from './useNotifications';
 import { useFetchLocation } from './useFetchLocation';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { syncPushTokenIfNeeded, clearPushTokenSecurely } from '@/services';
+import { reportError } from '@/services/crash.service';
 
 export function useToggleNotifications() {
   const { notificationsEnabled, setNotificationsEnabled } = useSettingsStore();
@@ -63,7 +64,7 @@ export function useToggleNotifications() {
         setNotificationsEnabled(false);
       }
     } catch (error) {
-      console.error('Failed to update notification settings:', error);
+      reportError(error, { where: 'useToggleNotifications', uid: user.uid });
       Toast.show({
         type: 'error',
         text1: t('toastErrorTitle'),

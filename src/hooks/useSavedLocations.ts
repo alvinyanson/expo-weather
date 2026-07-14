@@ -3,7 +3,7 @@ import { deleteSavedLocation, getSavedLocations, saveLocation } from '@/services
 import { useAuthStore } from '@/store/useAuthStore';
 import type { SavedLocation, SaveLocationInput } from '@/interfaces';
 import Toast from 'react-native-toast-message';
-import crashlytics from '@react-native-firebase/crashlytics';
+import { reportError } from '@/services/crash.service';
 import { t } from '@/services/i18n';
 
 export const useSavedLocations = () => {
@@ -110,7 +110,7 @@ export const useSavedLocations = () => {
         Toast.show({ type: 'success', text1: t('toastSavedTitle'), text2: t('toastSavedBody') });
       }
     } catch (e) {
-      crashlytics().recordError(e as Error);
+      reportError(e, { where: 'useSavedLocations.toggleSavedLocation' });
       Toast.show({ type: 'error', text1: t('toastErrorTitle'), text2: t('toastErrorBody') });
     }
   };
@@ -130,7 +130,7 @@ export const useSavedLocations = () => {
       });
     } catch (e) {
       onSettled?.();
-      crashlytics().recordError(e as Error);
+      reportError(e, { where: 'useSavedLocations.confirmDeleteLocation' });
       Toast.show({
         type: 'error',
         text1: t('toastDeleteFailedTitle'),
