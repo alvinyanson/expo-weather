@@ -14,20 +14,25 @@ _Note: I regularly update this app with new features, and I'll make sure this RE
 
 - **Current Weather & Forecasts**: View the latest conditions, an 8-day forecast, and hourly breakdowns.
 - **Location Search & Geocoding**: Search for cities worldwide and instantly view their weather.
-- **Recent Searches**: Keep track of your recently searched cities for quick access.
+- **Saved Locations & Sync**: Save your favorite cities, with instant Firestore synchronization across devices.
+- **Push Notifications & Sync**: Opt-in to receive weather updates. Syncs push tokens and GPS coordinates automatically in the background.
+- **Localization (i18n)**: Fully translated support for English and Japanese locales with system-default detection.
+- **Accessibility (a11y)**: Fully optimized for screen readers with accessibility roles, labels, and gesture fallbacks (e.g. for swipe-to-delete).
 - **Offline Caching**: View previously loaded weather data even without an active internet connection.
 - **Authentication**: Seamlessly log in with Google or use an anonymous account, powered by Firebase.
-- **Customizable Preferences**: Toggle between temperature units (°C/°F).
+- **Customizable Preferences**: Toggle between temperature units (°C/°F), wind units (km/h / mph), and languages.
 - **Pull-to-Refresh**: Easily fetch the most up-to-date weather data.
-- **Error Handling**: Graceful degradation and user-friendly error boundaries.
+- **Telemetry & Error Logging**: Uncaught exceptions are automatically captured and reported via Firebase Crashlytics, alongside user-friendly error boundaries.
 
 ## Tech Stack
 
 - **Framework**: [React Native](https://reactnative.dev) & [Expo](https://expo.dev/)
 - **Data Fetching & Caching**: [TanStack Query](https://tanstack.com/query/v5) with Offline Persister
 - **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
-- **Storage**: AsyncStorage
+- **Storage**: AsyncStorage and SecureStore (for sensitive cached coordinates)
 - **Authentication**: Firebase (Google Sign-In & Anonymous Auth)
+- **Localization**: `i18n-js` and `expo-localization` (English and Japanese support)
+- **Error Tracking**: Firebase Crashlytics
 - **API**: [Open-Meteo](https://open-meteo.com/) for accurate, free weather data
 - **Testing**: [Vitest](https://vitest.dev/)
 - **Linting & Formatting**: [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) and Prettier
