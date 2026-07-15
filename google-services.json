@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "303585011251",
+    "project_id": "expo-weather-5cc92",
+    "storage_bucket": "expo-weather-5cc92.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:303585011251:android:710bb975184f619e752546",
+        "android_client_info": {
+          "package_name": "com.anonymous.expoweather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "303585011251-5r10vij0pjjlnnh5g11jtk4jv03lof7b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.expoweather",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "303585011251-htbbl59ouh4ocjk1g3cn00tjp3jkba6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.expoweather",
+            "certificate_hash": "50fcd84fc577a3b4ddf2b0f3c4610d50850bf897"
+          }
+        },
+        {
+          "client_id": "303585011251-ms3ku2p5ai6f8egndv1pndibk6h0oapq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDg77iCETDWVlhP7HCpHey12-73zffO0h0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "303585011251-ms3ku2p5ai6f8egndv1pndibk6h0oapq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "303585011251-iase5tcgsonq8nm52v64q3q1r7lec3ua.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anonymous.expoweather"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
