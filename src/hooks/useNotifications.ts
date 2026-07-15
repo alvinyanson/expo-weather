@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import { t } from '@/services/i18n';
 import * as Notifications from 'expo-notifications';
 import apiClient from '@/services/api.client';
+import { reportError } from '@/services/crash.service';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
 // Expo push service endpoint. Passing an absolute URL to apiClient bypasses its
@@ -70,7 +71,7 @@ async function registerForPushNotificationsAsync(): Promise<string | undefined> 
     const { data } = await Notifications.getExpoPushTokenAsync({ projectId });
     return data;
   } catch (error) {
-    console.warn('Failed to get Expo push token:', error);
+    reportError(error, { where: 'registerForPushNotificationsAsync', projectId });
     return undefined;
   }
 }
@@ -84,7 +85,7 @@ export function useNotifications() {
       if (token) setExpoPushToken(token);
       return token;
     } catch (error) {
-      console.warn('Push registration error:', error);
+      reportError(error, { where: 'useNotifications.register' });
       return undefined;
     }
   };

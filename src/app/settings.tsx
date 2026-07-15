@@ -14,6 +14,23 @@ import { useAuth, useToggleNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 import { t } from '@/services/i18n';
+import crashlytics from '@react-native-firebase/crashlytics';
+import { reportError, logBreadcrumb } from '@/services/crash.service';
+
+const handleTestCrash = () => {
+  crashlytics().crash();
+};
+
+// Demonstrates a non-fatal: leaves breadcrumbs, then records a handled error.
+// The dashboard issue shows the breadcrumb trail plus the context custom keys.
+const handleTestNonFatal = () => {
+  logBreadcrumb('[Demo] user opened settings');
+  logBreadcrumb('[Demo] tapped test non-fatal');
+  reportError(new Error('Test non-fatal from settings'), {
+    where: 'settings.handleTestNonFatal',
+    demo: 'true',
+  });
+};
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -216,6 +233,26 @@ export default function SettingsScreen() {
             </Pressable>
           </View>
         )}
+
+        <View style={[styles.testButtonWrapper, notificationsEnabled && { marginTop: 16 }]}>
+          <Pressable
+            style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
+            onPress={handleTestCrash}
+            android_ripple={{ color: theme.colors.ripple }}
+          >
+            <Text style={styles.testButtonText}>{t('testCrash')}</Text>
+          </Pressable>
+        </View>
+
+        <View style={[styles.testButtonWrapper, { marginTop: 16 }]}>
+          <Pressable
+            style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
+            onPress={handleTestNonFatal}
+            android_ripple={{ color: theme.colors.ripple }}
+          >
+            <Text style={styles.testButtonText}>{t('testNonFatal')}</Text>
+          </Pressable>
+        </View>
 
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>

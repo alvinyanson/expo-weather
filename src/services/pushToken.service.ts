@@ -1,5 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 import { saveUserPushToken, clearUserPushToken } from './firestore.service';
+import { logBreadcrumb } from './crash.service';
+
+const describe = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
 export interface CachedPushToken {
   userId: string;
@@ -47,7 +50,7 @@ export const syncPushTokenIfNeeded = async (
         }
       }
     } catch (e) {
-      console.warn('[PushTokenCache] Failed to read cache:', e);
+      logBreadcrumb(`[PushTokenCache] Failed to read cache: ${describe(e)}`);
     }
   }
 
@@ -64,7 +67,7 @@ export const syncPushTokenIfNeeded = async (
       }),
     );
   } catch (e) {
-    console.warn('[PushTokenCache] Failed to write cache:', e);
+    logBreadcrumb(`[PushTokenCache] Failed to write cache: ${describe(e)}`);
   }
 };
 
@@ -76,6 +79,6 @@ export const clearPushTokenSecurely = async (userId: string): Promise<void> => {
   try {
     await SecureStore.deleteItemAsync(getPushTokenCacheKey(userId));
   } catch (e) {
-    console.warn('[PushTokenCache] Failed to delete cache:', e);
+    logBreadcrumb(`[PushTokenCache] Failed to delete cache: ${describe(e)}`);
   }
 };

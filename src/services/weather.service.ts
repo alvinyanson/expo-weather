@@ -2,6 +2,7 @@ import * as Location from 'expo-location';
 import { LocationData, WeatherResponse } from '@/interfaces';
 import apiClient from './api.client';
 import { t } from './i18n';
+import { logBreadcrumb } from './crash.service';
 
 export const fetchCoordinates = async (): Promise<{ latitude: number; longitude: number }> => {
   const { status } = await Location.requestForegroundPermissionsAsync();
@@ -38,7 +39,11 @@ export const fetchLocation = async (): Promise<LocationData> => {
     const [address] = await Location.reverseGeocodeAsync({ latitude, longitude });
     city = address?.city || address?.region || address?.district || t('unknownLocation');
   } catch (e) {
-    console.error('[Location Error] Reverse geocode failed', e);
+    // Expected degradation, not a bug: fall back to "Unknown location" and leave
+    // a breadcrumb so a later crash has the context.
+    logBreadcrumb(
+      `[Location] Reverse geocode failed: ${e instanceof Error ? e.message : String(e)}`,
+    );
   }
 
   return { latitude, longitude, city };

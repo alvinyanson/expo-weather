@@ -12,6 +12,11 @@ import { SymbolView } from 'expo-symbols';
 import { useAuth } from '@/hooks/useAuth';
 import { theme } from '@/theme';
 import { t } from '@/services/i18n';
+import { reportError, logBreadcrumb } from '@/services/crash.service';
+
+// A user backing out of the native sign-in sheet is expected, not a bug.
+const isCancellation = (error: unknown): boolean =>
+  error instanceof Error && /cancel/i.test(error.message);
 
 type Pending = 'google' | 'guest' | null;
 
@@ -27,7 +32,12 @@ export default function LoginScreen() {
     setPending('google');
     try {
       await signInWithGoogle();
-    } catch {
+    } catch (e) {
+      if (isCancellation(e)) {
+        logBreadcrumb('[Auth] Google sign-in cancelled by user');
+      } else {
+        reportError(e, { where: 'login.handleGoogle' });
+      }
       setError(t('googleFail'));
       setPending(null);
     }
@@ -38,7 +48,8 @@ export default function LoginScreen() {
     setPending('guest');
     try {
       await signInAnonymously();
-    } catch {
+    } catch (e) {
+      reportError(e, { where: 'login.handleGuest' });
       setError(t('guestFail'));
       setPending(null);
     }
