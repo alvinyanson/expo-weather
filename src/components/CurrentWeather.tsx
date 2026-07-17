@@ -22,7 +22,7 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
     <>
       <View style={styles.locationHeader}>
         <Text style={styles.cityName}>{city}</Text>
-        <Text style={styles.dateText}>
+        <Text testID="current-date" style={styles.dateText}>
           {t('todayPrefix')}
           {formatDateFull()}
         </Text>
@@ -30,6 +30,7 @@ export const CurrentWeather = ({ city, weather, tempUnit, onPress }: CurrentWeat
 
       <View style={styles.heroWrapper}>
         <Pressable
+          testID="current-weather"
           style={({ pressed }) => [styles.heroContainer, pressed && styles.heroPressed]}
           onPress={onPress}
           android_ripple={{ color: theme.colors.ripple, borderless: false }}

@@ -123,6 +123,7 @@ export default function HomeScreen() {
           {weather && gpsLocation && (
             <View style={styles.saveButtonWrapper}>
               <Pressable
+                testID={isSaved ? 'saved-location-button' : 'save-location-button'}
                 style={({ pressed }) => [
                   styles.saveButton,
                   isSaved && styles.saveButtonSaved,
@@ -149,7 +150,9 @@ export default function HomeScreen() {
           )}
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>{t('tapDetails')}</Text>
+            <Text testID="details-hint" style={styles.footerText}>
+              {t('tapDetails')}
+            </Text>
           </View>
         </View>
       </>

@@ -32,6 +32,7 @@ const RightAction = ({
   return (
     <Reanimated.View style={[styles.actionContainer, animatedStyle]}>
       <Pressable
+        testID="delete-location-button"
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={t('deleteAccessLabel', { city })}
@@ -71,6 +72,7 @@ export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocation
       )}
     >
       <Pressable
+        testID="saved-location-item"
         style={({ pressed }) => [styles.card, pressed && styles.buttonPressed]}
         onPress={onPress}
         android_ripple={{ color: theme.colors.ripple }}
@@ -82,8 +84,14 @@ export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocation
           }
         }}
       >
-        <Text style={styles.city}>{location.city}</Text>
-        {savedAt ? <Text style={styles.savedAt}>{t('savedPrefix', { savedAt })}</Text> : null}
+        <Text testID="saved-location-city" style={styles.city}>
+          {location.city}
+        </Text>
+        {savedAt ? (
+          <Text testID="saved-location-date" style={styles.savedAt}>
+            {t('savedPrefix', { savedAt })}
+          </Text>
+        ) : null}
       </Pressable>
     </ReanimatedSwipeable>
   );

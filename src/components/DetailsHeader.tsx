@@ -26,6 +26,7 @@ export const DetailsHeader = ({
   return (
     <View style={styles.header}>
       <Pressable
+        testID="back-button"
         onPress={onBack}
         style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
         android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
@@ -44,11 +45,14 @@ export const DetailsHeader = ({
           {weatherCodeToCondition(weather.current.weather_code)}
         </Text>
         {lastUpdated ? (
-          <Text style={styles.lastUpdatedText}>{t('updatedPrefix', { time: lastUpdated })}</Text>
+          <Text testID="last-updated" style={styles.lastUpdatedText}>
+            {t('updatedPrefix', { time: lastUpdated })}
+          </Text>
         ) : null}
       </View>
       {onSave ? (
         <Pressable
+          testID="details-save-button"
           onPress={onSave}
           accessibilityRole="button"
           accessibilityLabel={t('saveLocationLabel')}

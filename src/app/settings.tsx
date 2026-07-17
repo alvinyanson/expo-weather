@@ -63,6 +63,7 @@ export default function SettingsScreen() {
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <View style={styles.header}>
         <Pressable
+          testID="settings-back-button"
           onPress={() => router.back()}
           style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
           android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
@@ -75,7 +76,9 @@ export default function SettingsScreen() {
             tintColor="white"
           />
         </Pressable>
-        <Text style={styles.headerTitle}>{t('settingsTitle')}</Text>
+        <Text testID="settings-title" style={styles.headerTitle}>
+          {t('settingsTitle')}
+        </Text>
         <View style={{ width: 48 }} />
       </View>
 
@@ -83,12 +86,13 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
             <Text style={styles.settingLabel}>{t('tempUnitLabel')}</Text>
-            <Text style={styles.settingDescription}>
+            <Text testID={`temp-desc-${temperatureUnit}`} style={styles.settingDescription}>
               {temperatureUnit === 'celsius' ? t('celsiusDesc') : t('fahrenheitDesc')}
             </Text>
           </View>
           <View style={styles.toggleContainer}>
             <Pressable
+              testID="temp-toggle-celsius"
               style={[
                 styles.toggleButton,
                 temperatureUnit === 'celsius' && styles.toggleButtonActive,
@@ -107,6 +111,7 @@ export default function SettingsScreen() {
               </Text>
             </Pressable>
             <Pressable
+              testID="temp-toggle-fahrenheit"
               style={[
                 styles.toggleButton,
                 temperatureUnit === 'fahrenheit' && styles.toggleButtonActive,
@@ -136,6 +141,7 @@ export default function SettingsScreen() {
           </View>
           <View style={styles.toggleContainer}>
             <Pressable
+              testID="wind-toggle-kmh"
               style={[styles.toggleButton, windSpeedUnit === 'kmh' && styles.toggleButtonActive]}
               onPress={() => setWindSpeedUnit('kmh')}
               accessibilityRole="switch"
@@ -146,6 +152,7 @@ export default function SettingsScreen() {
               </Text>
             </Pressable>
             <Pressable
+              testID="wind-toggle-mph"
               style={[styles.toggleButton, windSpeedUnit === 'mph' && styles.toggleButtonActive]}
               onPress={() => setWindSpeedUnit('mph')}
               accessibilityRole="switch"
@@ -171,6 +178,7 @@ export default function SettingsScreen() {
           </View>
           <View style={styles.toggleContainer}>
             <Pressable
+              testID="language-toggle-system"
               style={[styles.toggleButton, language === 'system' && styles.toggleButtonActive]}
               onPress={() => setLanguage('system')}
               accessibilityRole="switch"
@@ -181,6 +189,7 @@ export default function SettingsScreen() {
               </Text>
             </Pressable>
             <Pressable
+              testID="language-toggle-en"
               style={[styles.toggleButton, language === 'en' && styles.toggleButtonActive]}
               onPress={() => setLanguage('en')}
               accessibilityRole="switch"
@@ -191,6 +200,7 @@ export default function SettingsScreen() {
               </Text>
             </Pressable>
             <Pressable
+              testID="language-toggle-ja"
               style={[styles.toggleButton, language === 'ja' && styles.toggleButtonActive]}
               onPress={() => setLanguage('ja')}
               accessibilityRole="switch"
@@ -213,6 +223,7 @@ export default function SettingsScreen() {
               <ActivityIndicator size="small" color="white" />
             ) : (
               <Switch
+                testID="weather-alerts-switch"
                 value={notificationsEnabled}
                 onValueChange={handleToggleNotifications}
                 trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
@@ -225,6 +236,7 @@ export default function SettingsScreen() {
         {notificationsEnabled && (
           <View style={styles.testButtonWrapper}>
             <Pressable
+              testID="test-notification-button"
               style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
               onPress={sendTestNotification}
               android_ripple={{ color: theme.colors.ripple }}
@@ -236,6 +248,7 @@ export default function SettingsScreen() {
 
         <View style={[styles.testButtonWrapper, notificationsEnabled && { marginTop: 16 }]}>
           <Pressable
+            testID="test-crash-button"
             style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
             onPress={handleTestCrash}
             android_ripple={{ color: theme.colors.ripple }}
@@ -246,6 +259,7 @@ export default function SettingsScreen() {
 
         <View style={[styles.testButtonWrapper, { marginTop: 16 }]}>
           <Pressable
+            testID="test-non-fatal-button"
             style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
             onPress={handleTestNonFatal}
             android_ripple={{ color: theme.colors.ripple }}
@@ -257,12 +271,15 @@ export default function SettingsScreen() {
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
             <Text style={styles.settingLabel}>{t('accountLabel')}</Text>
-            <Text style={styles.settingDescription}>{accountLabel}</Text>
+            <Text testID="account-value" style={styles.settingDescription}>
+              {accountLabel}
+            </Text>
           </View>
         </View>
 
         <View style={styles.signOutButtonWrapper}>
           <Pressable
+            testID="sign-out-button"
             style={({ pressed }) => [styles.signOutButton, pressed && styles.buttonPressed]}
             onPress={signOut}
             android_ripple={{ color: theme.colors.ripple }}

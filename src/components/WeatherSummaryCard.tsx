@@ -16,7 +16,7 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
   const uvIndex = weather.daily.uv_index_max[0] ?? 0;
 
   return (
-    <View style={styles.summaryCard}>
+    <View testID="weather-summary-card" style={styles.summaryCard}>
       <View style={styles.summaryMain}>
         <Text style={styles.summaryTemp}>
           {formatRound(weather.current.temperature_2m)}
@@ -30,17 +30,17 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
       </View>
       <View style={styles.divider} />
       <View style={styles.summaryDetails}>
-        <View style={styles.detailItem}>
+        <View style={styles.detailItem} testID="detail-humidity">
           <Text style={styles.detailLabel}>{t('humidityLabel')}</Text>
           <Text style={styles.detailValue}>{weather.current.relative_humidity_2m}%</Text>
         </View>
-        <View style={styles.detailItem}>
+        <View style={styles.detailItem} testID="detail-wind">
           <Text style={styles.detailLabel}>{t('windLabel')}</Text>
           <Text style={styles.detailValue}>
             {weather.current.wind_speed_10m} {windUnit}
           </Text>
         </View>
-        <View style={styles.detailItem}>
+        <View style={styles.detailItem} testID="detail-uv-index">
           <Text style={styles.detailLabel}>{t('uvIndexLabel')}</Text>
           <Text style={styles.detailValue}>{formatRound(uvIndex)}</Text>
         </View>

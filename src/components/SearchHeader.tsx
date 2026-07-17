@@ -57,6 +57,7 @@ export const SearchHeader = () => {
             style={styles.searchIcon}
           />
           <TextInput
+            testID="search-input"
             style={styles.searchInput}
             placeholder={t('searchPlaceholder')}
             accessibilityLabel={t('searchPlaceholder')}
@@ -69,6 +70,7 @@ export const SearchHeader = () => {
           {isSearching && <ActivityIndicator size="small" color="white" />}
         </View>
         <Pressable
+          testID="saved-locations-button"
           onPress={() => router.push('/saved')}
           style={({ pressed }) => [
             styles.settingsButton,
@@ -85,6 +87,7 @@ export const SearchHeader = () => {
           />
         </Pressable>
         <Pressable
+          testID="settings-button"
           onPress={() => router.push('/settings')}
           style={({ pressed }) => [styles.settingsButton, pressed && { opacity: 0.7 }]}
           accessibilityRole="button"

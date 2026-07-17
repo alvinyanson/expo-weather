@@ -64,7 +64,7 @@ export const DailyForecastList = ({
   };
 
   return (
-    <View style={styles.forecastContainer}>
+    <View testID="daily-forecast" style={styles.forecastContainer}>
       <View style={styles.forecastHeader}>
         <Text style={styles.forecastTitle}>{t('forecastTitle')}</Text>
         <View style={styles.forecastLabels}>

@@ -45,7 +45,7 @@ export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
   if (!weather.hourly) return null;
 
   return (
-    <View style={styles.hourlyContainer}>
+    <View testID="hourly-forecast" style={styles.hourlyContainer}>
       <Text style={styles.hourlySummary}>
         {t('hourlySummary', {
           condition: weatherCodeToCondition(weather.current.weather_code),

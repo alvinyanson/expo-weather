@@ -77,7 +77,9 @@ export default function SavedLocationsScreen() {
             size={48}
             tintColor={theme.colors.textHint}
           />
-          <Text style={styles.emptyTitle}>{t('emptySavedTitle')}</Text>
+          <Text testID="saved-empty" style={styles.emptyTitle}>
+            {t('emptySavedTitle')}
+          </Text>
           <Text style={styles.emptySubtitle}>{t('emptySavedSubtitle')}</Text>
         </View>
       );
@@ -109,6 +111,7 @@ export default function SavedLocationsScreen() {
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <View style={styles.header}>
         <Pressable
+          testID="saved-back-button"
           onPress={() => router.back()}
           style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
           android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
@@ -121,7 +124,9 @@ export default function SavedLocationsScreen() {
             tintColor="white"
           />
         </Pressable>
-        <Text style={styles.headerTitle}>{t('savedLocationsTitle')}</Text>
+        <Text testID="saved-title" style={styles.headerTitle}>
+          {t('savedLocationsTitle')}
+        </Text>
         <View style={{ width: 48 }} />
       </View>
 
