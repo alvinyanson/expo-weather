@@ -69,6 +69,7 @@
     "ios": "expo run:ios",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "maestro test maestro/login_flow.yaml",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "prettier --write .",
