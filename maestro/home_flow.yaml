@@ -1,0 +1,32 @@
+appId: com.anonymous.expoweather
+---
+# Reach the authenticated Home screen.
+- runFlow: login_flow.yaml
+
+# details-hint renders only after weather loads.
+- extendedWaitUntil:
+    visible:
+      id: "details-hint"
+    timeout: 30000
+
+# Search header
+- assertVisible:
+    id: "search-input"
+- assertVisible:
+    id: "saved-locations-button"
+- assertVisible:
+    id: "settings-button"
+
+# Current weather + hourly forecast
+- assertVisible:
+    id: "current-date"
+- assertVisible:
+    id: "hourly-forecast"
+
+# Save location toggle (testID reflects saved state)
+- assertVisible:
+    id: "save-location-button"
+- tapOn:
+    id: "save-location-button"
+- assertVisible:
+    id: "saved-location-button"

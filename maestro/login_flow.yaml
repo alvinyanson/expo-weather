@@ -1,4 +1,6 @@
 appId: com.anonymous.expoweather
+tags:
+  - subflow
 ---
 - launchApp:
     clearState: true

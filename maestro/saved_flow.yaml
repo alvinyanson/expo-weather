@@ -1,0 +1,54 @@
+appId: com.anonymous.expoweather
+---
+# Reach the authenticated Home screen.
+- runFlow: login_flow.yaml
+
+# Wait for Home, save the current location so Saved has an entry.
+- extendedWaitUntil:
+    visible:
+      id: "details-hint"
+    timeout: 30000
+- tapOn:
+    id: "save-location-button"
+- assertVisible:
+    id: "saved-location-button"
+
+# Open the Saved Locations screen.
+- tapOn:
+    id: "saved-locations-button"
+- extendedWaitUntil:
+    visible:
+      id: "saved-title"
+    timeout: 10000
+
+# Saved item (city/date values are dynamic)
+- assertVisible:
+    id: "saved-location-item"
+- assertVisible:
+    id: "saved-location-city"
+- assertVisible:
+    id: "saved-location-date"
+
+# Delete flow: swipe to reveal, open confirm modal, confirm.
+- swipe:
+    from:
+      id: "saved-location-item"
+    direction: LEFT
+- tapOn:
+    id: "delete-location-button"
+- assertVisible:
+    id: "cancel-delete-button"
+- assertVisible:
+    id: "confirm-delete-button"
+- tapOn:
+    id: "confirm-delete-button"
+
+# List is now empty.
+- assertVisible:
+    id: "saved-empty"
+
+# Back navigation returns to Home.
+- tapOn:
+    id: "saved-back-button"
+- assertVisible:
+    id: "search-input"

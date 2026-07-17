@@ -1,0 +1,46 @@
+appId: com.anonymous.expoweather
+---
+# Reach the authenticated Home screen.
+- runFlow: login_flow.yaml
+
+# Wait for Home, then open Details via the weather hero.
+- extendedWaitUntil:
+    visible:
+      id: "details-hint"
+    timeout: 30000
+- tapOn:
+    id: "current-weather"
+
+# Details renders once weather is ready.
+- extendedWaitUntil:
+    visible:
+      id: "daily-forecast"
+    timeout: 30000
+
+# Header
+- assertVisible:
+    id: "back-button"
+- assertVisible:
+    id: "details-save-button"
+- assertVisible:
+    id: "last-updated"
+
+# Summary card
+- assertVisible:
+    id: "weather-summary-card"
+- assertVisible:
+    id: "detail-humidity"
+- assertVisible:
+    id: "detail-wind"
+- assertVisible:
+    id: "detail-uv-index"
+
+# Forecast list
+- assertVisible:
+    id: "daily-forecast"
+
+# Back navigation returns to Home.
+- tapOn:
+    id: "back-button"
+- assertVisible:
+    id: "search-input"
