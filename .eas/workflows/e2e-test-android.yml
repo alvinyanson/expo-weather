@@ -1,0 +1,27 @@
+name: E2E Test Android
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build_android_for_e2e:
+    name: Build Android APK for E2E
+    type: build
+    params:
+      platform: android
+      profile: e2e-test
+
+  # The maestro job requires a paid EAS plan:
+  # I'll run the maestro locally for now.
+  # https://expo.dev/accounts/alvin-yanson-organization/settings/billing
+  # maestro_test:
+  #   name: Run Maestro E2E flows
+  #   needs: [build_android_for_e2e]
+  #   type: maestro
+  #   params:
+  #     build_id: ${{ needs.build_android_for_e2e.outputs.build_id }}
+  #     flow_path:
+  #       - .maestro/home_flow.yaml
+  #       - .maestro/details_flow.yaml
+  #       - .maestro/saved_flow.yaml
+  #       - .maestro/settings_flow.yaml

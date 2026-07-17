@@ -20,6 +20,13 @@
         "buildType": "apk"
       },
       "channel": "production"
+    },
+    "e2e-test": {
+      "withoutCredentials": true,
+      "environment": "production",
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {
