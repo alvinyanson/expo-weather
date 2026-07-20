@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useSearchStore } from '../../store/useSearchStore';
+import { useSearchStore } from '@/store/useSearchStore';
 
 // Mock AsyncStorage
 vi.mock('@react-native-async-storage/async-storage', () => {

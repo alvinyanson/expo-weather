@@ -19,14 +19,19 @@ describe('useSettingsStore', () => {
       temperatureUnit: 'celsius',
       windSpeedUnit: 'kmh',
       notificationsEnabled: false,
+      expoPushToken: undefined,
+      language: 'system',
     });
     vi.clearAllMocks();
   });
 
-  it('has default units', () => {
-    expect(useSettingsStore.getState().temperatureUnit).toBe('celsius');
-    expect(useSettingsStore.getState().windSpeedUnit).toBe('kmh');
-    expect(useSettingsStore.getState().notificationsEnabled).toBe(false);
+  it('has default units, language, and notification settings', () => {
+    const state = useSettingsStore.getState();
+    expect(state.temperatureUnit).toBe('celsius');
+    expect(state.windSpeedUnit).toBe('kmh');
+    expect(state.notificationsEnabled).toBe(false);
+    expect(state.language).toBe('system');
+    expect(state.expoPushToken).toBeUndefined();
   });
 
   it('can set temperatureUnit', () => {
@@ -44,5 +49,21 @@ describe('useSettingsStore', () => {
   it('can set notificationsEnabled', () => {
     useSettingsStore.getState().setNotificationsEnabled(true);
     expect(useSettingsStore.getState().notificationsEnabled).toBe(true);
+  });
+
+  it('can set language', () => {
+    useSettingsStore.getState().setLanguage('ja');
+    expect(useSettingsStore.getState().language).toBe('ja');
+
+    useSettingsStore.getState().setLanguage('en');
+    expect(useSettingsStore.getState().language).toBe('en');
+  });
+
+  it('can set and clear expoPushToken', () => {
+    useSettingsStore.getState().setExpoPushToken('push-token-123');
+    expect(useSettingsStore.getState().expoPushToken).toBe('push-token-123');
+
+    useSettingsStore.getState().setExpoPushToken(undefined);
+    expect(useSettingsStore.getState().expoPushToken).toBeUndefined();
   });
 });
