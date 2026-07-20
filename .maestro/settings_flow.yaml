@@ -6,55 +6,55 @@ appId: com.anonymous.expoweather
 # Wait for Home, then open Settings.
 - extendedWaitUntil:
     visible:
-      id: "details-hint"
+      id: 'details-hint'
     timeout: 30000
 - tapOn:
-    id: "settings-button"
+    id: 'settings-button'
 
 - extendedWaitUntil:
     visible:
-      id: "settings-title"
+      id: 'settings-title'
     timeout: 10000
 
 # Unit + language toggles
 - assertVisible:
-    id: "temp-toggle-celsius"
+    id: 'temp-toggle-celsius'
 - assertVisible:
-    id: "temp-toggle-fahrenheit"
+    id: 'temp-toggle-fahrenheit'
 - assertVisible:
-    id: "wind-toggle-kmh"
+    id: 'wind-toggle-kmh'
 - assertVisible:
-    id: "wind-toggle-mph"
+    id: 'wind-toggle-mph'
 - assertVisible:
-    id: "language-toggle-system"
+    id: 'language-toggle-system'
 - assertVisible:
-    id: "language-toggle-en"
+    id: 'language-toggle-en'
 - assertVisible:
-    id: "language-toggle-ja"
+    id: 'language-toggle-ja'
 - assertVisible:
-    id: "weather-alerts-switch"
+    id: 'weather-alerts-switch'
 
 # Temperature unit toggle (default Celsius -> Fahrenheit; testID reflects state)
 - assertVisible:
-    id: "temp-desc-celsius"
+    id: 'temp-desc-celsius'
 - tapOn:
-    id: "temp-toggle-fahrenheit"
+    id: 'temp-toggle-fahrenheit'
 - assertVisible:
-    id: "temp-desc-fahrenheit"
+    id: 'temp-desc-fahrenheit'
 
 # Lower section (scroll into view).
 # Test Notification, Test Crash, and Test Non-Fatal buttons are intentionally skipped.
 - scrollUntilVisible:
     element:
-      id: "account-value"
+      id: 'account-value'
     direction: DOWN
 - scrollUntilVisible:
     element:
-      id: "sign-out-button"
+      id: 'sign-out-button'
     direction: DOWN
 
 # Back navigation returns to Home (header back button is fixed).
 - tapOn:
-    id: "settings-back-button"
+    id: 'settings-back-button'
 - assertVisible:
-    id: "search-input"
+    id: 'search-input'

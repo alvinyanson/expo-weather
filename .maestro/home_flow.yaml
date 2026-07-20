@@ -6,27 +6,27 @@ appId: com.anonymous.expoweather
 # details-hint renders only after weather loads.
 - extendedWaitUntil:
     visible:
-      id: "details-hint"
+      id: 'details-hint'
     timeout: 30000
 
 # Search header
 - assertVisible:
-    id: "search-input"
+    id: 'search-input'
 - assertVisible:
-    id: "saved-locations-button"
+    id: 'saved-locations-button'
 - assertVisible:
-    id: "settings-button"
+    id: 'settings-button'
 
 # Current weather + hourly forecast
 - assertVisible:
-    id: "current-date"
+    id: 'current-date'
 - assertVisible:
-    id: "hourly-forecast"
+    id: 'hourly-forecast'
 
 # Save location toggle (testID reflects saved state)
 - assertVisible:
-    id: "save-location-button"
+    id: 'save-location-button'
 - tapOn:
-    id: "save-location-button"
+    id: 'save-location-button'
 - assertVisible:
-    id: "saved-location-button"
+    id: 'saved-location-button'

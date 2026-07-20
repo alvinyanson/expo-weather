@@ -6,41 +6,41 @@ appId: com.anonymous.expoweather
 # Wait for Home, then open Details via the weather hero.
 - extendedWaitUntil:
     visible:
-      id: "details-hint"
+      id: 'details-hint'
     timeout: 30000
 - tapOn:
-    id: "current-weather"
+    id: 'current-weather'
 
 # Details renders once weather is ready.
 - extendedWaitUntil:
     visible:
-      id: "daily-forecast"
+      id: 'daily-forecast'
     timeout: 30000
 
 # Header
 - assertVisible:
-    id: "back-button"
+    id: 'back-button'
 - assertVisible:
-    id: "details-save-button"
+    id: 'details-save-button'
 - assertVisible:
-    id: "last-updated"
+    id: 'last-updated'
 
 # Summary card
 - assertVisible:
-    id: "weather-summary-card"
+    id: 'weather-summary-card'
 - assertVisible:
-    id: "detail-humidity"
+    id: 'detail-humidity'
 - assertVisible:
-    id: "detail-wind"
+    id: 'detail-wind'
 - assertVisible:
-    id: "detail-uv-index"
+    id: 'detail-uv-index'
 
 # Forecast list
 - assertVisible:
-    id: "daily-forecast"
+    id: 'daily-forecast'
 
 # Back navigation returns to Home.
 - tapOn:
-    id: "back-button"
+    id: 'back-button'
 - assertVisible:
-    id: "search-input"
+    id: 'search-input'

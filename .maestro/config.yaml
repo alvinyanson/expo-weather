@@ -1,5 +1,5 @@
 flows:
-  - "*_flow.yaml"
+  - '*_flow.yaml'
 # login_flow is a shared subflow (called via runFlow); skip it as a top-level flow.
 excludeTags:
   - subflow

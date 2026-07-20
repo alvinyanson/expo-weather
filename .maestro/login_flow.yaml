@@ -7,11 +7,11 @@ tags:
 
 # Wait up to 30s for the app to load (JS is embedded in the release build).
 - extendedWaitUntil:
-    visible: "Expo Weather"
+    visible: 'Expo Weather'
     timeout: 30000
 
-- assertVisible: "Sign in to continue"
-- assertVisible: "Continue with Google"
-- assertVisible: "Continue as Guest"
-- tapOn: "Continue as Guest"
-- assertVisible: "Search city..."
+- assertVisible: 'Sign in to continue'
+- assertVisible: 'Continue with Google'
+- assertVisible: 'Continue as Guest'
+- tapOn: 'Continue as Guest'
+- assertVisible: 'Search city...'
