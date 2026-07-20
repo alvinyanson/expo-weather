@@ -14,23 +14,6 @@ import { useAuth, useToggleNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 import { t } from '@/services/i18n';
-import crashlytics from '@react-native-firebase/crashlytics';
-import { reportError, logBreadcrumb } from '@/services/crash.service';
-
-const handleTestCrash = () => {
-  crashlytics().crash();
-};
-
-// Demonstrates a non-fatal: leaves breadcrumbs, then records a handled error.
-// The dashboard issue shows the breadcrumb trail plus the context custom keys.
-const handleTestNonFatal = () => {
-  logBreadcrumb('[Demo] user opened settings');
-  logBreadcrumb('[Demo] tapped test non-fatal');
-  reportError(new Error('Test non-fatal from settings'), {
-    where: 'settings.handleTestNonFatal',
-    demo: 'true',
-  });
-};
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -43,12 +26,8 @@ export default function SettingsScreen() {
     setLanguage,
   } = useSettingsStore();
 
-  const {
-    notificationsEnabled,
-    isUpdatingNotifications,
-    handleToggleNotifications,
-    sendTestNotification,
-  } = useToggleNotifications();
+  const { notificationsEnabled, isUpdatingNotifications, handleToggleNotifications } =
+    useToggleNotifications();
 
   const { user, signOut } = useAuth();
 
@@ -233,41 +212,6 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {notificationsEnabled && (
-          <View style={styles.testButtonWrapper}>
-            <Pressable
-              testID="test-notification-button"
-              style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
-              onPress={sendTestNotification}
-              android_ripple={{ color: theme.colors.ripple }}
-            >
-              <Text style={styles.testButtonText}>{t('testNotification')}</Text>
-            </Pressable>
-          </View>
-        )}
-
-        <View style={[styles.testButtonWrapper, notificationsEnabled && { marginTop: 16 }]}>
-          <Pressable
-            testID="test-crash-button"
-            style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
-            onPress={handleTestCrash}
-            android_ripple={{ color: theme.colors.ripple }}
-          >
-            <Text style={styles.testButtonText}>{t('testCrash')}</Text>
-          </Pressable>
-        </View>
-
-        <View style={[styles.testButtonWrapper, { marginTop: 16 }]}>
-          <Pressable
-            testID="test-non-fatal-button"
-            style={({ pressed }) => [styles.testButton, pressed && styles.buttonPressed]}
-            onPress={handleTestNonFatal}
-            android_ripple={{ color: theme.colors.ripple }}
-          >
-            <Text style={styles.testButtonText}>{t('testNonFatal')}</Text>
-          </Pressable>
-        </View>
-
         <View style={styles.settingRow}>
           <View style={styles.labelContainer}>
             <Text style={styles.settingLabel}>{t('accountLabel')}</Text>
@@ -368,24 +312,7 @@ const styles = StyleSheet.create({
   toggleTextActive: {
     color: theme.colors.primary,
   },
-  testButtonWrapper: {
-    borderRadius: 8,
-    marginTop: 30,
-    overflow: 'hidden',
-  },
-  testButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    backgroundColor: 'white',
-    paddingVertical: 14,
-  },
-  testButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: theme.colors.primary,
-  },
+
   signOutButtonWrapper: {
     borderRadius: 8,
     marginTop: 16,
