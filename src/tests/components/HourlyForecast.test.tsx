@@ -1,5 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { HourlyForecast } from '@/components/HourlyForecast';
+import { WeatherResponse } from '@/interfaces';
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
@@ -18,7 +19,7 @@ const weather = {
     weather_code: [1],
     precipitation_probability: [15],
   },
-} as any;
+} as unknown as WeatherResponse;
 
 afterEach(() => {
   cleanup();
@@ -39,7 +40,7 @@ describe('HourlyForecast', () => {
   });
 
   it('returns null if no hourly data', () => {
-    const emptyWeather = { current: weather.current } as any;
+    const emptyWeather = { current: weather.current } as unknown as WeatherResponse;
     const { container } = render(<HourlyForecast weather={emptyWeather} />);
     expect(container.firstChild).toBeNull();
   });

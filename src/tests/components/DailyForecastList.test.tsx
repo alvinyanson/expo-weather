@@ -1,5 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { DailyForecastList } from '@/components/DailyForecastList';
+import type { WeatherResponse } from '@/interfaces';
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
@@ -10,7 +11,7 @@ const weather = {
     temperature_2m_max: [30.1, 32.5],
     temperature_2m_min: [24.4, 25.1],
   },
-} as any;
+} as unknown as WeatherResponse;
 
 afterEach(() => {
   cleanup();
@@ -45,7 +46,7 @@ describe('DailyForecastList', () => {
     const onRefresh = vi.fn();
     const { container } = render(
       <DailyForecastList
-        weather={{} as any}
+        weather={{} as unknown as WeatherResponse}
         tempUnit="°C"
         refreshing={false}
         onRefresh={onRefresh}

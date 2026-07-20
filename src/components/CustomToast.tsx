@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 import { theme } from '@/theme';
 
-const CustomToast = ({
+export const CustomToast = ({
   text1,
   text2,
   type,

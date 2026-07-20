@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { CurrentWeather } from '@/components/CurrentWeather';
+import type { WeatherResponse } from '@/interfaces';
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
@@ -18,7 +19,7 @@ const weather = {
     temperature_2m_min: [20],
     uv_index_max: [7],
   },
-} as any;
+} as unknown as WeatherResponse;
 
 afterEach(() => {
   cleanup();

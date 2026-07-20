@@ -42,7 +42,7 @@ afterEach(() => {
 });
 
 describe('SearchHeader', () => {
-  it('renders correctly', () => {
+  it('renders search input correctly', () => {
     mockSearchHook.mockReturnValue(searchHookState());
     render(<SearchHeader />);
     expect(screen.getByPlaceholderText('Search city...')).toBeTruthy();
@@ -67,13 +67,19 @@ describe('SearchHeader', () => {
     });
   });
 
-  it('navigates to settings on settings press', () => {
+  it('navigates to settings on settings button press', () => {
     mockSearchHook.mockReturnValue(searchHookState());
     render(<SearchHeader />);
 
-    // There isn't an explicit testID, but we can query by the wrapper of the settings button if we had one,
-    // or just mock the settings press. Since the settings button uses the 'gearshape' symbol, we might
-    // need a testID for it. Let's assume it has one or we can test it another way.
-    // For now, let's just make sure it renders.
+    fireEvent.click(screen.getByTestId('settings-button'));
+    expect(pushMock).toHaveBeenCalledWith('/settings');
+  });
+
+  it('navigates to saved locations on saved locations button press', () => {
+    mockSearchHook.mockReturnValue(searchHookState());
+    render(<SearchHeader />);
+
+    fireEvent.click(screen.getByTestId('saved-locations-button'));
+    expect(pushMock).toHaveBeenCalledWith('/saved');
   });
 });
