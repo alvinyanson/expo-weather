@@ -1,4 +1,10 @@
-import { useFetchLocation, useFetchWeather, useHaptics, useSavedLocations } from '@/hooks';
+import {
+  useFetchLocation,
+  useFetchWeather,
+  useHaptics,
+  useSavedLocations,
+  useShareWeather,
+} from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 import { formatTime } from '@/utils/formatters';
@@ -54,6 +60,7 @@ export default function DetailsScreen() {
 
   const { savedLocations, toggleSavedLocation } = useSavedLocations();
   const haptics = useHaptics();
+  const { share } = useShareWeather();
 
   const matchingSaved = targetLocation
     ? savedLocations.find(
@@ -74,6 +81,11 @@ export default function DetailsScreen() {
         city: targetLocation.city,
       });
     }
+  };
+
+  const handleShare = () => {
+    if (!weather || !targetLocation) return;
+    share({ city: targetLocation.city, weather, tempUnit });
   };
 
   const [refreshing, setRefreshing] = useState(false);
@@ -125,6 +137,7 @@ export default function DetailsScreen() {
         weather={weather}
         lastUpdated={lastUpdated}
         onBack={() => router.back()}
+        onShare={handleShare}
         onSave={handleSaveLocation}
         isSaved={isSaved}
       />

@@ -14,6 +14,12 @@ const translations = {
     // DetailsHeader
     updatedPrefix: 'Updated %{time}',
     saveLocationLabel: 'Save location',
+    shareLabel: 'Share weather',
+    shareDialogTitle: 'Share weather',
+    shareMessage:
+      '%{city}: %{condition}, %{temp}%{unit} now (high %{high}%{unit}, low %{low}%{unit}).',
+    shareFailedTitle: 'Share failed',
+    shareFailedBody: 'Could not share the weather. Please try again.',
 
     // HourlyForecast
     hourlySummary:
@@ -152,6 +158,12 @@ const translations = {
     // DetailsHeader
     updatedPrefix: '%{time} 更新',
     saveLocationLabel: '場所を保存',
+    shareLabel: '天気を共有',
+    shareDialogTitle: '天気を共有',
+    shareMessage:
+      '%{city}：%{condition}、現在%{temp}%{unit}（最高%{high}%{unit}、最低%{low}%{unit}）。',
+    shareFailedTitle: '共有に失敗しました',
+    shareFailedBody: '天気を共有できませんでした。もう一度お試しください。',
 
     // HourlyForecast
     hourlySummary:

@@ -65,4 +65,34 @@ describe('DetailsHeader', () => {
 
     expect(screen.queryByTestId('details-save-button')).toBeNull();
   });
+
+  it('renders share button and triggers onShare when provided', () => {
+    const onBack = vi.fn();
+    const onShare = vi.fn();
+
+    render(
+      <DetailsHeader
+        city="Manila"
+        weather={weather}
+        lastUpdated="10:00 AM"
+        onBack={onBack}
+        onShare={onShare}
+      />,
+    );
+
+    const shareButton = screen.getByTestId('details-share-button');
+    expect(shareButton).toBeTruthy();
+
+    fireEvent.click(shareButton);
+    expect(onShare).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not render share button when onShare is not provided', () => {
+    const onBack = vi.fn();
+    render(
+      <DetailsHeader city="Manila" weather={weather} lastUpdated="10:00 AM" onBack={onBack} />,
+    );
+
+    expect(screen.queryByTestId('details-share-button')).toBeNull();
+  });
 });
