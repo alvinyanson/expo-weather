@@ -27,3 +27,8 @@ export const formatHourlyTime = (dateStr: string | number | Date): string => {
   const date = new Date(dateStr);
   return date.toLocaleTimeString('default', { hour: 'numeric', hour12: true }).replace(' ', '');
 };
+
+// Return: "14.5995, 120.9842" (each rounded to 4 decimals)
+export const formatCoordinates = (lat: number, lon: number): string => {
+  return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+};

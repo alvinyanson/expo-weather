@@ -12,6 +12,7 @@ vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
 const mockToggleSavedLocation = vi.fn();
 const mockShare = vi.fn();
+const mockCopy = vi.fn();
 vi.mock('@/hooks', () => ({
   useFetchLocation: vi.fn(),
   useFetchWeather: vi.fn(),
@@ -26,6 +27,7 @@ vi.mock('@/hooks', () => ({
     impact: vi.fn(),
   }),
   useShareWeather: () => ({ share: mockShare }),
+  useCopyCoordinates: () => ({ copy: mockCopy }),
 }));
 
 import { useFetchLocation, useFetchWeather } from '@/hooks';

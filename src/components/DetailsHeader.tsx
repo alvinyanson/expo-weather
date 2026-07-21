@@ -15,6 +15,8 @@ interface DetailsHeaderProps {
   /** When provided, a save (bookmark) action is shown in the header's right slot. */
   onSave?: () => void;
   isSaved?: boolean;
+  /** When provided, long-pressing the city name copies its coordinates. */
+  onCopyCoordinates?: () => void;
 }
 
 export const DetailsHeader = ({
@@ -25,6 +27,7 @@ export const DetailsHeader = ({
   onShare,
   onSave,
   isSaved = false,
+  onCopyCoordinates,
 }: DetailsHeaderProps) => {
   return (
     <View style={styles.header}>
@@ -45,7 +48,14 @@ export const DetailsHeader = ({
         </Pressable>
       </View>
       <View style={styles.headerTitleContainer}>
-        <Text style={styles.headerCity}>{city}</Text>
+        <Text
+          testID="details-city"
+          style={styles.headerCity}
+          onLongPress={onCopyCoordinates}
+          accessibilityHint={onCopyCoordinates ? t('copyCoordinatesHint') : undefined}
+        >
+          {city}
+        </Text>
         <Text style={styles.headerCondition}>
           {weatherCodeToCondition(weather.current.weather_code)}
         </Text>
