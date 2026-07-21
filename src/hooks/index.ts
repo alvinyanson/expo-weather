@@ -12,3 +12,4 @@ export * from './useSyncPushToken';
 export * from './useHaptics';
 export * from './useShareWeather';
 export * from './useCopyCoordinates';
+export * from './useBarometer';

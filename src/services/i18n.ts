@@ -50,6 +50,17 @@ const translations = {
     windLabel: 'Wind',
     uvIndexLabel: 'UV Index',
 
+    // Pressure
+    pressureCardTitle: 'Atmospheric Pressure',
+    pressureSensorLabel: 'Device',
+    pressureForecastLabel: 'Forecast',
+    pressureUnit: 'hPa',
+    pressureChecking: 'Checking sensor...',
+    pressureUnavailable: 'No barometer on this device.',
+    pressureMatchesForecast: 'Matches the forecast.',
+    pressureAboveForecast: '%{delta} hPa above forecast',
+    pressureBelowForecast: '%{delta} hPa below forecast',
+
     // login
     appName: 'Expo Weather',
     loginSubtitle: 'Sign in to continue',
@@ -199,6 +210,17 @@ const translations = {
     humidityLabel: '湿度',
     windLabel: '風速',
     uvIndexLabel: 'UV指数',
+
+    // Pressure
+    pressureCardTitle: '気圧',
+    pressureSensorLabel: 'デバイス',
+    pressureForecastLabel: '予報',
+    pressureUnit: 'hPa',
+    pressureChecking: 'センサーを確認中...',
+    pressureUnavailable: 'このデバイスには気圧計がありません。',
+    pressureMatchesForecast: '予報と一致しています。',
+    pressureAboveForecast: '予報より%{delta} hPa高い',
+    pressureBelowForecast: '予報より%{delta} hPa低い',
 
     // login
     appName: 'Expoウェザー',

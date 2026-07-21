@@ -28,6 +28,7 @@ vi.mock('@/hooks', () => ({
   }),
   useShareWeather: () => ({ share: mockShare }),
   useCopyCoordinates: () => ({ copy: mockCopy }),
+  useBarometer: () => ({ status: 'unavailable', pressure: null }),
 }));
 
 import { useFetchLocation, useFetchWeather } from '@/hooks';
@@ -96,6 +97,7 @@ describe('DetailsScreen', () => {
     expect(screen.getByText('12 km/h')).toBeTruthy(); // wind
     expect(screen.getByText('7')).toBeTruthy(); // uv index max rounded
     expect(screen.getByText('8-Day Forecast')).toBeTruthy();
+    expect(screen.getByTestId('pressure-card')).toBeTruthy();
   });
 
   it('saves the displayed location from the header and confirms success', async () => {
