@@ -11,6 +11,7 @@ vi.mock('expo-router', () => ({
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
 const mockToggleSavedLocation = vi.fn();
+const mockShare = vi.fn();
 vi.mock('@/hooks', () => ({
   useFetchLocation: vi.fn(),
   useFetchWeather: vi.fn(),
@@ -24,6 +25,7 @@ vi.mock('@/hooks', () => ({
     error: vi.fn(),
     impact: vi.fn(),
   }),
+  useShareWeather: () => ({ share: mockShare }),
 }));
 
 import { useFetchLocation, useFetchWeather } from '@/hooks';
@@ -102,5 +104,15 @@ describe('DetailsScreen', () => {
     fireEvent.click(screen.getByLabelText('Save location'));
 
     expect(mockToggleSavedLocation).toHaveBeenCalledWith({ city: 'Manila', lat: 1, lon: 2 });
+  });
+
+  it('shares the displayed weather from the header', () => {
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    mockWeatherHook.mockReturnValue(hookState({ data: weather }));
+
+    render(<DetailsScreen />);
+    fireEvent.click(screen.getByLabelText('Share weather'));
+
+    expect(mockShare).toHaveBeenCalledWith({ city: 'Manila', weather, tempUnit: '°C' });
   });
 });

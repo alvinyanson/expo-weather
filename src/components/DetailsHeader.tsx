@@ -10,6 +10,8 @@ interface DetailsHeaderProps {
   weather: WeatherResponse;
   lastUpdated: string;
   onBack: () => void;
+  /** When provided, a share action is shown in the header's right slot (before save). */
+  onShare?: () => void;
   /** When provided, a save (bookmark) action is shown in the header's right slot. */
   onSave?: () => void;
   isSaved?: boolean;
@@ -20,25 +22,28 @@ export const DetailsHeader = ({
   weather,
   lastUpdated,
   onBack,
+  onShare,
   onSave,
   isSaved = false,
 }: DetailsHeaderProps) => {
   return (
     <View style={styles.header}>
-      <Pressable
-        testID="back-button"
-        onPress={onBack}
-        style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
-        android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
-        accessibilityRole="button"
-        accessibilityLabel={t('goBack')}
-      >
-        <SymbolView
-          name={{ ios: 'chevron.left', android: 'chevron_left' }}
-          size={24}
-          tintColor="white"
-        />
-      </Pressable>
+      <View style={styles.leftSlot}>
+        <Pressable
+          testID="back-button"
+          onPress={onBack}
+          style={({ pressed }) => [styles.iconButton, pressed && styles.buttonPressed]}
+          android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+          accessibilityRole="button"
+          accessibilityLabel={t('goBack')}
+        >
+          <SymbolView
+            name={{ ios: 'chevron.left', android: 'chevron_left' }}
+            size={24}
+            tintColor="white"
+          />
+        </Pressable>
+      </View>
       <View style={styles.headerTitleContainer}>
         <Text style={styles.headerCity}>{city}</Text>
         <Text style={styles.headerCondition}>
@@ -50,27 +55,43 @@ export const DetailsHeader = ({
           </Text>
         ) : null}
       </View>
-      {onSave ? (
-        <Pressable
-          testID="details-save-button"
-          onPress={onSave}
-          accessibilityRole="button"
-          accessibilityLabel={t('saveLocationLabel')}
-          style={({ pressed }) => [styles.saveButton, pressed && styles.buttonPressed]}
-          android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
-        >
-          <SymbolView
-            name={{
-              ios: isSaved ? 'bookmark.fill' : 'bookmark',
-              android: isSaved ? 'bookmark' : 'bookmark_border',
-            }}
-            size={24}
-            tintColor={isSaved ? theme.colors.accent : 'white'}
-          />
-        </Pressable>
-      ) : (
-        <View style={{ width: 48 }} />
-      )}
+      <View style={styles.rightSlot}>
+        {onShare ? (
+          <Pressable
+            testID="details-share-button"
+            onPress={onShare}
+            accessibilityRole="button"
+            accessibilityLabel={t('shareLabel')}
+            style={({ pressed }) => [styles.iconButton, pressed && styles.buttonPressed]}
+            android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+          >
+            <SymbolView
+              name={{ ios: 'square.and.arrow.up', android: 'share' }}
+              size={24}
+              tintColor="white"
+            />
+          </Pressable>
+        ) : null}
+        {onSave ? (
+          <Pressable
+            testID="details-save-button"
+            onPress={onSave}
+            accessibilityRole="button"
+            accessibilityLabel={t('saveLocationLabel')}
+            style={({ pressed }) => [styles.iconButton, pressed && styles.buttonPressed]}
+            android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+          >
+            <SymbolView
+              name={{
+                ios: isSaved ? 'bookmark.fill' : 'bookmark',
+                android: isSaved ? 'bookmark' : 'bookmark_border',
+              }}
+              size={24}
+              tintColor={isSaved ? theme.colors.accent : 'white'}
+            />
+          </Pressable>
+        ) : null}
+      </View>
     </View>
   );
 };
@@ -79,18 +100,20 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 10,
     height: 60,
   },
-  backButton: {
-    width: 48,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 24,
+  leftSlot: {
+    flex: 1,
+    alignItems: 'flex-start',
   },
-  saveButton: {
+  rightSlot: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+  },
+  iconButton: {
     width: 48,
     height: 48,
     justifyContent: 'center',
