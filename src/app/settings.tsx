@@ -26,6 +26,8 @@ export default function SettingsScreen() {
     setLanguage,
     hapticsEnabled,
     setHapticsEnabled,
+    batterySaverAware,
+    setBatterySaverAware,
   } = useSettingsStore();
 
   const { notificationsEnabled, isUpdatingNotifications, handleToggleNotifications } =
@@ -254,6 +256,25 @@ export default function SettingsScreen() {
               }}
               trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
               thumbColor={hapticsEnabled !== false ? 'white' : '#f4f3f4'}
+            />
+          </View>
+        </View>
+
+        <View style={styles.settingRow}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.settingLabel}>{t('batterySaverLabel')}</Text>
+            <Text style={styles.settingDescription}>{t('batterySaverDesc')}</Text>
+          </View>
+          <View style={styles.toggleContainer}>
+            <Switch
+              testID="battery-saver-switch"
+              value={batterySaverAware !== false}
+              onValueChange={(value) => {
+                haptics.selection();
+                setBatterySaverAware(value);
+              }}
+              trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
+              thumbColor={batterySaverAware !== false ? 'white' : '#f4f3f4'}
             />
           </View>
         </View>

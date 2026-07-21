@@ -53,3 +53,18 @@ vi.mock('expo-sensors', () => ({
     addListener: vi.fn(() => ({ remove: vi.fn() })),
   },
 }));
+
+vi.mock('expo-battery', () => ({
+  BatteryState: {
+    UNKNOWN: 0,
+    UNPLUGGED: 1,
+    CHARGING: 2,
+    FULL: 3,
+  },
+  isLowPowerModeEnabledAsync: vi.fn(() => Promise.resolve(false)),
+  getBatteryLevelAsync: vi.fn(() => Promise.resolve(0.75)),
+  getBatteryStateAsync: vi.fn(() => Promise.resolve(1)), // UNPLUGGED
+  addLowPowerModeListener: vi.fn(() => ({ remove: vi.fn() })),
+  addBatteryLevelListener: vi.fn(() => ({ remove: vi.fn() })),
+  addBatteryStateListener: vi.fn(() => ({ remove: vi.fn() })),
+}));

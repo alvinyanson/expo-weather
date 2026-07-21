@@ -11,6 +11,7 @@ import { useAuthListener } from '@/hooks/useAuthListener';
 import { useAuth } from '@/hooks/useAuth';
 import { useNotificationListeners } from '@/hooks/useNotificationListeners';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { BatterySaverIndicator } from '@/components/BatterySaverIndicator';
 import { theme } from '@/theme';
 import * as SplashScreen from 'expo-splash-screen';
 import { ObserveRoot, useObserve } from 'expo-observe';
@@ -21,6 +22,7 @@ import { t } from '@/services/i18n';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { useBatteryMonitor } from '@/hooks/useBatteryMonitor';
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler();
 ErrorUtils.setGlobalHandler((error, isFatal) => {
@@ -48,6 +50,7 @@ function RootApp() {
   useNetworkMonitor();
   useAuthListener();
   useNotificationListeners();
+  useBatteryMonitor();
   const { isAuthenticated, initializing } = useAuth();
   const { markInteractive } = useObserve();
   const language = useSettingsStore((state) => state.language);
@@ -72,6 +75,7 @@ function RootApp() {
   return (
     <SafeAreaView key={language} style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <OfflineIndicator />
+      <BatterySaverIndicator />
       <Stack
         screenOptions={{
           headerShown: false,
