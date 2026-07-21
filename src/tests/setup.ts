@@ -45,3 +45,11 @@ vi.mock('expo-haptics', () => ({
 vi.mock('expo-clipboard', () => ({
   setStringAsync: vi.fn(() => Promise.resolve(true)),
 }));
+
+vi.mock('expo-sensors', () => ({
+  Barometer: {
+    isAvailableAsync: vi.fn(() => Promise.resolve(false)),
+    setUpdateInterval: vi.fn(),
+    addListener: vi.fn(() => ({ remove: vi.fn() })),
+  },
+}));

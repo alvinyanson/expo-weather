@@ -32,3 +32,8 @@ export const formatHourlyTime = (dateStr: string | number | Date): string => {
 export const formatCoordinates = (lat: number, lon: number): string => {
   return `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 };
+
+// Return: "1013" (pressure as whole-number hPa)
+export const formatPressure = (value: number): string => {
+  return Math.round(value).toString();
+};

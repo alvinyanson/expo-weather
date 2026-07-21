@@ -25,6 +25,7 @@ import { t } from '@/services/i18n';
 import { DetailsHeader } from '@/components/DetailsHeader';
 import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
 import { DailyForecastList } from '@/components/DailyForecastList';
+import { PressureCard } from '@/components/PressureCard';
 
 export default function DetailsScreen() {
   const router = useRouter();
@@ -153,6 +154,7 @@ export default function DetailsScreen() {
       <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
         <View style={isTablet ? styles.tabletColumnLeft : undefined}>
           <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />
+          <PressureCard forecastPressure={weather.current.surface_pressure} />
         </View>
 
         <View style={isTablet ? styles.tabletColumnRight : styles.mobileColumnRight}>
