@@ -21,6 +21,12 @@ const translations = {
     shareFailedTitle: 'Share failed',
     shareFailedBody: 'Could not share the weather. Please try again.',
 
+    // Copy coordinates
+    copyCoordinatesHint: 'Long press to copy coordinates',
+    coordinatesCopiedTitle: 'Coordinates copied',
+    copyFailedTitle: 'Copy failed',
+    copyFailedBody: 'Could not copy the coordinates. Please try again.',
+
     // HourlyForecast
     hourlySummary:
       '%{condition} conditions will continue for the rest of the day. Wind gusts are up to %{windSpeed} %{windUnit}.',
@@ -164,6 +170,12 @@ const translations = {
       '%{city}：%{condition}、現在%{temp}%{unit}（最高%{high}%{unit}、最低%{low}%{unit}）。',
     shareFailedTitle: '共有に失敗しました',
     shareFailedBody: '天気を共有できませんでした。もう一度お試しください。',
+
+    // Copy coordinates
+    copyCoordinatesHint: '長押しで座標をコピー',
+    coordinatesCopiedTitle: '座標をコピーしました',
+    copyFailedTitle: 'コピーに失敗しました',
+    copyFailedBody: '座標をコピーできませんでした。もう一度お試しください。',
 
     // HourlyForecast
     hourlySummary:

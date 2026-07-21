@@ -1,4 +1,5 @@
 import {
+  useCopyCoordinates,
   useFetchLocation,
   useFetchWeather,
   useHaptics,
@@ -61,6 +62,7 @@ export default function DetailsScreen() {
   const { savedLocations, toggleSavedLocation } = useSavedLocations();
   const haptics = useHaptics();
   const { share } = useShareWeather();
+  const { copy } = useCopyCoordinates();
 
   const matchingSaved = targetLocation
     ? savedLocations.find(
@@ -86,6 +88,11 @@ export default function DetailsScreen() {
   const handleShare = () => {
     if (!weather || !targetLocation) return;
     share({ city: targetLocation.city, weather, tempUnit });
+  };
+
+  const handleCopyCoordinates = () => {
+    if (!targetLocation) return;
+    copy(targetLocation.latitude, targetLocation.longitude);
   };
 
   const [refreshing, setRefreshing] = useState(false);
@@ -140,6 +147,7 @@ export default function DetailsScreen() {
         onShare={handleShare}
         onSave={handleSaveLocation}
         isSaved={isSaved}
+        onCopyCoordinates={handleCopyCoordinates}
       />
 
       <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
