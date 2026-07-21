@@ -4,6 +4,8 @@ export interface WeatherResponse {
     weather_code: number;
     relative_humidity_2m: number;
     wind_speed_10m: number;
+    // Optional: a response cached before this field was requested will lack it.
+    surface_pressure?: number;
   };
   daily: {
     time: string[];

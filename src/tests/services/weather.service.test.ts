@@ -103,6 +103,8 @@ describe('fetchWeather', () => {
         params: expect.objectContaining({
           latitude: 10,
           longitude: 20,
+          current:
+            'temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m,surface_pressure',
           temperature_unit: 'celsius',
           wind_speed_unit: 'kmh',
         }),
