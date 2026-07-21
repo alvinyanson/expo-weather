@@ -5,11 +5,13 @@ import type { SavedLocation, SaveLocationInput } from '@/interfaces';
 import Toast from 'react-native-toast-message';
 import { reportError } from '@/services/crash.service';
 import { t } from '@/services/i18n';
+import { useHaptics } from '@/hooks/useHaptics';
 
 export const useSavedLocations = () => {
   const uid = useAuthStore((state) => state.user?.uid);
   const queryClient = useQueryClient();
   const queryKey = ['savedLocations', uid];
+  const haptics = useHaptics();
 
   const list = useQuery<SavedLocation[], Error>({
     queryKey,
@@ -96,6 +98,7 @@ export const useSavedLocations = () => {
     try {
       if (matchingSaved) {
         await deleteMutation.mutateAsync(matchingSaved.id);
+        haptics.success();
         Toast.show({
           type: 'success',
           text1: t('toastDeletedTitle'),
@@ -107,9 +110,11 @@ export const useSavedLocations = () => {
           lat: targetLocation.lat,
           lon: targetLocation.lon,
         });
+        haptics.success();
         Toast.show({ type: 'success', text1: t('toastSavedTitle'), text2: t('toastSavedBody') });
       }
     } catch (e) {
+      haptics.error();
       reportError(e, { where: 'useSavedLocations.toggleSavedLocation' });
       Toast.show({ type: 'error', text1: t('toastErrorTitle'), text2: t('toastErrorBody') });
     }
@@ -122,6 +127,7 @@ export const useSavedLocations = () => {
     if (!locationToDelete) return;
     try {
       await deleteMutation.mutateAsync(locationToDelete.id);
+      haptics.success();
       onSettled?.();
       Toast.show({
         type: 'success',
@@ -129,6 +135,7 @@ export const useSavedLocations = () => {
         text2: t('toastConfirmDeletedBody', { city: locationToDelete.city }),
       });
     } catch (e) {
+      haptics.error();
       onSettled?.();
       reportError(e, { where: 'useSavedLocations.confirmDeleteLocation' });
       Toast.show({

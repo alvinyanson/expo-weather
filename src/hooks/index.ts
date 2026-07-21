@@ -9,3 +9,4 @@ export * from './useNotificationListeners';
 export * from './useAuth';
 export * from './useAuthListener';
 export * from './useSyncPushToken';
+export * from './useHaptics';

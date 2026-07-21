@@ -1,4 +1,4 @@
-import { useFetchLocation, useFetchWeather, useSavedLocations } from '@/hooks';
+import { useFetchLocation, useFetchWeather, useHaptics, useSavedLocations } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 import { formatTime } from '@/utils/formatters';
@@ -53,6 +53,7 @@ export default function DetailsScreen() {
   const lastUpdated = dataUpdatedAt ? formatTime(dataUpdatedAt) : '';
 
   const { savedLocations, toggleSavedLocation } = useSavedLocations();
+  const haptics = useHaptics();
 
   const matchingSaved = targetLocation
     ? savedLocations.find(
@@ -80,6 +81,7 @@ export default function DetailsScreen() {
   const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
+    haptics.impact();
     setRefreshing(false);
   };
 

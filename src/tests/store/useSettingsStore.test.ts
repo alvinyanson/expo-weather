@@ -21,6 +21,7 @@ describe('useSettingsStore', () => {
       notificationsEnabled: false,
       expoPushToken: undefined,
       language: 'system',
+      hapticsEnabled: true,
     });
     vi.clearAllMocks();
   });
@@ -32,6 +33,15 @@ describe('useSettingsStore', () => {
     expect(state.notificationsEnabled).toBe(false);
     expect(state.language).toBe('system');
     expect(state.expoPushToken).toBeUndefined();
+    expect(state.hapticsEnabled).toBe(true);
+  });
+
+  it('can set hapticsEnabled', () => {
+    useSettingsStore.getState().setHapticsEnabled(false);
+    expect(useSettingsStore.getState().hapticsEnabled).toBe(false);
+
+    useSettingsStore.getState().setHapticsEnabled(true);
+    expect(useSettingsStore.getState().hapticsEnabled).toBe(true);
   });
 
   it('can set temperatureUnit', () => {
