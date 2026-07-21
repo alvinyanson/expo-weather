@@ -22,6 +22,7 @@ describe('useSettingsStore', () => {
       expoPushToken: undefined,
       language: 'system',
       hapticsEnabled: true,
+      batterySaverAware: true,
     });
     vi.clearAllMocks();
   });
@@ -34,6 +35,7 @@ describe('useSettingsStore', () => {
     expect(state.language).toBe('system');
     expect(state.expoPushToken).toBeUndefined();
     expect(state.hapticsEnabled).toBe(true);
+    expect(state.batterySaverAware).toBe(true);
   });
 
   it('can set hapticsEnabled', () => {
@@ -75,5 +77,15 @@ describe('useSettingsStore', () => {
 
     useSettingsStore.getState().setExpoPushToken(undefined);
     expect(useSettingsStore.getState().expoPushToken).toBeUndefined();
+  });
+
+  it('has batterySaverAware default true and can toggle it', () => {
+    expect(useSettingsStore.getState().batterySaverAware).toBe(true);
+
+    useSettingsStore.getState().setBatterySaverAware(false);
+    expect(useSettingsStore.getState().batterySaverAware).toBe(false);
+
+    useSettingsStore.getState().setBatterySaverAware(true);
+    expect(useSettingsStore.getState().batterySaverAware).toBe(true);
   });
 });

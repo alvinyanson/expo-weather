@@ -8,6 +8,7 @@ const {
   mockSetWindSpeedUnit,
   mockSetLanguage,
   mockSetHapticsEnabled,
+  mockSetBatterySaverAware,
   mockSelection,
   mockUseSettingsStoreState,
 } = vi.hoisted(() => ({
@@ -16,12 +17,14 @@ const {
   mockSetWindSpeedUnit: vi.fn(),
   mockSetLanguage: vi.fn(),
   mockSetHapticsEnabled: vi.fn(),
+  mockSetBatterySaverAware: vi.fn(),
   mockSelection: vi.fn(),
   mockUseSettingsStoreState: {
     temperatureUnit: 'celsius',
     windSpeedUnit: 'kmh',
     language: 'system',
     hapticsEnabled: true,
+    batterySaverAware: true,
   },
 }));
 
@@ -49,10 +52,12 @@ vi.mock('@/store/useSettingsStore', () => {
       windSpeedUnit: mockUseSettingsStoreState.windSpeedUnit,
       language: mockUseSettingsStoreState.language,
       hapticsEnabled: mockUseSettingsStoreState.hapticsEnabled,
+      batterySaverAware: mockUseSettingsStoreState.batterySaverAware,
       setTemperatureUnit: mockSetTemperatureUnit,
       setWindSpeedUnit: mockSetWindSpeedUnit,
       setLanguage: mockSetLanguage,
       setHapticsEnabled: mockSetHapticsEnabled,
+      setBatterySaverAware: mockSetBatterySaverAware,
     })),
     {
       getState: vi.fn(() => ({ language: 'system' })),
@@ -74,6 +79,7 @@ describe('SettingsScreen', () => {
     mockUseSettingsStoreState.windSpeedUnit = 'kmh';
     mockUseSettingsStoreState.language = 'system';
     mockUseSettingsStoreState.hapticsEnabled = true;
+    mockUseSettingsStoreState.batterySaverAware = true;
 
     mockHandleToggleNotifications = vi.fn();
     mockSignOut = vi.fn();
@@ -213,5 +219,19 @@ describe('SettingsScreen', () => {
     render(<SettingsScreen />);
 
     expect(screen.getByTestId('account-value').textContent).toBe('test@example.com');
+  });
+
+  it('renders battery saver row and toggling updates the store', () => {
+    render(<SettingsScreen />);
+
+    expect(screen.getByText('Battery-Aware Refresh')).toBeTruthy();
+
+    const batterySwitchWrapper = screen.getByTestId('battery-saver-switch');
+    const batterySwitchInput = batterySwitchWrapper.querySelector('input')!;
+    expect(batterySwitchInput).toBeTruthy();
+
+    fireEvent.click(batterySwitchInput);
+    expect(mockSetBatterySaverAware).toHaveBeenCalledWith(false);
+    expect(mockSelection).toHaveBeenCalled();
   });
 });
