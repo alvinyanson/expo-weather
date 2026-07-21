@@ -33,3 +33,11 @@ vi.mock('expo-secure-store', () => ({
   setItemAsync: vi.fn(),
   deleteItemAsync: vi.fn(),
 }));
+
+vi.mock('expo-haptics', () => ({
+  selectionAsync: vi.fn(() => Promise.resolve()),
+  notificationAsync: vi.fn(() => Promise.resolve()),
+  impactAsync: vi.fn(() => Promise.resolve()),
+  NotificationFeedbackType: { Success: 'success', Error: 'error' },
+  ImpactFeedbackStyle: { Light: 'light', Medium: 'medium' },
+}));

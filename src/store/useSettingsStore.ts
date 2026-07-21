@@ -12,11 +12,13 @@ interface SettingsStore {
   notificationsEnabled: boolean;
   expoPushToken?: string;
   language: Language;
+  hapticsEnabled: boolean;
   setTemperatureUnit: (unit: TemperatureUnit) => void;
   setWindSpeedUnit: (unit: WindSpeedUnit) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
   setExpoPushToken: (token?: string) => void;
   setLanguage: (lang: Language) => void;
+  setHapticsEnabled: (enabled: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -27,11 +29,13 @@ export const useSettingsStore = create<SettingsStore>()(
       notificationsEnabled: false,
       expoPushToken: undefined,
       language: 'system',
+      hapticsEnabled: true,
       setTemperatureUnit: (unit) => set({ temperatureUnit: unit }),
       setWindSpeedUnit: (unit) => set({ windSpeedUnit: unit }),
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
       setExpoPushToken: (token) => set({ expoPushToken: token }),
       setLanguage: (lang) => set({ language: lang }),
+      setHapticsEnabled: (enabled) => set({ hapticsEnabled: enabled }),
     }),
     {
       name: 'settings-storage',
