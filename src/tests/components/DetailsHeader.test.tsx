@@ -95,4 +95,33 @@ describe('DetailsHeader', () => {
 
     expect(screen.queryByTestId('details-share-button')).toBeNull();
   });
+
+  // Note: react-native-web drops onLongPress on Text (only native fires it), so the
+  // long-press -> copy path is exercised by the useCopyCoordinates hook test and
+  // verified manually on device. Here we assert the testable wiring surface.
+  it('exposes the city name under testID for the copy-coordinates long-press', () => {
+    const onBack = vi.fn();
+    const onCopyCoordinates = vi.fn();
+    render(
+      <DetailsHeader
+        city="Manila"
+        weather={weather}
+        lastUpdated="10:00 AM"
+        onBack={onBack}
+        onCopyCoordinates={onCopyCoordinates}
+      />,
+    );
+
+    expect(screen.getByTestId('details-city')).toBeTruthy();
+    expect(screen.getByTestId('details-city').textContent).toBe('Manila');
+  });
+
+  it('renders the city name unchanged when onCopyCoordinates is omitted', () => {
+    const onBack = vi.fn();
+    render(
+      <DetailsHeader city="Manila" weather={weather} lastUpdated="10:00 AM" onBack={onBack} />,
+    );
+
+    expect(screen.getByTestId('details-city').textContent).toBe('Manila');
+  });
 });

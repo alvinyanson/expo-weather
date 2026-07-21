@@ -41,3 +41,7 @@ vi.mock('expo-haptics', () => ({
   NotificationFeedbackType: { Success: 'success', Error: 'error' },
   ImpactFeedbackStyle: { Light: 'light', Medium: 'medium' },
 }));
+
+vi.mock('expo-clipboard', () => ({
+  setStringAsync: vi.fn(() => Promise.resolve(true)),
+}));
