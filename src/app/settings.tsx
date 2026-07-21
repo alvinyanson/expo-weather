@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useAuth, useToggleNotifications } from '@/hooks';
+import { useAuth, useHaptics, useToggleNotifications } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
 import { t } from '@/services/i18n';
@@ -24,12 +24,15 @@ export default function SettingsScreen() {
     setWindSpeedUnit,
     language,
     setLanguage,
+    hapticsEnabled,
+    setHapticsEnabled,
   } = useSettingsStore();
 
   const { notificationsEnabled, isUpdatingNotifications, handleToggleNotifications } =
     useToggleNotifications();
 
   const { user, signOut } = useAuth();
+  const haptics = useHaptics();
 
   // On sign-out the auth listener clears the store and the root layout
   // redirects to the login screen.
@@ -76,7 +79,10 @@ export default function SettingsScreen() {
                 styles.toggleButton,
                 temperatureUnit === 'celsius' && styles.toggleButtonActive,
               ]}
-              onPress={() => setTemperatureUnit('celsius')}
+              onPress={() => {
+                haptics.selection();
+                setTemperatureUnit('celsius');
+              }}
               accessibilityRole="switch"
               accessibilityState={{ checked: temperatureUnit === 'celsius' }}
             >
@@ -95,7 +101,10 @@ export default function SettingsScreen() {
                 styles.toggleButton,
                 temperatureUnit === 'fahrenheit' && styles.toggleButtonActive,
               ]}
-              onPress={() => setTemperatureUnit('fahrenheit')}
+              onPress={() => {
+                haptics.selection();
+                setTemperatureUnit('fahrenheit');
+              }}
               accessibilityRole="switch"
               accessibilityState={{ checked: temperatureUnit === 'fahrenheit' }}
             >
@@ -122,7 +131,10 @@ export default function SettingsScreen() {
             <Pressable
               testID="wind-toggle-kmh"
               style={[styles.toggleButton, windSpeedUnit === 'kmh' && styles.toggleButtonActive]}
-              onPress={() => setWindSpeedUnit('kmh')}
+              onPress={() => {
+                haptics.selection();
+                setWindSpeedUnit('kmh');
+              }}
               accessibilityRole="switch"
               accessibilityState={{ checked: windSpeedUnit === 'kmh' }}
             >
@@ -133,7 +145,10 @@ export default function SettingsScreen() {
             <Pressable
               testID="wind-toggle-mph"
               style={[styles.toggleButton, windSpeedUnit === 'mph' && styles.toggleButtonActive]}
-              onPress={() => setWindSpeedUnit('mph')}
+              onPress={() => {
+                haptics.selection();
+                setWindSpeedUnit('mph');
+              }}
               accessibilityRole="switch"
               accessibilityState={{ checked: windSpeedUnit === 'mph' }}
             >
@@ -159,7 +174,10 @@ export default function SettingsScreen() {
             <Pressable
               testID="language-toggle-system"
               style={[styles.toggleButton, language === 'system' && styles.toggleButtonActive]}
-              onPress={() => setLanguage('system')}
+              onPress={() => {
+                haptics.selection();
+                setLanguage('system');
+              }}
               accessibilityRole="switch"
               accessibilityState={{ checked: language === 'system' }}
             >
@@ -170,7 +188,10 @@ export default function SettingsScreen() {
             <Pressable
               testID="language-toggle-en"
               style={[styles.toggleButton, language === 'en' && styles.toggleButtonActive]}
-              onPress={() => setLanguage('en')}
+              onPress={() => {
+                haptics.selection();
+                setLanguage('en');
+              }}
               accessibilityRole="switch"
               accessibilityState={{ checked: language === 'en' }}
             >
@@ -181,7 +202,10 @@ export default function SettingsScreen() {
             <Pressable
               testID="language-toggle-ja"
               style={[styles.toggleButton, language === 'ja' && styles.toggleButtonActive]}
-              onPress={() => setLanguage('ja')}
+              onPress={() => {
+                haptics.selection();
+                setLanguage('ja');
+              }}
               accessibilityRole="switch"
               accessibilityState={{ checked: language === 'ja' }}
             >
@@ -204,11 +228,33 @@ export default function SettingsScreen() {
               <Switch
                 testID="weather-alerts-switch"
                 value={notificationsEnabled}
-                onValueChange={handleToggleNotifications}
+                onValueChange={(value) => {
+                  haptics.selection();
+                  handleToggleNotifications(value);
+                }}
                 trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
                 thumbColor={notificationsEnabled ? 'white' : '#f4f3f4'}
               />
             )}
+          </View>
+        </View>
+
+        <View style={styles.settingRow}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.settingLabel}>{t('hapticsLabel')}</Text>
+            <Text style={styles.settingDescription}>{t('hapticsDesc')}</Text>
+          </View>
+          <View style={styles.toggleContainer}>
+            <Switch
+              testID="haptics-switch"
+              value={hapticsEnabled !== false}
+              onValueChange={(value) => {
+                haptics.selection();
+                setHapticsEnabled(value);
+              }}
+              trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
+              thumbColor={hapticsEnabled !== false ? 'white' : '#f4f3f4'}
+            />
           </View>
         </View>
 

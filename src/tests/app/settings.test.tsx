@@ -7,16 +7,21 @@ const {
   mockSetTemperatureUnit,
   mockSetWindSpeedUnit,
   mockSetLanguage,
+  mockSetHapticsEnabled,
+  mockSelection,
   mockUseSettingsStoreState,
 } = vi.hoisted(() => ({
   backMock: vi.fn(),
   mockSetTemperatureUnit: vi.fn(),
   mockSetWindSpeedUnit: vi.fn(),
   mockSetLanguage: vi.fn(),
+  mockSetHapticsEnabled: vi.fn(),
+  mockSelection: vi.fn(),
   mockUseSettingsStoreState: {
     temperatureUnit: 'celsius',
     windSpeedUnit: 'kmh',
     language: 'system',
+    hapticsEnabled: true,
   },
 }));
 
@@ -29,6 +34,12 @@ vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 vi.mock('@/hooks', () => ({
   useAuth: vi.fn(),
   useToggleNotifications: vi.fn(),
+  useHaptics: () => ({
+    selection: mockSelection,
+    success: vi.fn(),
+    error: vi.fn(),
+    impact: vi.fn(),
+  }),
 }));
 
 vi.mock('@/store/useSettingsStore', () => {
@@ -37,9 +48,11 @@ vi.mock('@/store/useSettingsStore', () => {
       temperatureUnit: mockUseSettingsStoreState.temperatureUnit,
       windSpeedUnit: mockUseSettingsStoreState.windSpeedUnit,
       language: mockUseSettingsStoreState.language,
+      hapticsEnabled: mockUseSettingsStoreState.hapticsEnabled,
       setTemperatureUnit: mockSetTemperatureUnit,
       setWindSpeedUnit: mockSetWindSpeedUnit,
       setLanguage: mockSetLanguage,
+      setHapticsEnabled: mockSetHapticsEnabled,
     })),
     {
       getState: vi.fn(() => ({ language: 'system' })),
@@ -60,6 +73,7 @@ describe('SettingsScreen', () => {
     mockUseSettingsStoreState.temperatureUnit = 'celsius';
     mockUseSettingsStoreState.windSpeedUnit = 'kmh';
     mockUseSettingsStoreState.language = 'system';
+    mockUseSettingsStoreState.hapticsEnabled = true;
 
     mockHandleToggleNotifications = vi.fn();
     mockSignOut = vi.fn();
@@ -145,6 +159,27 @@ describe('SettingsScreen', () => {
 
     fireEvent.click(alertsSwitchInput);
     expect(mockHandleToggleNotifications).toHaveBeenCalledWith(true);
+  });
+
+  it('renders haptics row and toggling updates the store', () => {
+    render(<SettingsScreen />);
+
+    expect(screen.getByText('Haptic Feedback')).toBeTruthy();
+
+    const hapticsSwitchWrapper = screen.getByTestId('haptics-switch');
+    const hapticsSwitchInput = hapticsSwitchWrapper.querySelector('input')!;
+    expect(hapticsSwitchInput).toBeTruthy();
+
+    fireEvent.click(hapticsSwitchInput);
+    expect(mockSetHapticsEnabled).toHaveBeenCalledWith(false);
+    expect(mockSelection).toHaveBeenCalled();
+  });
+
+  it('fires a selection haptic on unit changes', () => {
+    render(<SettingsScreen />);
+
+    fireEvent.click(screen.getByTestId('temp-toggle-fahrenheit'));
+    expect(mockSelection).toHaveBeenCalled();
   });
 
   it('displays loading state when updating notifications', () => {

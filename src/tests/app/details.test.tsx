@@ -18,6 +18,12 @@ vi.mock('@/hooks', () => ({
     savedLocations: [],
     toggleSavedLocation: mockToggleSavedLocation,
   })),
+  useHaptics: () => ({
+    selection: vi.fn(),
+    success: vi.fn(),
+    error: vi.fn(),
+    impact: vi.fn(),
+  }),
 }));
 
 import { useFetchLocation, useFetchWeather } from '@/hooks';
