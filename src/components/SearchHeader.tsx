@@ -70,6 +70,19 @@ export const SearchHeader = () => {
           {isSearching && <ActivityIndicator size="small" color="white" />}
         </View>
         <Pressable
+          testID="map-button"
+          onPress={() => router.push('/map')}
+          style={({ pressed }) => [
+            styles.settingsButton,
+            { marginRight: 10 },
+            pressed && { opacity: 0.7 },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel={t('mapButtonLabel')}
+        >
+          <SymbolView name={{ ios: 'map', android: 'map' }} size={24} tintColor="white" />
+        </Pressable>
+        <Pressable
           testID="saved-locations-button"
           onPress={() => router.push('/saved')}
           style={({ pressed }) => [

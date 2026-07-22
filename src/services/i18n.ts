@@ -45,6 +45,15 @@ const translations = {
     savedLocationsLabel: 'Saved locations',
     recentSearchesTitle: 'Recent Searches',
 
+    // Map
+    mapButtonLabel: 'Weather map',
+    mapTitle: 'Weather Map',
+    mapEmptyTitle: 'Nothing to show on the map yet.',
+    mapEmptySubtitle: 'Enable location or save a location to see it on the map.',
+    mapViewDetailsLabel: 'View details',
+    mapZoomInLabel: 'Zoom in',
+    mapZoomOutLabel: 'Zoom out',
+
     // WeatherSummaryCard
     humidityLabel: 'Humidity',
     windLabel: 'Wind',
@@ -208,6 +217,15 @@ const translations = {
     searchPlaceholder: '都市を検索...',
     savedLocationsLabel: '保存済みの場所',
     recentSearchesTitle: '最近の検索',
+
+    // Map
+    mapButtonLabel: '天気マップ',
+    mapTitle: '天気マップ',
+    mapEmptyTitle: 'マップに表示するものがまだありません。',
+    mapEmptySubtitle: '位置情報を有効にするか、場所を保存するとマップに表示されます。',
+    mapViewDetailsLabel: '詳細を表示',
+    mapZoomInLabel: 'ズームイン',
+    mapZoomOutLabel: 'ズームアウト',
 
     // WeatherSummaryCard
     humidityLabel: '湿度',

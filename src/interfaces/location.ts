@@ -12,3 +12,11 @@ export interface LocationSearchResult {
   country?: string;
   admin1?: string;
 }
+
+export interface MapMarkerData {
+  id: string; // 'current-location' for GPS, or the SavedLocation.id
+  latitude: number;
+  longitude: number;
+  city: string;
+  isCurrentLocation: boolean;
+}
