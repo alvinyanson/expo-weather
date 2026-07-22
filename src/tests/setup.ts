@@ -54,6 +54,22 @@ vi.mock('expo-sensors', () => ({
   },
 }));
 
+// @maplibre/maplibre-react-native is a native module with no react-native-web
+// equivalent, so tests can't render the real map. Replace it with passthrough
+// stubs (render children only) so markers/callouts still land in the DOM -
+// same approach as the expo-battery/expo-sensors mocks below.
+vi.mock('@maplibre/maplibre-react-native', () => {
+  const React = require('react');
+  const passthrough = ({ children }: any) => React.createElement(React.Fragment, null, children);
+  return {
+    Map: passthrough,
+    Camera: () => null,
+    Marker: passthrough,
+    Callout: passthrough,
+    ViewAnnotation: passthrough,
+  };
+});
+
 vi.mock('expo-battery', () => ({
   BatteryState: {
     UNKNOWN: 0,

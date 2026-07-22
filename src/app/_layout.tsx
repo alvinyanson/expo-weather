@@ -89,6 +89,7 @@ function RootApp() {
           <Stack.Screen name="details" />
           <Stack.Screen name="settings" />
           <Stack.Screen name="saved" />
+          <Stack.Screen name="map" />
         </Stack.Protected>
 
         <Stack.Protected guard={!isAuthenticated}>

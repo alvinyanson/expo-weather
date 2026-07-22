@@ -82,4 +82,12 @@ describe('SearchHeader', () => {
     fireEvent.click(screen.getByTestId('saved-locations-button'));
     expect(pushMock).toHaveBeenCalledWith('/saved');
   });
+
+  it('navigates to the map on map button press', () => {
+    mockSearchHook.mockReturnValue(searchHookState());
+    render(<SearchHeader />);
+
+    fireEvent.click(screen.getByTestId('map-button'));
+    expect(pushMock).toHaveBeenCalledWith('/map');
+  });
 });
