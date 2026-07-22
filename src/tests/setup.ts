@@ -60,9 +60,26 @@ vi.mock('expo-sensors', () => ({
 // same approach as the expo-battery/expo-sensors mocks below.
 vi.mock('@maplibre/maplibre-react-native', () => {
   const React = require('react');
+  // require() inside a hoisted vi.mock factory bypasses the react-native ->
+  // react-native-web alias, so pull Pressable from react-native-web directly.
+  const { Pressable } = require('react-native-web');
   const passthrough = ({ children }: any) => React.createElement(React.Fragment, null, children);
+  const MapMock = ({ children, onLongPress }: any) =>
+    React.createElement(
+      React.Fragment,
+      null,
+      onLongPress &&
+        React.createElement(Pressable, {
+          testID: 'map-longpress-trigger',
+          onPress: () =>
+            onLongPress({
+              nativeEvent: { lngLat: [121.0, 14.5] },
+            }),
+        }),
+      children,
+    );
   return {
-    Map: passthrough,
+    Map: MapMock,
     Camera: () => null,
     Marker: passthrough,
     Callout: passthrough,

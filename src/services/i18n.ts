@@ -53,6 +53,12 @@ const translations = {
     mapViewDetailsLabel: 'View details',
     mapZoomInLabel: 'Zoom in',
     mapZoomOutLabel: 'Zoom out',
+    mapPickResolving: 'Resolving location…',
+    mapPickHint: 'Long press anywhere on the map to inspect weather.',
+    pickedSaveLabel: 'Save location',
+    pickedUnsaveLabel: 'Unsave location',
+    pickedDismissLabel: 'Dismiss marker',
+    pickedViewDetailsLabel: 'View details',
 
     // WeatherSummaryCard
     humidityLabel: 'Humidity',
@@ -226,6 +232,12 @@ const translations = {
     mapViewDetailsLabel: '詳細を表示',
     mapZoomInLabel: 'ズームイン',
     mapZoomOutLabel: 'ズームアウト',
+    mapPickResolving: '位置情報を取得中…',
+    mapPickHint: 'マップ上を長押しして天気を表示します。',
+    pickedSaveLabel: '場所を保存',
+    pickedUnsaveLabel: '保存を解除',
+    pickedDismissLabel: 'ピンを閉じる',
+    pickedViewDetailsLabel: '詳細を表示',
 
     // WeatherSummaryCard
     humidityLabel: '湿度',
