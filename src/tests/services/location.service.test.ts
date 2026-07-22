@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { searchLocations } from '@/services/location.service';
 
+vi.mock('expo-location', () => ({
+  reverseGeocodeAsync: vi.fn(),
+}));
+
 vi.mock('axios');
 const mockedAxios = vi.mocked(axios);
 

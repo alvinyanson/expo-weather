@@ -4,8 +4,9 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { Camera, Map, type CameraRef, type MapRef } from '@maplibre/maplibre-react-native';
 import { t } from '@/services/i18n';
-import { useFetchLocation, useSavedLocations } from '@/hooks';
+import { useFetchLocation, useHaptics, useReverseGeocode, useSavedLocations } from '@/hooks';
 import { WeatherMapMarker } from '@/components/WeatherMapMarker';
+import { PickedLocationMarker } from '@/components/PickedLocationMarker';
 import type { MapMarkerData } from '@/interfaces';
 import { theme } from '@/theme';
 
@@ -14,10 +15,19 @@ const MAP_STYLE_URL =
 
 export default function MapScreen() {
   const router = useRouter();
+  const haptics = useHaptics();
   const { data: gpsLocation } = useFetchLocation();
-  const { savedLocations } = useSavedLocations();
+  const { savedLocations, toggleSavedLocation } = useSavedLocations();
 
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
+  const [pickedCoords, setPickedCoords] = useState<{ latitude: number; longitude: number } | null>(
+    null,
+  );
+
+  const { data: placeName, isFetching: isResolvingCity } = useReverseGeocode(
+    pickedCoords ?? undefined,
+  );
+
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapRef>(null);
 
@@ -46,6 +56,18 @@ export default function MapScreen() {
   ];
 
   const isEmpty = markers.length === 0;
+  const showHint = isEmpty && !pickedCoords;
+
+  const resolvedCityName = placeName ?? t('mapPickResolving');
+
+  const isPickedSaved = pickedCoords
+    ? savedLocations.some(
+        (loc) =>
+          loc.city.toLowerCase() === resolvedCityName.toLowerCase() ||
+          (Math.abs(loc.lat - pickedCoords.latitude) < 0.01 &&
+            Math.abs(loc.lon - pickedCoords.longitude) < 0.01),
+      )
+    : false;
 
   // Initial camera: GPS first, then first saved location, else a world default.
   const initialCenter: [number, number] = gpsLocation
@@ -57,6 +79,15 @@ export default function MapScreen() {
 
   const handleToggleSelect = (id: string) => {
     setSelectedMarkerId((current) => (current === id ? null : id));
+  };
+
+  const handleLongPress = (e: any) => {
+    const lngLat = e.nativeEvent?.lngLat;
+    if (!lngLat || !Array.isArray(lngLat) || lngLat.length < 2) return;
+    const [longitude, latitude] = lngLat;
+    setSelectedMarkerId(null);
+    setPickedCoords({ latitude, longitude });
+    haptics.impact();
   };
 
   // Read the live zoom from the map (so pinch gestures stay in sync) and step it.
@@ -98,65 +129,70 @@ export default function MapScreen() {
       </View>
 
       <View style={styles.content}>
-        {isEmpty ? (
-          <View style={styles.center}>
-            <SymbolView
-              name={{ ios: 'map', android: 'map' }}
-              size={48}
-              tintColor={theme.colors.textHint}
+        <View style={styles.map}>
+          <Map
+            ref={mapRef}
+            style={styles.map}
+            mapStyle={MAP_STYLE_URL}
+            onLongPress={handleLongPress}
+          >
+            <Camera
+              ref={cameraRef}
+              initialViewState={{ center: initialCenter, zoom: initialZoom }}
             />
-            <Text testID="map-empty" style={styles.emptyTitle}>
-              {t('mapEmptyTitle')}
-            </Text>
-            <Text style={styles.emptySubtitle}>{t('mapEmptySubtitle')}</Text>
-          </View>
-        ) : (
-          <View style={styles.map}>
-            <Map ref={mapRef} style={styles.map} mapStyle={MAP_STYLE_URL}>
-              <Camera
-                ref={cameraRef}
-                initialViewState={{ center: initialCenter, zoom: initialZoom }}
+            {markers.map((marker) => (
+              <WeatherMapMarker
+                key={marker.id}
+                marker={marker}
+                isSelected={selectedMarkerId === marker.id}
+                onToggleSelect={handleToggleSelect}
+                onViewDetails={handleViewDetails}
               />
-              {markers.map((marker) => (
-                <WeatherMapMarker
-                  key={marker.id}
-                  marker={marker}
-                  isSelected={selectedMarkerId === marker.id}
-                  onToggleSelect={handleToggleSelect}
-                  onViewDetails={handleViewDetails}
-                />
-              ))}
-            </Map>
+            ))}
+            {pickedCoords && (
+              <PickedLocationMarker
+                latitude={pickedCoords.latitude}
+                longitude={pickedCoords.longitude}
+                city={resolvedCityName}
+                isResolvingCity={isResolvingCity}
+                isSaved={isPickedSaved}
+                onViewDetails={handleViewDetails}
+                onToggleSave={toggleSavedLocation}
+                onDismiss={() => setPickedCoords(null)}
+              />
+            )}
+          </Map>
 
-            <View style={styles.zoomControls}>
-              <Pressable
-                testID="map-zoom-in-button"
-                onPress={() => handleZoom(1)}
-                style={({ pressed }) => [styles.zoomButton, pressed && styles.buttonPressed]}
-                android_ripple={{ color: theme.colors.ripple, borderless: false }}
-                accessibilityRole="button"
-                accessibilityLabel={t('mapZoomInLabel')}
-              >
-                <SymbolView name={{ ios: 'plus', android: 'add' }} size={24} tintColor="white" />
-              </Pressable>
-              <View style={styles.zoomDivider} />
-              <Pressable
-                testID="map-zoom-out-button"
-                onPress={() => handleZoom(-1)}
-                style={({ pressed }) => [styles.zoomButton, pressed && styles.buttonPressed]}
-                android_ripple={{ color: theme.colors.ripple, borderless: false }}
-                accessibilityRole="button"
-                accessibilityLabel={t('mapZoomOutLabel')}
-              >
-                <SymbolView
-                  name={{ ios: 'minus', android: 'remove' }}
-                  size={24}
-                  tintColor="white"
-                />
-              </Pressable>
+          {showHint && (
+            <View testID="map-pick-hint" style={styles.hintContainer} pointerEvents="none">
+              <Text style={styles.hintText}>{t('mapPickHint')}</Text>
             </View>
+          )}
+
+          <View style={styles.zoomControls}>
+            <Pressable
+              testID="map-zoom-in-button"
+              onPress={() => handleZoom(1)}
+              style={({ pressed }) => [styles.zoomButton, pressed && styles.buttonPressed]}
+              android_ripple={{ color: theme.colors.ripple, borderless: false }}
+              accessibilityRole="button"
+              accessibilityLabel={t('mapZoomInLabel')}
+            >
+              <SymbolView name={{ ios: 'plus', android: 'add' }} size={24} tintColor="white" />
+            </Pressable>
+            <View style={styles.zoomDivider} />
+            <Pressable
+              testID="map-zoom-out-button"
+              onPress={() => handleZoom(-1)}
+              style={({ pressed }) => [styles.zoomButton, pressed && styles.buttonPressed]}
+              android_ripple={{ color: theme.colors.ripple, borderless: false }}
+              accessibilityRole="button"
+              accessibilityLabel={t('mapZoomOutLabel')}
+            >
+              <SymbolView name={{ ios: 'minus', android: 'remove' }} size={24} tintColor="white" />
+            </Pressable>
           </View>
-        )}
+        </View>
       </View>
     </View>
   );
@@ -195,6 +231,24 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
+  hintContainer: {
+    position: 'absolute',
+    top: theme.spacing.md,
+    left: theme.spacing.md,
+    right: theme.spacing.md,
+    backgroundColor: theme.colors.overlay,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderRadius: theme.borderRadius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    alignItems: 'center',
+  },
+  hintText: {
+    color: theme.colors.textMuted,
+    fontSize: theme.typography.sizes.sm,
+    textAlign: 'center',
+  },
   zoomControls: {
     position: 'absolute',
     right: theme.spacing.md,
@@ -214,23 +268,5 @@ const styles = StyleSheet.create({
   zoomDivider: {
     height: 1,
     backgroundColor: theme.colors.border,
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: theme.spacing.lg,
-  },
-  emptyTitle: {
-    color: 'white',
-    fontSize: theme.typography.sizes.lg,
-    fontWeight: '600',
-    marginTop: theme.spacing.md,
-  },
-  emptySubtitle: {
-    color: theme.colors.textHint,
-    fontSize: theme.typography.sizes.sm,
-    textAlign: 'center',
-    marginTop: theme.spacing.sm,
   },
 });
