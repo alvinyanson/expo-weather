@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mmkvZustandStorage } from '@/services/storage';
 
 export interface OnboardingStore {
   hasCompletedOnboarding: boolean;
@@ -19,12 +19,12 @@ export const useOnboardingStore = create<OnboardingStore>()(
     }),
     {
       name: 'onboarding-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => mmkvZustandStorage),
       partialize: (state) => ({
         hasCompletedOnboarding: state.hasCompletedOnboarding,
       }),
-      onRehydrateStorage: () => () => {
-        useOnboardingStore.setState({ hasHydrated: true });
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
       },
     },
   ),

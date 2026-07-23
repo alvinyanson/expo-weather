@@ -1,15 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    setItem: vi.fn(),
-    getItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
-}));
-
 describe('useOnboardingStore', () => {
   beforeEach(() => {
     useOnboardingStore.setState({

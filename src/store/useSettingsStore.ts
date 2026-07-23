@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mmkvZustandStorage } from '@/services/storage';
 
 export type TemperatureUnit = 'celsius' | 'fahrenheit';
 export type WindSpeedUnit = 'kmh' | 'mph';
@@ -43,7 +43,7 @@ export const useSettingsStore = create<SettingsStore>()(
     }),
     {
       name: 'settings-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => mmkvZustandStorage),
     },
   ),
 );

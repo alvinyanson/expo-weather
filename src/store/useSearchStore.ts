@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mmkvZustandStorage } from '@/services/storage';
 import { LocationSearchResult } from '@/interfaces';
 
 interface SearchStore {
@@ -22,7 +22,7 @@ export const useSearchStore = create<SearchStore>()(
     }),
     {
       name: 'recent-searches-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => mmkvZustandStorage),
     },
   ),
 );

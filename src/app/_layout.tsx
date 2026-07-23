@@ -1,7 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mmkvQueryPersister } from '@/services/storage';
 import { ErrorBoundaryProps, Stack } from 'expo-router';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -41,10 +40,6 @@ const queryClient = new QueryClient({
       gcTime: 1000 * 60 * 60 * 24, // 24 hours
     },
   },
-});
-
-const asyncStoragePersister = createAsyncStoragePersister({
-  storage: AsyncStorage,
 });
 
 function RootApp() {
@@ -112,7 +107,7 @@ function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PersistQueryClientProvider
         client={queryClient}
-        persistOptions={{ persister: asyncStoragePersister }}
+        persistOptions={{ persister: mmkvQueryPersister }}
       >
         <SafeAreaProvider>
           <RootApp />
