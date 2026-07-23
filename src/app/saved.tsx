@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import {
-  ActivityIndicator,
   FlatList,
   Pressable,
   StatusBar,
@@ -15,6 +14,7 @@ import {
 import { t } from '@/services/i18n';
 import { useSavedLocations } from '@/hooks';
 import { SavedLocationItem } from '@/components/SavedLocationItem';
+import { SavedLocationsSkeleton } from '@/components/skeletons/SavedLocationsSkeleton';
 import type { SavedLocation } from '@/interfaces';
 import { theme } from '@/theme';
 
@@ -45,12 +45,7 @@ export default function SavedLocationsScreen() {
 
   const renderBody = () => {
     if (isLoading) {
-      return (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="white" />
-          <Text style={styles.message}>{t('loadingSaved')}</Text>
-        </View>
-      );
+      return <SavedLocationsSkeleton />;
     }
 
     if (error) {

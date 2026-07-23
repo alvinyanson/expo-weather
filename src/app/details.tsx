@@ -11,21 +11,14 @@ import { theme } from '@/theme';
 import { formatTime } from '@/utils/formatters';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  StatusBar,
-  useWindowDimensions,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, View, StatusBar, useWindowDimensions } from 'react-native';
 import { t } from '@/services/i18n';
 
 import { DetailsHeader } from '@/components/DetailsHeader';
 import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
 import { DailyForecastList } from '@/components/DailyForecastList';
 import { PressureCard } from '@/components/PressureCard';
+import { DetailsScreenSkeleton } from '@/components/skeletons/DetailsScreenSkeleton';
 
 export default function DetailsScreen() {
   const router = useRouter();
@@ -122,14 +115,7 @@ export default function DetailsScreen() {
   }
 
   if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="white" />
-          <Text style={styles.loadingText}>{t('loadingDetails')}</Text>
-        </View>
-      </View>
-    );
+    return <DetailsScreenSkeleton />;
   }
 
   if (!weather?.current || !weather?.daily || !targetLocation) {
@@ -180,11 +166,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-  },
-  loadingText: {
-    color: 'white',
-    marginTop: 10,
-    fontSize: 16,
   },
   retryButton: {
     backgroundColor: theme.colors.surface,

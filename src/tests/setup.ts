@@ -101,3 +101,24 @@ vi.mock('expo-battery', () => ({
   addBatteryLevelListener: vi.fn(() => ({ remove: vi.fn() })),
   addBatteryStateListener: vi.fn(() => ({ remove: vi.fn() })),
 }));
+
+vi.mock('react-native-reanimated', () => {
+  const React = require('react');
+  const { View } = require('react-native-web');
+  return {
+    default: {
+      View: (props: any) => React.createElement(View, props),
+    },
+    useSharedValue: vi.fn((init) => ({ value: init })),
+    useAnimatedStyle: vi.fn((cb) => (cb ? cb() : {})),
+    withTiming: vi.fn((toValue) => toValue),
+    withRepeat: vi.fn((animation) => animation),
+    withSequence: vi.fn((...animations) => animations[0]),
+    Easing: {
+      out: vi.fn(),
+      in: vi.fn(),
+      ease: vi.fn(),
+      inOut: vi.fn(),
+    },
+  };
+});

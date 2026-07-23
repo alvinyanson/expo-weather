@@ -24,17 +24,6 @@ vi.mock('@/store/useBatteryStore', () => {
   return { useBatteryStore: store };
 });
 
-vi.mock('react-native-reanimated', () => {
-  return {
-    default: {
-      View: ({ children }: any) => <div>{children}</div>,
-    },
-    useAnimatedStyle: vi.fn(() => ({})),
-    withTiming: vi.fn((toValue) => toValue),
-    Easing: { inOut: vi.fn(), ease: vi.fn() },
-  };
-});
-
 describe('BatterySaverIndicator', () => {
   beforeEach(() => {
     mockBatterySaverAware.value = true;
