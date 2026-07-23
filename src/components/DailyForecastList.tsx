@@ -2,23 +2,18 @@ import { weatherCodeToSymbol, getIconTintColor } from '@/utils/weatherMapper';
 import { formatDayName, formatRound } from '@/utils/formatters';
 import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
-import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { WeatherResponse } from '@/interfaces';
 import { t } from '@/services/i18n';
 
 interface DailyForecastListProps {
   weather: WeatherResponse;
   tempUnit: string;
-  refreshing: boolean;
-  onRefresh: () => void;
+  refreshing?: boolean;
+  onRefresh?: () => void;
 }
 
-export const DailyForecastList = ({
-  weather,
-  tempUnit,
-  refreshing,
-  onRefresh,
-}: DailyForecastListProps) => {
+export const DailyForecastList = ({ weather, tempUnit }: DailyForecastListProps) => {
   if (!weather?.daily) return null;
 
   const renderForecastItem = ({ index }: { item: number; index: number }) => {
@@ -77,15 +72,8 @@ export const DailyForecastList = ({
         renderItem={renderForecastItem}
         keyExtractor={(_, index) => weather.daily.time[index] ?? String(index)}
         showsVerticalScrollIndicator={false}
+        scrollEnabled={false}
         contentContainerStyle={styles.forecastList}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="white"
-            colors={[theme.colors.primary]}
-          />
-        }
       />
     </View>
   );

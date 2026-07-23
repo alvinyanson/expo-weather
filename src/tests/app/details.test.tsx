@@ -9,6 +9,18 @@ vi.mock('expo-router', () => ({
 }));
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
+vi.mock('react-native-svg', () => {
+  const React = require('react');
+  const Dummy = ({ children, ...props }: any) => React.createElement('div', props, children);
+  return {
+    __esModule: true,
+    default: Dummy,
+    Path: Dummy,
+    Rect: Dummy,
+    Circle: Dummy,
+    Text: Dummy,
+  };
+});
 
 const mockToggleSavedLocation = vi.fn();
 const mockShare = vi.fn();
@@ -39,6 +51,14 @@ const mockWeatherHook = vi.mocked(useFetchWeather);
 const location = { latitude: 1, longitude: 2, city: 'Manila' };
 const weather = {
   current: { temperature_2m: 23.6, weather_code: 0, relative_humidity_2m: 60, wind_speed_10m: 12 },
+  hourly: {
+    time: [
+      new Date(Date.now() + 3600000).toISOString(),
+      new Date(Date.now() + 7200000).toISOString(),
+    ],
+    temperature_2m: [24, 26],
+    precipitation_probability: [0, 10],
+  },
   daily: {
     time: ['2026-06-18', '2026-06-19'],
     weather_code: [0, 3],
@@ -92,12 +112,13 @@ describe('DetailsScreen', () => {
 
     expect(screen.getByText('Manila')).toBeTruthy();
     expect(screen.getByText('Clear Sky')).toBeTruthy(); // weather_code 0
-    expect(screen.getByText('24°C')).toBeTruthy(); // 23.6 rounded
+    expect(screen.getAllByText('24°C').length).toBeGreaterThan(0); // 23.6 rounded
     expect(screen.getByText('60%')).toBeTruthy(); // humidity
     expect(screen.getByText('12 km/h')).toBeTruthy(); // wind
     expect(screen.getByText('7')).toBeTruthy(); // uv index max rounded
     expect(screen.getByText('8-Day Forecast')).toBeTruthy();
     expect(screen.getByTestId('pressure-card')).toBeTruthy();
+    expect(screen.getByTestId('hourly-temperature-chart')).toBeTruthy();
   });
 
   it('saves the displayed location from the header and confirms success', async () => {

@@ -6,6 +6,7 @@ import {
   getIconTintColor,
 } from '@/utils/weatherMapper';
 import { formatHourlyTime, formatRound } from '@/utils/formatters';
+import { selectNext24Hours } from '@/utils/hourlyChart';
 import { theme } from '@/theme';
 import { SymbolView } from 'expo-symbols';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
@@ -16,30 +17,22 @@ interface HourlyForecastProps {
   weather: WeatherResponse;
 }
 
-interface HourlyForecastItem {
-  time: string;
-  temperature: number;
-  weatherCode: number;
-  precipitation: number;
-}
-
 export const HourlyForecast = ({ weather }: HourlyForecastProps) => {
   const windSpeedUnit = useSettingsStore((state) => state.windSpeedUnit);
   const windUnit = windSpeedUnit === 'kmh' ? 'km/h' : 'mph';
 
   const hourlyData = useMemo(() => {
     if (!weather.hourly) return [];
-    return weather.hourly.time.reduce((acc: HourlyForecastItem[], time, i) => {
-      if (new Date(time).getTime() >= Date.now() - 3600000 && acc.length < 24) {
-        acc.push({
-          time,
-          temperature: weather.hourly.temperature_2m[i] ?? 0,
-          weatherCode: weather.hourly.weather_code[i] ?? 0,
-          precipitation: weather.hourly.precipitation_probability[i] ?? 0,
-        });
-      }
-      return acc;
-    }, []);
+    const points = selectNext24Hours(weather.hourly);
+    return points.map((pt) => {
+      const idx = weather.hourly?.time.indexOf(pt.time) ?? -1;
+      return {
+        time: pt.time,
+        temperature: pt.temperature,
+        precipitation: pt.precipitation,
+        weatherCode: idx >= 0 ? (weather.hourly?.weather_code[idx] ?? 0) : 0,
+      };
+    });
   }, [weather.hourly]);
 
   if (!weather.hourly) return null;

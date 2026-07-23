@@ -11,13 +11,23 @@ import { theme } from '@/theme';
 import { formatTime } from '@/utils/formatters';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View, StatusBar, useWindowDimensions } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 import { t } from '@/services/i18n';
 
 import { DetailsHeader } from '@/components/DetailsHeader';
 import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
 import { DailyForecastList } from '@/components/DailyForecastList';
 import { PressureCard } from '@/components/PressureCard';
+import { HourlyTemperatureChart } from '@/components/HourlyTemperatureChart';
 import { DetailsScreenSkeleton } from '@/components/skeletons/DetailsScreenSkeleton';
 import { SwipeToDismiss } from '@/components/SwipeToDismiss';
 
@@ -144,10 +154,25 @@ export default function DetailsScreen() {
           onCopyCoordinates={handleCopyCoordinates}
         />
 
-        <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={
+            isTablet ? styles.tabletContentContainer : styles.mobileContentContainer
+          }
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="white"
+              colors={[theme.colors.primary]}
+            />
+          }
+        >
           <View style={isTablet ? styles.tabletColumnLeft : undefined}>
             <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />
             <PressureCard forecastPressure={weather.current.surface_pressure} />
+            <HourlyTemperatureChart weather={weather} tempUnit={tempUnit} />
           </View>
 
           <View style={isTablet ? styles.tabletColumnRight : styles.mobileColumnRight}>
@@ -158,7 +183,7 @@ export default function DetailsScreen() {
               onRefresh={onRefresh}
             />
           </View>
-        </View>
+        </ScrollView>
       </View>
     </SwipeToDismiss>
   );
@@ -191,15 +216,18 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
   },
-  tabletContentContainer: {
+  scrollContainer: {
     flex: 1,
+  },
+  tabletContentContainer: {
     flexDirection: 'row',
     paddingHorizontal: 20,
     gap: 20,
+    paddingBottom: 20,
   },
   mobileContentContainer: {
-    flex: 1,
     flexDirection: 'column',
+    paddingBottom: 20,
   },
   tabletColumnLeft: {
     flex: 1,

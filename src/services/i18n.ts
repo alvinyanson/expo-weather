@@ -32,6 +32,12 @@ const translations = {
       '%{condition} conditions will continue for the rest of the day. Wind gusts are up to %{windSpeed} %{windUnit}.',
     nowText: 'Now',
 
+    // HourlyTemperatureChart
+    hourlyChartTitle: 'Next 24 Hours',
+    hourlyChartEmpty: 'No hourly forecast available.',
+    hourlyChartPrecipLabel: 'Precipitation',
+    hourlyChartA11yLabel: 'Temperature from %{min}%{unit} to %{max}%{unit} over the next 24 hours.',
+
     // OfflineIndicator
     offlineText: 'Offline. Displaying cached data.',
 
@@ -210,6 +216,12 @@ const translations = {
     hourlySummary:
       '残りの時間も%{condition}の状態が続くでしょう。最大瞬間風速は最大%{windSpeed} %{windUnit}です。',
     nowText: '現在',
+
+    // HourlyTemperatureChart
+    hourlyChartTitle: '24時間天気',
+    hourlyChartEmpty: '時間ごとの予報データがありません。',
+    hourlyChartPrecipLabel: '降水確率',
+    hourlyChartA11yLabel: '今後24時間の気温は%{min}%{unit}から%{max}%{unit}です。',
 
     // OfflineIndicator
     offlineText: 'オフラインです。キャッシュされたデータを表示しています。',
