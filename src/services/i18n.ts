@@ -82,6 +82,19 @@ const translations = {
     pressureAboveForecast: '%{delta} hPa above forecast',
     pressureBelowForecast: '%{delta} hPa below forecast',
 
+    // onboarding
+    onboardingSearchTitle: 'Search Any City',
+    onboardingSearchDescription:
+      'Quickly search and view current weather conditions and forecasts for cities worldwide.',
+    onboardingSaveTitle: 'Save Favorite Locations',
+    onboardingSaveDescription:
+      'Keep your most important cities pinned for fast, one-tap access anytime.',
+    onboardingAlertsTitle: 'Stay Informed',
+    onboardingAlertsDescription:
+      'Get timely updates and stay prepared for changing weather conditions.',
+    onboardingNext: 'Next',
+    onboardingGetStarted: 'Get Started',
+
     // login
     appName: 'Expo Weather',
     loginSubtitle: 'Sign in to continue',
@@ -266,6 +279,16 @@ const translations = {
     pressureMatchesForecast: '予報と一致しています。',
     pressureAboveForecast: '予報より%{delta} hPa高い',
     pressureBelowForecast: '予報より%{delta} hPa低い',
+
+    // onboarding
+    onboardingSearchTitle: '世界中の都市を検索',
+    onboardingSearchDescription: '世界各地の都市を迅速に検索し、現在の天気や予報を確認できます。',
+    onboardingSaveTitle: 'お気に入りの場所を保存',
+    onboardingSaveDescription: '大切な都市を保存して、いつでもワンタップでアクセスできます。',
+    onboardingAlertsTitle: '最新の気象情報をキャッチ',
+    onboardingAlertsDescription: '天候の変化に備え、タイムリーな気象更新を受け取ることができます。',
+    onboardingNext: '次へ',
+    onboardingGetStarted: 'はじめる',
 
     // login
     appName: 'Expoウェザー',
