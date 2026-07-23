@@ -19,6 +19,7 @@ import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
 import { DailyForecastList } from '@/components/DailyForecastList';
 import { PressureCard } from '@/components/PressureCard';
 import { DetailsScreenSkeleton } from '@/components/skeletons/DetailsScreenSkeleton';
+import { SwipeToDismiss } from '@/components/SwipeToDismiss';
 
 export default function DetailsScreen() {
   const router = useRouter();
@@ -101,6 +102,11 @@ export default function DetailsScreen() {
   const isGettingLocation = !params.lat && isLoadingLocation;
   const isLoading = isGettingLocation || (!weather && isFetchingWeather);
 
+  const handleDismiss = () => {
+    haptics.impact();
+    router.back();
+  };
+
   if (isError) {
     return (
       <View style={styles.container}>
@@ -123,36 +129,38 @@ export default function DetailsScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+    <SwipeToDismiss onDismiss={handleDismiss}>
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-      <DetailsHeader
-        city={targetLocation.city}
-        weather={weather}
-        lastUpdated={lastUpdated}
-        onBack={() => router.back()}
-        onShare={handleShare}
-        onSave={handleSaveLocation}
-        isSaved={isSaved}
-        onCopyCoordinates={handleCopyCoordinates}
-      />
+        <DetailsHeader
+          city={targetLocation.city}
+          weather={weather}
+          lastUpdated={lastUpdated}
+          onBack={() => router.back()}
+          onShare={handleShare}
+          onSave={handleSaveLocation}
+          isSaved={isSaved}
+          onCopyCoordinates={handleCopyCoordinates}
+        />
 
-      <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
-        <View style={isTablet ? styles.tabletColumnLeft : undefined}>
-          <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />
-          <PressureCard forecastPressure={weather.current.surface_pressure} />
-        </View>
+        <View style={isTablet ? styles.tabletContentContainer : styles.mobileContentContainer}>
+          <View style={isTablet ? styles.tabletColumnLeft : undefined}>
+            <WeatherSummaryCard weather={weather} tempUnit={tempUnit} windUnit={windUnit} />
+            <PressureCard forecastPressure={weather.current.surface_pressure} />
+          </View>
 
-        <View style={isTablet ? styles.tabletColumnRight : styles.mobileColumnRight}>
-          <DailyForecastList
-            weather={weather}
-            tempUnit={tempUnit}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
+          <View style={isTablet ? styles.tabletColumnRight : styles.mobileColumnRight}>
+            <DailyForecastList
+              weather={weather}
+              tempUnit={tempUnit}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </SwipeToDismiss>
   );
 }
 

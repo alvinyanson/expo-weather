@@ -112,13 +112,39 @@ vi.mock('react-native-reanimated', () => {
     useSharedValue: vi.fn((init) => ({ value: init })),
     useAnimatedStyle: vi.fn((cb) => (cb ? cb() : {})),
     withTiming: vi.fn((toValue) => toValue),
+    withSpring: vi.fn((toValue) => toValue),
     withRepeat: vi.fn((animation) => animation),
     withSequence: vi.fn((...animations) => animations[0]),
+    interpolate: vi.fn((value, inputRange, outputRange) => {
+      if (!inputRange || !outputRange) return 0;
+      const ratio = (value - inputRange[0]) / (inputRange[1] - inputRange[0]);
+      return outputRange[0] + ratio * (outputRange[1] - outputRange[0]);
+    }),
+    Extrapolation: { CLAMP: 'clamp', EXTEND: 'extend', IDENTITY: 'identity' },
+    runOnJS: vi.fn((fn) => fn),
     Easing: {
       out: vi.fn(),
       in: vi.fn(),
       ease: vi.fn(),
       inOut: vi.fn(),
     },
+  };
+});
+
+function gestureChainable(): any {
+  return new Proxy(
+    {},
+    {
+      get: () => () => gestureChainable(),
+    },
+  );
+}
+
+vi.mock('react-native-gesture-handler', () => {
+  const React = require('react');
+  const { View } = require('react-native-web');
+  return {
+    Gesture: { Pan: () => gestureChainable() },
+    GestureDetector: ({ children }: any) => React.createElement(View, null, children),
   };
 });
