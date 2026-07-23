@@ -167,6 +167,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  loadingText: {
+    color: 'white',
+    marginTop: 10,
+    fontSize: 16,
+  },
   retryButton: {
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 30,
