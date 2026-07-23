@@ -191,7 +191,7 @@ describe('HomeScreen', () => {
 
     render(<HomeScreen />);
 
-    expect(screen.getByText('Fetching weather data...')).toBeTruthy();
+    expect(screen.getByTestId('home-skeleton')).toBeTruthy();
   });
 
   it('renders the city, temperature and condition once loaded', () => {

@@ -4,7 +4,6 @@ import { useSettingsStore } from '@/store/useSettingsStore';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import {
-  ActivityIndicator,
   Pressable,
   ScrollView,
   StatusBar,
@@ -18,6 +17,7 @@ import { t } from '@/services/i18n';
 import { SearchHeader } from '@/components/SearchHeader';
 import { CurrentWeather } from '@/components/CurrentWeather';
 import { HourlyForecast } from '@/components/HourlyForecast';
+import { HomeScreenSkeleton } from '@/components/skeletons/HomeScreenSkeleton';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -178,14 +178,7 @@ export default function HomeScreen() {
 
       <SearchHeader />
 
-      {isLoading ? (
-        <View style={styles.center}>
-          <ActivityIndicator size="large" color="white" />
-          <Text style={styles.loadingText}>{t('fetchingWeather')}</Text>
-        </View>
-      ) : (
-        renderContent()
-      )}
+      {isLoading ? <HomeScreenSkeleton /> : renderContent()}
     </View>
   );
 }
@@ -260,11 +253,6 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: theme.colors.textHint,
-  },
-  loadingText: {
-    color: 'white',
-    marginTop: 10,
-    fontSize: 16,
   },
   errorText: {
     color: 'white',

@@ -70,7 +70,7 @@ describe('DetailsScreen', () => {
 
     render(<DetailsScreen />);
 
-    expect(screen.getByText('Loading details...')).toBeTruthy();
+    expect(screen.getByTestId('details-skeleton')).toBeTruthy();
   });
 
   it('shows an empty state with a working "Go Back" when there is no data', () => {

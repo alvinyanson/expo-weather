@@ -4,11 +4,6 @@ import type { SavedLocation } from '@/interfaces';
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
-vi.mock('react-native-reanimated', () => ({
-  default: { View: ({ children }: any) => <div>{children}</div> },
-  useAnimatedStyle: vi.fn(() => ({})),
-}));
-
 vi.mock('react-native-gesture-handler/ReanimatedSwipeable', () => ({
   default: ({ children, renderRightActions }: any) => (
     <div>

@@ -10,13 +10,6 @@ vi.mock('expo-router', () => ({
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
-// Reanimated relies on native modules that don't exist under jsdom, so stub the
-// pieces SavedLocationItem uses (mirrors the OfflineIndicator test).
-vi.mock('react-native-reanimated', () => ({
-  default: { View: ({ children }: any) => createElement(Fragment, null, children) },
-  useAnimatedStyle: vi.fn(() => ({})),
-}));
-
 // Render the Swipeable's content and its (normally hidden) right actions inline
 // so the Delete action is present in the DOM without simulating a real gesture.
 vi.mock('react-native-gesture-handler/ReanimatedSwipeable', () => ({
@@ -69,7 +62,7 @@ describe('SavedLocationsScreen', () => {
 
     render(<SavedLocationsScreen />);
 
-    expect(screen.getByText('Loading saved locations...')).toBeTruthy();
+    expect(screen.getByTestId('saved-skeleton')).toBeTruthy();
   });
 
   it('shows the empty state when there are no saved locations', () => {
