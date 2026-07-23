@@ -15,3 +15,5 @@ export * from './useCopyCoordinates';
 export * from './useBarometer';
 export * from './useBatteryMonitor';
 export * from './useReverseGeocode';
+export * from './useDatabaseInit';
+export * from './useWeatherHistory';

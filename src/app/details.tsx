@@ -154,6 +154,25 @@ export default function DetailsScreen() {
           onCopyCoordinates={handleCopyCoordinates}
         />
 
+        <Pressable
+          style={({ pressed }) => [styles.historyButton, pressed && styles.historyButtonPressed]}
+          android_ripple={{ color: theme.colors.ripple }}
+          accessibilityRole="button"
+          accessibilityLabel="View weather history"
+          onPress={() =>
+            router.push({
+              pathname: '/history',
+              params: {
+                lat: String(targetLocation.latitude),
+                lon: String(targetLocation.longitude),
+                city: targetLocation.city,
+              },
+            })
+          }
+        >
+          <Text style={styles.historyButtonText}>View History</Text>
+        </Pressable>
+
         <ScrollView
           style={styles.scrollContainer}
           contentContainerStyle={
@@ -214,6 +233,23 @@ const styles = StyleSheet.create({
   },
   retryText: {
     color: 'white',
+    fontWeight: '600',
+  },
+  historyButton: {
+    marginHorizontal: theme.spacing.md,
+    marginTop: theme.spacing.xs,
+    paddingVertical: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    alignItems: 'center',
+  },
+  historyButtonPressed: {
+    opacity: 0.8,
+  },
+  historyButtonText: {
+    color: theme.colors.text,
+    fontSize: theme.typography.sizes.sm,
     fontWeight: '600',
   },
   scrollContainer: {

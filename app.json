@@ -48,7 +48,8 @@
             "android": ["en", "ja"]
           }
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
