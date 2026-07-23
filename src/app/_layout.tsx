@@ -23,6 +23,8 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useBatteryMonitor } from '@/hooks/useBatteryMonitor';
+import { useDatabaseInit } from '@/hooks/useDatabaseInit';
+import { DatabaseContext } from '@/contexts/DatabaseContext';
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler();
 ErrorUtils.setGlobalHandler((error, isFatal) => {
@@ -91,6 +93,7 @@ function RootApp() {
           <Stack.Screen name="settings" />
           <Stack.Screen name="saved" />
           <Stack.Screen name="map" />
+          <Stack.Screen name="history" />
         </Stack.Protected>
 
         <Stack.Protected guard={hasCompletedOnboarding && !isAuthenticated}>
@@ -103,6 +106,8 @@ function RootApp() {
 }
 
 function RootLayout() {
+  const { db } = useDatabaseInit();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PersistQueryClientProvider
@@ -110,7 +115,9 @@ function RootLayout() {
         persistOptions={{ persister: mmkvQueryPersister }}
       >
         <SafeAreaProvider>
-          <RootApp />
+          <DatabaseContext.Provider value={db}>
+            <RootApp />
+          </DatabaseContext.Provider>
         </SafeAreaProvider>
       </PersistQueryClientProvider>
     </GestureHandlerRootView>

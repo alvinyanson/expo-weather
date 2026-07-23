@@ -186,3 +186,148 @@ vi.mock('react-native-mmkv', () => {
     MMKV: vi.fn().mockImplementation(createMockInstance),
   };
 });
+
+// expo-sqlite mock - in-memory implementation using plain arrays/Maps
+// so service unit tests run without any native bindings.
+const sqliteRows: Map<string, Record<string, unknown>[]> = new Map();
+let sqliteAutoId = 1;
+
+function makeMockDb() {
+  return {
+    execAsync: vi.fn(async () => {
+      // Ensure the in-memory table exists (idempotent).
+      if (!sqliteRows.has('weather_history')) {
+        sqliteRows.set('weather_history', []);
+      }
+    }),
+    runAsync: vi.fn(async (sql: string, params: unknown[] = []) => {
+      const s = sql.trim().toUpperCase();
+
+      if (s.startsWith('INSERT INTO WEATHER_HISTORY')) {
+        const table = sqliteRows.get('weather_history') ?? [];
+        const [
+          fetched_at,
+          latitude,
+          longitude,
+          city,
+          temperature,
+          weather_code,
+          humidity,
+          wind_speed,
+          pressure,
+          temp_max,
+          temp_min,
+          temperature_unit,
+          wind_speed_unit,
+        ] = params as [
+          string,
+          number,
+          number,
+          string,
+          number,
+          number,
+          number,
+          number,
+          number | null,
+          number,
+          number,
+          string,
+          string,
+        ];
+        table.push({
+          id: sqliteAutoId++,
+          fetched_at,
+          latitude,
+          longitude,
+          city,
+          temperature,
+          weather_code,
+          humidity,
+          wind_speed,
+          pressure,
+          temp_max,
+          temp_min,
+          temperature_unit,
+          wind_speed_unit,
+        });
+        sqliteRows.set('weather_history', table);
+        return { lastInsertRowId: sqliteAutoId - 1, changes: 1 };
+      }
+
+      if (s.startsWith('DELETE FROM WEATHER_HISTORY')) {
+        const table = sqliteRows.get('weather_history') ?? [];
+        const before = table.length;
+
+        let filtered = table;
+        if (s.includes('WHERE FETCHED_AT <')) {
+          const cutoff = params[0] as string;
+          filtered = table.filter((r) => (r.fetched_at as string) >= cutoff);
+        } else if (s.includes('WHERE LATITUDE BETWEEN')) {
+          const latMin = params[0] as number;
+          const latMax = params[1] as number;
+          const lonMin = params[2] as number;
+          const lonMax = params[3] as number;
+          filtered = table.filter(
+            (r) =>
+              !(
+                (r.latitude as number) >= latMin &&
+                (r.latitude as number) <= latMax &&
+                (r.longitude as number) >= lonMin &&
+                (r.longitude as number) <= lonMax
+              ),
+          );
+        }
+
+        sqliteRows.set('weather_history', filtered);
+        return { lastInsertRowId: 0, changes: before - filtered.length };
+      }
+
+      return { lastInsertRowId: 0, changes: 0 };
+    }),
+    getAllAsync: vi.fn(async (sql: string, params: unknown[] = []) => {
+      const s = sql.trim().toUpperCase();
+      const table = sqliteRows.get('weather_history') ?? [];
+
+      if (s.includes('FROM WEATHER_HISTORY')) {
+        let result = table;
+
+        if (s.includes('WHERE LATITUDE BETWEEN')) {
+          const latMin = params[0] as number;
+          const latMax = params[1] as number;
+          const lonMin = params[2] as number;
+          const lonMax = params[3] as number;
+          const limitVal = params[4] as number | undefined;
+          result = table
+            .filter(
+              (r) =>
+                (r.latitude as number) >= latMin &&
+                (r.latitude as number) <= latMax &&
+                (r.longitude as number) >= lonMin &&
+                (r.longitude as number) <= lonMax,
+            )
+            .slice(0, limitVal ?? 200);
+        }
+
+        // ORDER BY fetched_at DESC
+        return result.toSorted((a, b) =>
+          (b.fetched_at as string).localeCompare(a.fetched_at as string),
+        );
+      }
+
+      return [];
+    }),
+  };
+}
+
+// Reset in-memory data between tests.
+beforeEach(() => {
+  sqliteRows.clear();
+  sqliteAutoId = 1;
+  // Pre-create the table so execAsync is not strictly required.
+  sqliteRows.set('weather_history', []);
+});
+
+vi.mock('expo-sqlite', () => ({
+  openDatabaseAsync: vi.fn(async () => makeMockDb()),
+  SQLiteDatabase: vi.fn(),
+}));
