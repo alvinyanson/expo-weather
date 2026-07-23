@@ -22,6 +22,7 @@ import { t } from '@/services/i18n';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useBatteryMonitor } from '@/hooks/useBatteryMonitor';
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler();
@@ -52,19 +53,20 @@ function RootApp() {
   useNotificationListeners();
   useBatteryMonitor();
   const { isAuthenticated, initializing } = useAuth();
+  const { hasCompletedOnboarding, hasHydrated } = useOnboardingStore();
   const { markInteractive } = useObserve();
   const language = useSettingsStore((state) => state.language);
 
   useEffect(() => {
-    if (!initializing) {
+    if (!initializing && hasHydrated) {
       SplashScreen.hideAsync();
       markInteractive();
     }
-  }, [initializing, markInteractive]);
+  }, [initializing, hasHydrated, markInteractive]);
 
-  // Hold on a loader until Firebase reports the initial auth state, otherwise
-  // the login screen would flash before a persisted session is restored.
-  if (initializing) {
+  // Hold on a loader until Firebase reports the initial auth state and onboarding
+  // storage rehydration completes.
+  if (initializing || !hasHydrated) {
     return (
       <View style={{ flex: 1, backgroundColor: theme.colors.background, justifyContent: 'center' }}>
         <ActivityIndicator size="large" color={theme.colors.text} />
@@ -82,9 +84,13 @@ function RootApp() {
           animation: 'fade',
         }}
       >
+        <Stack.Protected guard={!hasCompletedOnboarding}>
+          <Stack.Screen name="onboarding" />
+        </Stack.Protected>
+
         {/* Authenticated app routes. When the user signs out, these are removed
             and expo-router redirects to the only remaining screen (login). */}
-        <Stack.Protected guard={isAuthenticated}>
+        <Stack.Protected guard={hasCompletedOnboarding && isAuthenticated}>
           <Stack.Screen name="index" />
           <Stack.Screen name="details" />
           <Stack.Screen name="settings" />
@@ -92,7 +98,7 @@ function RootApp() {
           <Stack.Screen name="map" />
         </Stack.Protected>
 
-        <Stack.Protected guard={!isAuthenticated}>
+        <Stack.Protected guard={hasCompletedOnboarding && !isAuthenticated}>
           <Stack.Screen name="login" />
         </Stack.Protected>
       </Stack>
