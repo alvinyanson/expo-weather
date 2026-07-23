@@ -26,7 +26,6 @@
     "plugins": [
       "expo-router",
       "expo-notifications",
-      "@react-native-async-storage/expo-with-async-storage",
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
       "@react-native-google-signin/google-signin",

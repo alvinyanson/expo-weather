@@ -95,13 +95,6 @@ vi.mock('@/services', async () => {
   };
 });
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    getItem: vi.fn(() => Promise.resolve(null)),
-    setItem: vi.fn(() => Promise.resolve()),
-  },
-}));
-
 const mockToggleSavedLocation = vi.fn();
 vi.mock('@/hooks', async () => {
   const actual = await vi.importActual<typeof import('@/hooks')>('@/hooks');

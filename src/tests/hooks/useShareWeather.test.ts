@@ -4,15 +4,6 @@ import type { WeatherResponse } from '@/interfaces';
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    setItem: vi.fn(),
-    getItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
-}));
-
 const { shareMock } = vi.hoisted(() => ({ shareMock: vi.fn() }));
 
 vi.mock('react-native', () => ({

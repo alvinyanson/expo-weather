@@ -1,15 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    setItem: vi.fn(),
-    getItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
-}));
-
 const { setStringAsyncMock } = vi.hoisted(() => ({ setStringAsyncMock: vi.fn() }));
 vi.mock('expo-clipboard', () => ({
   setStringAsync: setStringAsyncMock,

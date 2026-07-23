@@ -1,18 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
-// Mock AsyncStorage
-vi.mock('@react-native-async-storage/async-storage', () => {
-  return {
-    default: {
-      setItem: vi.fn(),
-      getItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn(),
-    },
-  };
-});
-
 describe('useSettingsStore', () => {
   beforeEach(() => {
     useSettingsStore.setState({

@@ -148,3 +148,41 @@ vi.mock('react-native-gesture-handler', () => {
     GestureDetector: ({ children }: any) => React.createElement(View, null, children),
   };
 });
+
+const mmkvStorageMap = new Map<string, string | number | boolean>();
+
+vi.mock('react-native-mmkv', () => {
+  const createMockInstance = () => ({
+    set: vi.fn((key: string, value: string | number | boolean) => {
+      mmkvStorageMap.set(key, value);
+    }),
+    getString: vi.fn((key: string) => {
+      const val = mmkvStorageMap.get(key);
+      return typeof val === 'string' ? val : undefined;
+    }),
+    getNumber: vi.fn((key: string) => {
+      const val = mmkvStorageMap.get(key);
+      return typeof val === 'number' ? val : undefined;
+    }),
+    getBoolean: vi.fn((key: string) => {
+      const val = mmkvStorageMap.get(key);
+      return typeof val === 'boolean' ? val : undefined;
+    }),
+    remove: vi.fn((key: string) => {
+      mmkvStorageMap.delete(key);
+    }),
+    delete: vi.fn((key: string) => {
+      mmkvStorageMap.delete(key);
+    }),
+    contains: vi.fn((key: string) => mmkvStorageMap.has(key)),
+    clearAll: vi.fn(() => {
+      mmkvStorageMap.clear();
+    }),
+    getAllKeys: vi.fn(() => Array.from(mmkvStorageMap.keys())),
+  });
+
+  return {
+    createMMKV: vi.fn().mockImplementation(createMockInstance),
+    MMKV: vi.fn().mockImplementation(createMockInstance),
+  };
+});

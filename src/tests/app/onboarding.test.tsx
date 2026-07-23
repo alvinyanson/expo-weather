@@ -7,15 +7,6 @@ vi.mock('expo-symbols', () => ({
   SymbolView: () => null,
 }));
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    setItem: vi.fn(),
-    getItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
-}));
-
 describe('OnboardingScreen', () => {
   beforeEach(() => {
     useOnboardingStore.setState({

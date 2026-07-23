@@ -3,15 +3,6 @@ import { renderHook } from '@testing-library/react';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useSettingsStore } from '@/store/useSettingsStore';
 
-vi.mock('@react-native-async-storage/async-storage', () => ({
-  default: {
-    setItem: vi.fn(),
-    getItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
-}));
-
 const { selectionAsync, notificationAsync, impactAsync } = vi.hoisted(() => ({
   selectionAsync: vi.fn(() => Promise.resolve()),
   notificationAsync: vi.fn(() => Promise.resolve()),
