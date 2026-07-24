@@ -189,6 +189,15 @@ const translations = {
     errLocationGpsCheck: 'Could not determine your location. Please check your GPS settings.',
     unknownLocation: 'Unknown Location',
 
+    // Location Permission
+    locationPermissionTitle: 'Location Permission Required',
+    locationPermissionRationale:
+      'Location access is needed to show weather for your current location. Please grant permission to continue.',
+    locationPermissionBlocked:
+      'Location permission is currently blocked in your device settings. Please open settings to grant location access for local weather updates.',
+    grantPermissionBtn: 'Grant Access',
+    openSettingsBtn: 'Open Settings',
+
     // Error boundary
     errorBoundaryTitle: 'We ran into a problem.',
     errorBoundarySubtitle: "We're sorry, but the application encountered an unexpected error.",
@@ -387,6 +396,15 @@ const translations = {
     errLocationDenied: '位置情報へのアクセス権限が拒否されました',
     errLocationGpsCheck: '現在地を特定できませんでした。GPS設定を確認してください。',
     unknownLocation: '不明な場所',
+
+    // Location Permission
+    locationPermissionTitle: '位置情報の許可が必要です',
+    locationPermissionRationale:
+      '現在地の天気情報を表示するには、位置情報へのアクセス許可が必要です。',
+    locationPermissionBlocked:
+      '端末の設定で位置情報の許可がブロックされています。ローカルの天気情報を取得するには、設定を開いて位置情報のアクセスを許可してください。',
+    grantPermissionBtn: 'アクセスを許可',
+    openSettingsBtn: '設定を開く',
 
     // Error boundary
     errorBoundaryTitle: '問題が発生しました。',
