@@ -1,5 +1,5 @@
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import type { SavedLocation } from '@/interfaces';
@@ -7,10 +7,12 @@ import { formatDateFull, formatTime } from '@/utils/formatters';
 import { theme } from '@/theme';
 import { t } from '@/services/i18n';
 
-interface SavedLocationItemProps {
+export interface SavedLocationItemProps {
   location: SavedLocation;
   onDelete: (location: SavedLocation) => void;
   onPress: () => void;
+  drag?: () => void;
+  isActive?: boolean;
 }
 
 const ACTION_WIDTH = 88;
@@ -50,7 +52,13 @@ const RightAction = ({
   );
 };
 
-export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocationItemProps) => {
+export const SavedLocationItem = ({
+  location,
+  onDelete,
+  onPress,
+  drag,
+  isActive = false,
+}: SavedLocationItemProps) => {
   const savedAt = location.createdAt
     ? `${formatDateFull(location.createdAt)} · ${formatTime(location.createdAt)}`
     : null;
@@ -60,9 +68,10 @@ export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocation
       containerStyle={styles.swipeable}
       friction={2}
       rightThreshold={ACTION_WIDTH / 2}
-      renderRightActions={(_progress, drag, methods) => (
+      enabled={!isActive}
+      renderRightActions={(_progress, dragValue, methods) => (
         <RightAction
-          drag={drag}
+          drag={dragValue}
           city={location.city}
           onPress={() => {
             methods.close();
@@ -73,8 +82,14 @@ export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocation
     >
       <Pressable
         testID="saved-location-item"
-        style={({ pressed }) => [styles.card, pressed && styles.buttonPressed]}
+        style={({ pressed }) => [
+          styles.card,
+          isActive && styles.activeCard,
+          pressed && styles.buttonPressed,
+        ]}
         onPress={onPress}
+        onLongPress={drag}
+        disabled={isActive}
         android_ripple={{ color: theme.colors.ripple }}
         accessibilityRole="button"
         accessibilityActions={[{ name: 'delete', label: t('deleteLabel') }]}
@@ -84,13 +99,31 @@ export const SavedLocationItem = ({ location, onDelete, onPress }: SavedLocation
           }
         }}
       >
-        <Text testID="saved-location-city" style={styles.city}>
-          {location.city}
-        </Text>
-        {savedAt ? (
-          <Text testID="saved-location-date" style={styles.savedAt}>
-            {t('savedPrefix', { savedAt })}
+        <View style={styles.infoContainer}>
+          <Text testID="saved-location-city" style={styles.city}>
+            {location.city}
           </Text>
+          {savedAt ? (
+            <Text testID="saved-location-date" style={styles.savedAt}>
+              {t('savedPrefix', { savedAt })}
+            </Text>
+          ) : null}
+        </View>
+        {drag ? (
+          <Pressable
+            testID="drag-handle"
+            onPressIn={drag}
+            onLongPress={drag}
+            style={({ pressed }) => [styles.dragHandle, pressed && styles.buttonPressed]}
+            accessibilityRole="button"
+            accessibilityLabel={t('dragHandleAccessLabel', { city: location.city })}
+          >
+            <SymbolView
+              name={{ ios: 'line.3.horizontal', android: 'drag_handle' }}
+              size={22}
+              tintColor={theme.colors.textHint}
+            />
+          </Pressable>
         ) : null}
       </Pressable>
     </ReanimatedSwipeable>
@@ -108,7 +141,28 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.lg,
     minHeight: 64,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  activeCard: {
+    backgroundColor: theme.colors.surfaceHighlight,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    transform: [{ scale: 1.02 }],
+  },
+  infoContainer: {
+    flex: 1,
     justifyContent: 'center',
+  },
+  dragHandle: {
+    padding: theme.spacing.xs,
+    marginLeft: theme.spacing.md,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   city: {
     fontSize: theme.typography.sizes.xl,

@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { deleteSavedLocation, getSavedLocations, saveLocation } from '@/services';
+import {
+  deleteSavedLocation,
+  getSavedLocations,
+  saveLocation,
+  updateSavedLocationOrders,
+} from '@/services/firestore.service';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { SavedLocation, SaveLocationInput } from '@/interfaces';
 import Toast from 'react-native-toast-message';
@@ -84,6 +89,53 @@ export const useSavedLocations = () => {
     },
   });
 
+  const reorderMutation = useMutation<
+    void,
+    Error,
+    SavedLocation[],
+    { previousLocations?: SavedLocation[] }
+  >({
+    mutationFn: async (newOrder) => {
+      const updates = newOrder.map((item, index) => ({
+        id: item.id,
+        order: index,
+      }));
+      await updateSavedLocationOrders(updates);
+    },
+    onMutate: async (newOrder) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousLocations = queryClient.getQueryData<SavedLocation[]>(queryKey);
+
+      const updatedLocations = newOrder.map((item, index) => ({
+        ...item,
+        order: index,
+      }));
+
+      queryClient.setQueryData<SavedLocation[]>(queryKey, updatedLocations);
+
+      return { previousLocations };
+    },
+    onSuccess: () => {
+      haptics.selection();
+    },
+    onError: (err, newOrder, context) => {
+      if (context?.previousLocations) {
+        queryClient.setQueryData(queryKey, context.previousLocations);
+      }
+      haptics.error();
+      reportError(err, { where: 'useSavedLocations.reorderMutation' });
+      Toast.show({
+        type: 'error',
+        text1: t('toastErrorTitle'),
+        text2: t('toastErrorBody'),
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
   const toggleSavedLocation = async (
     targetLocation: { lat: number; lon: number; city: string } | null | undefined,
   ) => {
@@ -149,7 +201,8 @@ export const useSavedLocations = () => {
   return {
     savedLocations: list.data ?? [],
     isLoading: list.isLoading,
-    error: list.error ?? saveMutation.error ?? deleteMutation.error ?? null,
+    error:
+      list.error ?? saveMutation.error ?? deleteMutation.error ?? reorderMutation.error ?? null,
     refetch: list.refetch,
 
     saveLocation: saveMutation.mutateAsync,
@@ -157,6 +210,9 @@ export const useSavedLocations = () => {
 
     deleteLocation: deleteMutation.mutateAsync,
     isDeleting: deleteMutation.isPending,
+
+    reorderSavedLocations: reorderMutation.mutateAsync,
+    isReordering: reorderMutation.isPending,
 
     toggleSavedLocation,
     confirmDeleteLocation,

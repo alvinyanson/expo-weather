@@ -28,6 +28,30 @@ vi.mock('@react-native-firebase/crashlytics', () => ({
   }),
 }));
 
+vi.mock('@react-native-firebase/auth', () => ({
+  getAuth: vi.fn(() => ({ currentUser: null })),
+  onAuthStateChanged: vi.fn(),
+  signInAnonymously: vi.fn(),
+  signInWithCredential: vi.fn(),
+  signOut: vi.fn(),
+}));
+
+vi.mock('@react-native-google-signin/google-signin', () => ({
+  GoogleSignin: {
+    configure: vi.fn(),
+    hasPlayServices: vi.fn(),
+    signIn: vi.fn(),
+    signOut: vi.fn(),
+    revokeAccess: vi.fn(),
+    isSignedIn: vi.fn(),
+  },
+  statusCodes: {
+    SIGN_IN_CANCELLED: 'SIGN_IN_CANCELLED',
+    IN_PROGRESS: 'IN_PROGRESS',
+    PLAY_SERVICES_NOT_AVAILABLE: 'PLAY_SERVICES_NOT_AVAILABLE',
+  },
+}));
+
 vi.mock('expo-secure-store', () => ({
   getItemAsync: vi.fn(),
   setItemAsync: vi.fn(),
@@ -146,6 +170,21 @@ vi.mock('react-native-gesture-handler', () => {
   return {
     Gesture: { Pan: () => gestureChainable() },
     GestureDetector: ({ children }: any) => React.createElement(View, null, children),
+  };
+});
+
+vi.mock('react-native-draggable-flatlist', () => {
+  const React = require('react');
+  const { FlatList } = require('react-native-web');
+  return {
+    default: ({ data, renderItem, keyExtractor, ...props }: any) =>
+      React.createElement(FlatList, {
+        data,
+        keyExtractor,
+        renderItem: ({ item, index }: any) =>
+          renderItem?.({ item, index, drag: vi.fn(), isActive: false }),
+        ...props,
+      }),
   };
 });
 

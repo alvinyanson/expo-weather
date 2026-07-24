@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   where,
   setDoc,
+  writeBatch,
 } from '@react-native-firebase/firestore';
 import {
   deleteSavedLocation,
@@ -15,7 +16,11 @@ import {
   saveLocation,
   saveUserPushToken,
   clearUserPushToken,
+  updateSavedLocationOrders,
 } from '@/services/firestore.service';
+
+const mockBatchUpdate = vi.fn();
+const mockBatchCommit = vi.fn();
 
 vi.mock('@react-native-firebase/firestore', () => ({
   getFirestore: vi.fn(() => ({ __db: true })),
@@ -28,6 +33,10 @@ vi.mock('@react-native-firebase/firestore', () => ({
   where: vi.fn((field, op, value) => ({ __where: [field, op, value] })),
   serverTimestamp: vi.fn(() => '__SERVER_TS__'),
   setDoc: vi.fn(),
+  writeBatch: vi.fn(() => ({
+    update: mockBatchUpdate,
+    commit: mockBatchCommit,
+  })),
 }));
 
 const mockAddDoc = vi.mocked(addDoc);
@@ -138,10 +147,86 @@ describe('getSavedLocations', () => {
     expect(location!.createdAt).toBeNull();
   });
 
+  it('sorts results by order ascending, then by createdAt descending', async () => {
+    mockGetDocs.mockResolvedValue({
+      docs: [
+        {
+          id: 'unordered-old',
+          data: () => ({
+            city: 'A',
+            lat: 0,
+            lon: 0,
+            userId: 'user-1',
+            createdAt: { toMillis: () => 1000 },
+          }),
+        },
+        {
+          id: 'ordered-second',
+          data: () => ({
+            city: 'B',
+            lat: 0,
+            lon: 0,
+            userId: 'user-1',
+            createdAt: { toMillis: () => 3000 },
+            order: 1,
+          }),
+        },
+        {
+          id: 'ordered-first',
+          data: () => ({
+            city: 'C',
+            lat: 0,
+            lon: 0,
+            userId: 'user-1',
+            createdAt: { toMillis: () => 2000 },
+            order: 0,
+          }),
+        },
+        {
+          id: 'unordered-new',
+          data: () => ({
+            city: 'D',
+            lat: 0,
+            lon: 0,
+            userId: 'user-1',
+            createdAt: { toMillis: () => 4000 },
+          }),
+        },
+      ],
+    } as never);
+
+    const result = await getSavedLocations('user-1');
+
+    expect(result.map((r) => r.id)).toEqual([
+      'ordered-first',
+      'ordered-second',
+      'unordered-new',
+      'unordered-old',
+    ]);
+  });
+
   it('propagates Firestore errors', async () => {
     mockGetDocs.mockRejectedValue(new Error('unavailable'));
 
     await expect(getSavedLocations('user-1')).rejects.toThrow('unavailable');
+  });
+});
+
+describe('updateSavedLocationOrders', () => {
+  it('updates location order via writeBatch', async () => {
+    mockBatchCommit.mockResolvedValue(undefined as never);
+
+    await updateSavedLocationOrders([
+      { id: 'loc-1', order: 0 },
+      { id: 'loc-2', order: 1 },
+    ]);
+
+    expect(writeBatch).toHaveBeenCalled();
+    expect(doc).toHaveBeenCalledWith({ __db: true }, 'saved_locations', 'loc-1');
+    expect(doc).toHaveBeenCalledWith({ __db: true }, 'saved_locations', 'loc-2');
+    expect(mockBatchUpdate).toHaveBeenCalledWith({ __doc: 'saved_locations/loc-1' }, { order: 0 });
+    expect(mockBatchUpdate).toHaveBeenCalledWith({ __doc: 'saved_locations/loc-2' }, { order: 1 });
+    expect(mockBatchCommit).toHaveBeenCalled();
   });
 });
 

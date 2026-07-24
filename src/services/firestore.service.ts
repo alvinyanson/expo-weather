@@ -9,6 +9,7 @@ import {
   where,
   serverTimestamp,
   setDoc,
+  writeBatch,
 } from '@react-native-firebase/firestore';
 import type { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import type { SavedLocation, SaveLocationInput } from '@/interfaces';
@@ -21,6 +22,7 @@ interface SavedLocationDoc {
   lon: number;
   userId: string;
   createdAt: FirebaseFirestoreTypes.Timestamp | null;
+  order?: number;
 }
 
 /** Maps a Firestore document's id + data into the `SavedLocation` interface. */
@@ -31,6 +33,7 @@ const mapDoc = (id: string, data: SavedLocationDoc): SavedLocation => ({
   lon: data.lon,
   userId: data.userId,
   createdAt: data.createdAt ? data.createdAt.toMillis() : null,
+  ...(data.order !== undefined ? { order: data.order } : {}),
 });
 
 /**
@@ -52,18 +55,42 @@ export const saveLocation = async (
 };
 
 /**
- * Fetches every location the given user has saved, newest first.
+ * Fetches every location the given user has saved, newest first (or ordered by order).
  */
 export const getSavedLocations = async (userId: string): Promise<SavedLocation[]> => {
   const db = getFirestore();
   const q = query(collection(db, COLLECTION), where('userId', '==', userId));
   const snapshot = await getDocs(q);
   const results = snapshot.docs.map((d) => mapDoc(d.id, d.data() as SavedLocationDoc));
-  Array.prototype.sort.call(
-    results,
-    (a: SavedLocation, b: SavedLocation) => (b.createdAt ?? Infinity) - (a.createdAt ?? Infinity),
-  );
-  return results;
+  return results.toSorted((a, b) => {
+    if (a.order !== undefined && b.order !== undefined) {
+      if (a.order !== b.order) {
+        return a.order - b.order;
+      }
+      return (b.createdAt ?? Infinity) - (a.createdAt ?? Infinity);
+    }
+    if (a.order !== undefined) return -1;
+    if (b.order !== undefined) return 1;
+    return (b.createdAt ?? Infinity) - (a.createdAt ?? Infinity);
+  });
+};
+
+export interface LocationOrderUpdate {
+  id: string;
+  order: number;
+}
+
+/**
+ * Updates the display order of multiple saved locations in a single batch write.
+ */
+export const updateSavedLocationOrders = async (updates: LocationOrderUpdate[]): Promise<void> => {
+  const db = getFirestore();
+  const batch = writeBatch(db);
+  updates.forEach(({ id, order }) => {
+    const ref = doc(db, COLLECTION, id);
+    batch.update(ref, { order });
+  });
+  await batch.commit();
 };
 
 /**
