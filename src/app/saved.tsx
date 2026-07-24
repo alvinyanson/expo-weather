@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import {
-  FlatList,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -11,6 +10,7 @@ import {
   useWindowDimensions,
   Modal,
 } from 'react-native';
+import DraggableFlatList, { type RenderItemParams } from 'react-native-draggable-flatlist';
 import { t } from '@/services/i18n';
 import { useSavedLocations } from '@/hooks';
 import { SavedLocationItem } from '@/components/SavedLocationItem';
@@ -22,7 +22,14 @@ export default function SavedLocationsScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const isTablet = width >= 768;
-  const { savedLocations, isLoading, error, refetch, confirmDeleteLocation } = useSavedLocations();
+  const {
+    savedLocations,
+    isLoading,
+    error,
+    refetch,
+    confirmDeleteLocation,
+    reorderSavedLocations,
+  } = useSavedLocations();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [locationToDelete, setLocationToDelete] = useState<SavedLocation | null>(null);
@@ -42,6 +49,18 @@ export default function SavedLocationsScreen() {
       params: { lat: location.lat, lon: location.lon, city: location.city },
     });
   };
+
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<SavedLocation>) => (
+    <View style={isTablet ? styles.gridItem : undefined}>
+      <SavedLocationItem
+        location={item}
+        onDelete={confirmDelete}
+        onPress={() => handlePressLocation(item)}
+        drag={drag}
+        isActive={isActive}
+      />
+    </View>
+  );
 
   const renderBody = () => {
     if (isLoading) {
@@ -81,22 +100,15 @@ export default function SavedLocationsScreen() {
     }
 
     return (
-      <FlatList
+      <DraggableFlatList
         key={isTablet ? 'tablet' : 'mobile'}
         data={savedLocations}
+        onDragEnd={({ data }) => reorderSavedLocations(data)}
         keyExtractor={(item) => item.id}
         numColumns={isTablet ? 2 : 1}
         columnWrapperStyle={isTablet ? styles.columnWrapper : undefined}
         contentContainerStyle={styles.listContent}
-        renderItem={({ item }) => (
-          <View style={isTablet ? styles.gridItem : undefined}>
-            <SavedLocationItem
-              location={item}
-              onDelete={confirmDelete}
-              onPress={() => handlePressLocation(item)}
-            />
-          </View>
-        )}
+        renderItem={renderItem}
       />
     );
   };

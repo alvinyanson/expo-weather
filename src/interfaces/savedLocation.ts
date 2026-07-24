@@ -5,6 +5,7 @@ export interface SavedLocation {
   lon: number;
   createdAt: number | null;
   userId: string;
+  order?: number;
 }
 
 export interface SaveLocationInput {

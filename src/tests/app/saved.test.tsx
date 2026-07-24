@@ -40,6 +40,8 @@ const baseHook = (overrides = {}) =>
     isSaving: false,
     deleteLocation: vi.fn(),
     isDeleting: false,
+    reorderSavedLocations: vi.fn(),
+    isReordering: false,
     toggleSavedLocation: vi.fn(),
     confirmDeleteLocation: vi.fn(),
     ...overrides,

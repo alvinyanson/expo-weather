@@ -44,6 +44,7 @@ const translations = {
     // SavedLocationItem
     deleteLabel: 'Delete',
     deleteAccessLabel: 'Delete %{city}',
+    dragHandleAccessLabel: 'Reorder %{city}',
     savedPrefix: 'Saved %{savedAt}',
 
     // SearchHeader
@@ -242,6 +243,7 @@ const translations = {
     // SavedLocationItem
     deleteLabel: '削除',
     deleteAccessLabel: '%{city}を削除',
+    dragHandleAccessLabel: '%{city}の順序を変更',
     savedPrefix: '%{savedAt}に保存',
 
     // SearchHeader
