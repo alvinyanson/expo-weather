@@ -1,9 +1,15 @@
 import * as Location from 'expo-location';
 import apiClient from '@/services/api.client';
-import { fetchCoordinates, fetchLocation, fetchWeather } from '@/services/weather.service';
+import {
+  LocationPermissionError,
+  fetchCoordinates,
+  fetchLocation,
+  fetchWeather,
+} from '@/services/weather.service';
 
 vi.mock('expo-location', () => ({
   Accuracy: { Balanced: 3 },
+  getForegroundPermissionsAsync: vi.fn(),
   requestForegroundPermissionsAsync: vi.fn(),
   getCurrentPositionAsync: vi.fn(),
   getLastKnownPositionAsync: vi.fn(),
@@ -17,8 +23,16 @@ vi.mock('@/services/api.client', () => ({
 const mockLocation = vi.mocked(Location);
 const mockGet = vi.mocked(apiClient.get);
 
-const grant = () =>
-  mockLocation.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'granted' } as never);
+const grant = () => {
+  mockLocation.getForegroundPermissionsAsync.mockResolvedValue({
+    status: 'granted',
+    canAskAgain: true,
+  } as never);
+  mockLocation.requestForegroundPermissionsAsync.mockResolvedValue({
+    status: 'granted',
+    canAskAgain: true,
+  } as never);
+};
 
 const positionAt = (latitude: number, longitude: number) =>
   ({ coords: { latitude, longitude } }) as never;
@@ -33,10 +47,44 @@ afterEach(() => {
 });
 
 describe('fetchCoordinates', () => {
-  it('throws when location permission is denied', async () => {
-    mockLocation.requestForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' } as never);
+  it('throws LocationPermissionError with canAskAgain: true when permission is denied once', async () => {
+    mockLocation.getForegroundPermissionsAsync.mockResolvedValue({
+      status: 'denied',
+      canAskAgain: true,
+    } as never);
+    mockLocation.requestForegroundPermissionsAsync.mockResolvedValue({
+      status: 'denied',
+      canAskAgain: true,
+    } as never);
 
-    await expect(fetchCoordinates()).rejects.toThrow('Permission to access location was denied');
+    try {
+      await fetchCoordinates();
+      expect.fail('Should have thrown LocationPermissionError');
+    } catch (err: any) {
+      expect(err).toBeInstanceOf(LocationPermissionError);
+      expect(err.canAskAgain).toBe(true);
+      expect(err.message).toBe('Permission to access location was denied');
+    }
+  });
+
+  it('throws LocationPermissionError with canAskAgain: false when permanently blocked', async () => {
+    mockLocation.getForegroundPermissionsAsync.mockResolvedValue({
+      status: 'denied',
+      canAskAgain: false,
+    } as never);
+    mockLocation.requestForegroundPermissionsAsync.mockResolvedValue({
+      status: 'denied',
+      canAskAgain: false,
+    } as never);
+
+    try {
+      await fetchCoordinates();
+      expect.fail('Should have thrown LocationPermissionError');
+    } catch (err: any) {
+      expect(err).toBeInstanceOf(LocationPermissionError);
+      expect(err.canAskAgain).toBe(false);
+      expect(err.message).toBe('Permission to access location was denied');
+    }
   });
 
   it('returns coordinates from the current position', async () => {

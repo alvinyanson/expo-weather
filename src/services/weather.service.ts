@@ -4,10 +4,29 @@ import apiClient from './api.client';
 import { t } from './i18n';
 import { reverseGeocode } from './location.service';
 
+export class LocationPermissionError extends Error {
+  canAskAgain: boolean;
+  status: Location.PermissionStatus;
+
+  constructor(message: string, canAskAgain: boolean, status: Location.PermissionStatus) {
+    super(message);
+    this.name = 'LocationPermissionError';
+    this.canAskAgain = canAskAgain;
+    this.status = status;
+  }
+}
+
 export const fetchCoordinates = async (): Promise<{ latitude: number; longitude: number }> => {
-  const { status } = await Location.requestForegroundPermissionsAsync();
-  if (status !== 'granted') {
-    throw new Error(t('errLocationDenied'));
+  let permission = await Location.getForegroundPermissionsAsync();
+  if (permission.status !== 'granted') {
+    permission = await Location.requestForegroundPermissionsAsync();
+  }
+  if (permission.status !== 'granted') {
+    throw new LocationPermissionError(
+      t('errLocationDenied'),
+      permission.canAskAgain,
+      permission.status,
+    );
   }
 
   let location;

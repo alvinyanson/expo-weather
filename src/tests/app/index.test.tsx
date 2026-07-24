@@ -123,6 +123,9 @@ vi.mock('@/store/useSearchStore', () => ({
 
 import { useFetchLocation, useFetchWeather, useSearchLocation } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { LocationPermissionError } from '@/services/weather.service';
+import { Linking } from 'react-native';
+import { t } from '@/services/i18n';
 
 const mockLocationHook = vi.mocked(useFetchLocation);
 const mockWeatherHook = vi.mocked(useFetchWeather);
@@ -214,21 +217,66 @@ describe('HomeScreen', () => {
     });
   });
 
-  it('shows the error message and retries on press', () => {
+  it('shows the error message and retries on press for generic errors', () => {
     const refetchLocation = vi.fn();
     const refetchWeather = vi.fn();
     mockLocationHook.mockReturnValue(
-      hookState({ error: new Error('Permission denied'), refetch: refetchLocation }),
+      hookState({ error: new Error('Network error'), refetch: refetchLocation }),
     );
     mockWeatherHook.mockReturnValue(hookState({ refetch: refetchWeather }));
     mockSearchHook.mockReturnValue(searchHookState());
 
     render(<HomeScreen />);
-    expect(screen.getByText('Permission denied')).toBeTruthy();
+    expect(screen.getByText('Network error')).toBeTruthy();
 
     fireEvent.click(screen.getByText('Retry'));
     expect(refetchLocation).toHaveBeenCalled();
     expect(refetchWeather).toHaveBeenCalled();
+  });
+
+  it('renders LocationPermissionCard with rationale when canAskAgain is true', () => {
+    const refetchLocation = vi.fn();
+    mockLocationHook.mockReturnValue(
+      hookState({
+        error: new LocationPermissionError('Denied', true, 'denied' as any),
+        refetch: refetchLocation,
+      }),
+    );
+    mockWeatherHook.mockReturnValue(hookState());
+    mockSearchHook.mockReturnValue(searchHookState());
+
+    render(<HomeScreen />);
+    expect(screen.getByText(t('locationPermissionTitle'))).toBeTruthy();
+    expect(screen.getByText(t('locationPermissionRationale'))).toBeTruthy();
+    expect(screen.getByText(t('grantPermissionBtn'))).toBeTruthy();
+
+    fireEvent.click(screen.getByText(t('grantPermissionBtn')));
+    expect(refetchLocation).toHaveBeenCalled();
+  });
+
+  it('renders LocationPermissionCard with open settings button when canAskAgain is false', () => {
+    if (!Linking.openSettings) {
+      Linking.openSettings = vi.fn();
+    }
+    const openSettingsSpy = vi
+      .spyOn(Linking, 'openSettings')
+      .mockImplementation(() => Promise.resolve());
+    mockLocationHook.mockReturnValue(
+      hookState({
+        error: new LocationPermissionError('Denied', false, 'denied' as any),
+        refetch: vi.fn(),
+      }),
+    );
+    mockWeatherHook.mockReturnValue(hookState());
+    mockSearchHook.mockReturnValue(searchHookState());
+
+    render(<HomeScreen />);
+    expect(screen.getByText(t('locationPermissionTitle'))).toBeTruthy();
+    expect(screen.getByText(t('locationPermissionBlocked'))).toBeTruthy();
+    expect(screen.getByText(t('openSettingsBtn'))).toBeTruthy();
+
+    fireEvent.click(screen.getByText(t('openSettingsBtn')));
+    expect(openSettingsSpy).toHaveBeenCalledTimes(1);
   });
 
   it('shows search results and selects a location', () => {

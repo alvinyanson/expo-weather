@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import { t } from '@/services/i18n';
 
+import { LocationPermissionError } from '@/services/weather.service';
+import { LocationPermissionCard } from '@/components/LocationPermissionCard';
 import { SearchHeader } from '@/components/SearchHeader';
 import { CurrentWeather } from '@/components/CurrentWeather';
 import { HourlyForecast } from '@/components/HourlyForecast';
@@ -80,6 +82,19 @@ export default function HomeScreen() {
   const error = locationError || weatherError;
 
   if (error) {
+    if (locationError instanceof LocationPermissionError) {
+      return (
+        <View style={styles.container}>
+          <View style={styles.center}>
+            <LocationPermissionCard
+              canAskAgain={locationError.canAskAgain}
+              onRetry={refetchLocation}
+            />
+          </View>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.center}>
