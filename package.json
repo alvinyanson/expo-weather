@@ -17,6 +17,7 @@
     "@tanstack/react-query-persist-client": "^5.101.0",
     "axios": "^1.18.0",
     "expo": "~56.0.12",
+    "expo-background-task": "~56.0.23",
     "expo-battery": "~56.0.4",
     "expo-clipboard": "~56.0.4",
     "expo-constants": "~56.0.18",
@@ -39,6 +40,7 @@
     "expo-status-bar": "~56.0.4",
     "expo-symbols": "~56.0.6",
     "expo-system-ui": "~56.0.5",
+    "expo-task-manager": "~56.0.23",
     "expo-updates": "~56.0.20",
     "expo-web-browser": "~56.0.5",
     "i18n-js": "^4.5.3",
@@ -80,7 +82,8 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "verify": "npx tsc --noEmit && pnpm run lint && pnpm run test"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

@@ -28,6 +28,8 @@ export default function SettingsScreen() {
     setHapticsEnabled,
     batterySaverAware,
     setBatterySaverAware,
+    backgroundRefreshEnabled,
+    setBackgroundRefreshEnabled,
   } = useSettingsStore();
 
   const { notificationsEnabled, isUpdatingNotifications, handleToggleNotifications } =
@@ -275,6 +277,25 @@ export default function SettingsScreen() {
               }}
               trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
               thumbColor={batterySaverAware !== false ? 'white' : '#f4f3f4'}
+            />
+          </View>
+        </View>
+
+        <View style={styles.settingRow}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.settingLabel}>{t('backgroundRefreshLabel')}</Text>
+            <Text style={styles.settingDescription}>{t('backgroundRefreshDesc')}</Text>
+          </View>
+          <View style={styles.toggleContainer}>
+            <Switch
+              testID="background-refresh-switch"
+              value={backgroundRefreshEnabled}
+              onValueChange={(value) => {
+                haptics.selection();
+                setBackgroundRefreshEnabled(value);
+              }}
+              trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
+              thumbColor={backgroundRefreshEnabled ? 'white' : '#f4f3f4'}
             />
           </View>
         </View>

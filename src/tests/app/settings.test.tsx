@@ -9,6 +9,7 @@ const {
   mockSetLanguage,
   mockSetHapticsEnabled,
   mockSetBatterySaverAware,
+  mockSetBackgroundRefreshEnabled,
   mockSelection,
   mockUseSettingsStoreState,
 } = vi.hoisted(() => ({
@@ -18,6 +19,7 @@ const {
   mockSetLanguage: vi.fn(),
   mockSetHapticsEnabled: vi.fn(),
   mockSetBatterySaverAware: vi.fn(),
+  mockSetBackgroundRefreshEnabled: vi.fn(),
   mockSelection: vi.fn(),
   mockUseSettingsStoreState: {
     temperatureUnit: 'celsius',
@@ -25,6 +27,7 @@ const {
     language: 'system',
     hapticsEnabled: true,
     batterySaverAware: true,
+    backgroundRefreshEnabled: false,
   },
 }));
 
@@ -53,11 +56,13 @@ vi.mock('@/store/useSettingsStore', () => {
       language: mockUseSettingsStoreState.language,
       hapticsEnabled: mockUseSettingsStoreState.hapticsEnabled,
       batterySaverAware: mockUseSettingsStoreState.batterySaverAware,
+      backgroundRefreshEnabled: mockUseSettingsStoreState.backgroundRefreshEnabled,
       setTemperatureUnit: mockSetTemperatureUnit,
       setWindSpeedUnit: mockSetWindSpeedUnit,
       setLanguage: mockSetLanguage,
       setHapticsEnabled: mockSetHapticsEnabled,
       setBatterySaverAware: mockSetBatterySaverAware,
+      setBackgroundRefreshEnabled: mockSetBackgroundRefreshEnabled,
     })),
     {
       getState: vi.fn(() => ({ language: 'system' })),
@@ -80,6 +85,7 @@ describe('SettingsScreen', () => {
     mockUseSettingsStoreState.language = 'system';
     mockUseSettingsStoreState.hapticsEnabled = true;
     mockUseSettingsStoreState.batterySaverAware = true;
+    mockUseSettingsStoreState.backgroundRefreshEnabled = false;
 
     mockHandleToggleNotifications = vi.fn();
     mockSignOut = vi.fn();
@@ -232,6 +238,20 @@ describe('SettingsScreen', () => {
 
     fireEvent.click(batterySwitchInput);
     expect(mockSetBatterySaverAware).toHaveBeenCalledWith(false);
+    expect(mockSelection).toHaveBeenCalled();
+  });
+
+  it('renders background refresh row and toggling updates the store', () => {
+    render(<SettingsScreen />);
+
+    expect(screen.getByText('Background Weather Refresh')).toBeTruthy();
+
+    const refreshSwitchWrapper = screen.getByTestId('background-refresh-switch');
+    const refreshSwitchInput = refreshSwitchWrapper.querySelector('input')!;
+    expect(refreshSwitchInput).toBeTruthy();
+
+    fireEvent.click(refreshSwitchInput);
+    expect(mockSetBackgroundRefreshEnabled).toHaveBeenCalledWith(true);
     expect(mockSelection).toHaveBeenCalled();
   });
 });

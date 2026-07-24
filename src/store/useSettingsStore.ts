@@ -14,6 +14,8 @@ interface SettingsStore {
   language: Language;
   hapticsEnabled: boolean;
   batterySaverAware: boolean;
+  backgroundRefreshEnabled: boolean;
+  lastBackgroundWeatherCode: number | null;
   setTemperatureUnit: (unit: TemperatureUnit) => void;
   setWindSpeedUnit: (unit: WindSpeedUnit) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
@@ -21,6 +23,8 @@ interface SettingsStore {
   setLanguage: (lang: Language) => void;
   setHapticsEnabled: (enabled: boolean) => void;
   setBatterySaverAware: (enabled: boolean) => void;
+  setBackgroundRefreshEnabled: (enabled: boolean) => void;
+  setLastBackgroundWeatherCode: (code: number | null) => void;
 }
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -33,6 +37,8 @@ export const useSettingsStore = create<SettingsStore>()(
       language: 'system',
       hapticsEnabled: true,
       batterySaverAware: true,
+      backgroundRefreshEnabled: false,
+      lastBackgroundWeatherCode: null,
       setTemperatureUnit: (unit) => set({ temperatureUnit: unit }),
       setWindSpeedUnit: (unit) => set({ windSpeedUnit: unit }),
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
@@ -40,6 +46,8 @@ export const useSettingsStore = create<SettingsStore>()(
       setLanguage: (lang) => set({ language: lang }),
       setHapticsEnabled: (enabled) => set({ hapticsEnabled: enabled }),
       setBatterySaverAware: (enabled) => set({ batterySaverAware: enabled }),
+      setBackgroundRefreshEnabled: (enabled) => set({ backgroundRefreshEnabled: enabled }),
+      setLastBackgroundWeatherCode: (code) => set({ lastBackgroundWeatherCode: code }),
     }),
     {
       name: 'settings-storage',
