@@ -23,8 +23,11 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useBatteryMonitor } from '@/hooks/useBatteryMonitor';
+import { useBackgroundWeather } from '@/hooks/useBackgroundWeather';
 import { useDatabaseInit } from '@/hooks/useDatabaseInit';
 import { DatabaseContext } from '@/contexts/DatabaseContext';
+// oxlint-disable-next-line import/no-unassigned-import
+import '@/tasks/backgroundWeatherTask';
 
 const defaultErrorHandler = ErrorUtils.getGlobalHandler();
 ErrorUtils.setGlobalHandler((error, isFatal) => {
@@ -49,6 +52,7 @@ function RootApp() {
   useAuthListener();
   useNotificationListeners();
   useBatteryMonitor();
+  useBackgroundWeather();
   const { isAuthenticated, initializing } = useAuth();
   const { hasCompletedOnboarding, hasHydrated } = useOnboardingStore();
   const { markInteractive } = useObserve();

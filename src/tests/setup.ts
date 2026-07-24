@@ -78,6 +78,26 @@ vi.mock('expo-sensors', () => ({
   },
 }));
 
+vi.mock('expo-task-manager', () => ({
+  defineTask: vi.fn(),
+  isTaskRegisteredAsync: vi.fn(() => Promise.resolve(false)),
+}));
+
+vi.mock('expo-background-task', () => ({
+  BackgroundTaskResult: {
+    Success: 1,
+    Failed: 2,
+  },
+  BackgroundTaskStatus: {
+    Restricted: 1,
+    Available: 2,
+  },
+  registerTaskAsync: vi.fn(() => Promise.resolve()),
+  unregisterTaskAsync: vi.fn(() => Promise.resolve()),
+  getStatusAsync: vi.fn(() => Promise.resolve(2)),
+  triggerTaskWorkerForTestingAsync: vi.fn(() => Promise.resolve(true)),
+}));
+
 // @maplibre/maplibre-react-native is a native module with no react-native-web
 // equivalent, so tests can't render the real map. Replace it with passthrough
 // stubs (render children only) so markers/callouts still land in the DOM -

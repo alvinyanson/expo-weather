@@ -11,6 +11,8 @@ describe('useSettingsStore', () => {
       language: 'system',
       hapticsEnabled: true,
       batterySaverAware: true,
+      backgroundRefreshEnabled: false,
+      lastBackgroundWeatherCode: null,
     });
     vi.clearAllMocks();
   });
@@ -24,6 +26,8 @@ describe('useSettingsStore', () => {
     expect(state.expoPushToken).toBeUndefined();
     expect(state.hapticsEnabled).toBe(true);
     expect(state.batterySaverAware).toBe(true);
+    expect(state.backgroundRefreshEnabled).toBe(false);
+    expect(state.lastBackgroundWeatherCode).toBeNull();
   });
 
   it('can set hapticsEnabled', () => {
@@ -75,5 +79,22 @@ describe('useSettingsStore', () => {
 
     useSettingsStore.getState().setBatterySaverAware(true);
     expect(useSettingsStore.getState().batterySaverAware).toBe(true);
+  });
+
+  it('can set backgroundRefreshEnabled', () => {
+    expect(useSettingsStore.getState().backgroundRefreshEnabled).toBe(false);
+
+    useSettingsStore.getState().setBackgroundRefreshEnabled(true);
+    expect(useSettingsStore.getState().backgroundRefreshEnabled).toBe(true);
+  });
+
+  it('can set lastBackgroundWeatherCode', () => {
+    expect(useSettingsStore.getState().lastBackgroundWeatherCode).toBeNull();
+
+    useSettingsStore.getState().setLastBackgroundWeatherCode(61);
+    expect(useSettingsStore.getState().lastBackgroundWeatherCode).toBe(61);
+
+    useSettingsStore.getState().setLastBackgroundWeatherCode(null);
+    expect(useSettingsStore.getState().lastBackgroundWeatherCode).toBeNull();
   });
 });
