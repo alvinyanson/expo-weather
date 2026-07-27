@@ -58,7 +58,7 @@ vi.mock('expo-constants', () => ({
 }));
 
 vi.mock('../../hooks/useNotifications', () => ({
-  useNotifications: vi.fn(() => ({ expoPushToken: 'token-123', sendTestNotification: vi.fn() })),
+  useNotifications: vi.fn(() => ({ expoPushToken: 'token-123' })),
 }));
 
 vi.mock('../../hooks/useAuth', () => ({

@@ -10,7 +10,7 @@ import { reportError } from '@/services/crash.service';
 
 export function useToggleNotifications() {
   const { notificationsEnabled, setNotificationsEnabled } = useSettingsStore();
-  const { expoPushToken, sendTestNotification, register } = useNotifications();
+  const { expoPushToken, register } = useNotifications();
   const { user } = useAuth();
   const { data: gpsLocation } = useFetchLocation();
   const [isUpdatingNotifications, setIsUpdatingNotifications] = useState(false);
@@ -79,6 +79,5 @@ export function useToggleNotifications() {
     notificationsEnabled,
     isUpdatingNotifications,
     handleToggleNotifications,
-    sendTestNotification,
   };
 }

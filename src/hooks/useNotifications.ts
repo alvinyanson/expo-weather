@@ -3,13 +3,8 @@ import Toast from 'react-native-toast-message';
 import Constants from 'expo-constants';
 import { t } from '@/services/i18n';
 import * as Notifications from 'expo-notifications';
-import apiClient from '@/services/api.client';
 import { reportError } from '@/services/crash.service';
 import { useSettingsStore } from '@/store/useSettingsStore';
-
-// Expo push service endpoint. Passing an absolute URL to apiClient bypasses its
-// (Open-Meteo) baseURL while still reusing the shared error interceptor.
-const EXPO_PUSH_ENDPOINT = process.env.EXPO_PUBLIC_EXPO_PUSH_ENDPOINT;
 
 const ANDROID_CHANNEL: Notifications.NotificationChannelInput = {
   name: 'default',
@@ -17,14 +12,6 @@ const ANDROID_CHANNEL: Notifications.NotificationChannelInput = {
   vibrationPattern: [0, 250, 250, 250],
   lightColor: '#FF231F7C',
 };
-
-interface ExpoPushMessage {
-  to: string;
-  sound?: 'default' | null;
-  title?: string;
-  body?: string;
-  data?: Record<string, unknown>;
-}
 
 // How notifications behave while the app is in the foreground.
 Notifications.setNotificationHandler({
@@ -90,47 +77,5 @@ export function useNotifications() {
     }
   };
 
-  // Sends a remote push notification to this device via the Expo push service,
-  // using the registered push token.
-  const sendTestNotification = async () => {
-    if (!expoPushToken) {
-      Toast.show({
-        type: 'error',
-        text1: t('toastNotReadyTitle'),
-        text2: t('toastNotReadyBody'),
-      });
-      return;
-    }
-
-    if (!EXPO_PUSH_ENDPOINT) {
-      console.warn('EXPO_PUBLIC_EXPO_PUSH_ENDPOINT is not configured.');
-      Toast.show({
-        type: 'error',
-        text1: t('toastErrorTitle'),
-        text2: t('toastPushNotConfigured'),
-      });
-      return;
-    }
-
-    const message: ExpoPushMessage = {
-      to: expoPushToken,
-      sound: 'default',
-      title: t('testNotificationTitle'),
-      body: t('testNotificationBody'),
-      data: { source: 'settings-test' },
-    };
-
-    try {
-      await apiClient.post(EXPO_PUSH_ENDPOINT, message);
-    } catch (error) {
-      console.warn('Failed to send test notification:', error);
-      Toast.show({
-        type: 'error',
-        text1: t('toastErrorTitle'),
-        text2: t('toastTestSendFailed'),
-      });
-    }
-  };
-
-  return { expoPushToken, sendTestNotification, register };
+  return { expoPushToken, register };
 }
