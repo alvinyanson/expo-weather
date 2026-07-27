@@ -5,6 +5,7 @@ import { t } from '@/services/i18n';
 import * as Notifications from 'expo-notifications';
 import { reportError } from '@/services/crash.service';
 import { useSettingsStore } from '@/store/useSettingsStore';
+import { registerNotificationCategoriesAsync } from '@/services/notificationCategory.service';
 
 const ANDROID_CHANNEL: Notifications.NotificationChannelInput = {
   name: 'default',
@@ -46,6 +47,7 @@ async function ensureNotificationPermission(): Promise<boolean> {
 async function registerForPushNotificationsAsync(): Promise<string | undefined> {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', ANDROID_CHANNEL);
+    await registerNotificationCategoriesAsync();
   }
 
   if (!(await ensureNotificationPermission())) return undefined;

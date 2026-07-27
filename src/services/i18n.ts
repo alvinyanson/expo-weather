@@ -183,6 +183,9 @@ const translations = {
     testNotificationTitle: 'Test Notification',
     testNotificationBody: 'Your notifications are set up and working!',
     toastTestSendFailed: 'Could not send the test notification.',
+    notificationActionViewDetails: 'View Details',
+    notificationActionSaveLocation: 'Save Location',
+    notificationLocationSavedToast: 'Location saved from notification',
 
     // Services
     errLocationDenied: 'Permission to access location was denied',
@@ -391,6 +394,9 @@ const translations = {
     testNotificationTitle: 'テスト通知',
     testNotificationBody: '通知機能の設定が完了し、正常に動作しています！',
     toastTestSendFailed: 'テスト通知を送信できませんでした。',
+    notificationActionViewDetails: '詳細を見る',
+    notificationActionSaveLocation: '場所を保存',
+    notificationLocationSavedToast: '通知から場所を保存しました',
 
     // Services
     errLocationDenied: '位置情報へのアクセス権限が拒否されました',

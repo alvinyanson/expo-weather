@@ -37,6 +37,17 @@ vi.mock('expo-router', () => ({
 
 vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
+const mockScheduleNotificationAsync = vi.fn();
+
+vi.mock('expo-notifications', () => ({
+  scheduleNotificationAsync: (...args: any[]) => mockScheduleNotificationAsync(...args),
+  setNotificationCategoryAsync: vi.fn(),
+  getPermissionsAsync: vi.fn(() => Promise.resolve({ status: 'granted' })),
+  requestPermissionsAsync: vi.fn(() => Promise.resolve({ status: 'granted' })),
+  setNotificationChannelAsync: vi.fn(),
+  AndroidImportance: { MAX: 5 },
+}));
+
 vi.mock('@/hooks', () => ({
   useAuth: vi.fn(),
   useToggleNotifications: vi.fn(),

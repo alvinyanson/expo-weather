@@ -6,3 +6,4 @@ export * from './weather.service';
 export * from './pushToken.service';
 export * from './storage';
 export * from './weatherHistory.service';
+export * from './notificationCategory.service';
