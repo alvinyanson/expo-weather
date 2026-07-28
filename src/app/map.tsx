@@ -13,6 +13,12 @@ import { theme } from '@/theme';
 const MAP_STYLE_URL =
   process.env.EXPO_PUBLIC_MAP_STYLE_URL || 'https://tiles.openfreemap.org/styles/liberty';
 
+const MIN_ZOOM_LEVEL = 1;
+const MAX_ZOOM_LEVEL = 18;
+const INITIAL_EMPTY_ZOOM_LEVEL = 1;
+const INITIAL_DEFAULT_ZOOM_LEVEL = 8;
+const DEFAULT_CENTER_COORDINATES: [number, number] = [0, 20];
+
 export default function MapScreen() {
   const router = useRouter();
   const haptics = useHaptics();
@@ -30,9 +36,6 @@ export default function MapScreen() {
 
   const cameraRef = useRef<CameraRef>(null);
   const mapRef = useRef<MapRef>(null);
-
-  const MIN_ZOOM = 1;
-  const MAX_ZOOM = 18;
 
   const markers: MapMarkerData[] = [
     ...(gpsLocation
@@ -74,8 +77,8 @@ export default function MapScreen() {
     ? [gpsLocation.longitude, gpsLocation.latitude]
     : savedLocations[0]
       ? [savedLocations[0].lon, savedLocations[0].lat]
-      : [0, 20];
-  const initialZoom = isEmpty ? 1 : 10;
+      : DEFAULT_CENTER_COORDINATES;
+  const initialZoom = isEmpty ? INITIAL_EMPTY_ZOOM_LEVEL : INITIAL_DEFAULT_ZOOM_LEVEL;
 
   const handleToggleSelect = (id: string) => {
     setSelectedMarkerId((current) => (current === id ? null : id));
@@ -93,7 +96,7 @@ export default function MapScreen() {
   // Read the live zoom from the map (so pinch gestures stay in sync) and step it.
   const handleZoom = async (delta: number) => {
     const current = (await mapRef.current?.getZoom()) ?? initialZoom;
-    const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, current + delta));
+    const next = Math.min(MAX_ZOOM_LEVEL, Math.max(MIN_ZOOM_LEVEL, current + delta));
     cameraRef.current?.zoomTo(next, { duration: 200 });
   };
 

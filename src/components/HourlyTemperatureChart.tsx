@@ -102,7 +102,7 @@ export const HourlyTemperatureChart = ({ weather, tempUnit }: HourlyTemperatureC
             cy={geo.firstPoint.y}
             r={4}
             fill={theme.colors.accent}
-            stroke="white"
+            stroke={theme.colors.white}
             strokeWidth={1.5}
           />
 
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
   },
   legendRow: {
     flexDirection: 'row',

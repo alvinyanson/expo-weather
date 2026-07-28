@@ -20,7 +20,7 @@ export function LocationPermissionCard({ canAskAgain, onRetry }: LocationPermiss
       <SymbolView
         name={{ ios: 'exclamationmark.triangle.fill', android: 'warning' }}
         size={48}
-        tintColor="white"
+        tintColor={theme.colors.white}
       />
       <Text style={styles.title}>{t('locationPermissionTitle')}</Text>
       <Text style={styles.description}>

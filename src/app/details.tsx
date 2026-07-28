@@ -183,7 +183,7 @@ export default function DetailsScreen() {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              tintColor="white"
+              tintColor={theme.colors.white}
               colors={[theme.colors.primary]}
             />
           }
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   loadingText: {
-    color: 'white',
+    color: theme.colors.text,
     marginTop: 10,
     fontSize: 16,
   },
@@ -228,11 +228,11 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 30,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: theme.borderRadius.xl,
     marginTop: 20,
   },
   retryText: {
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '600',
   },
   historyButton: {

@@ -35,7 +35,7 @@ export function BatterySaverIndicator() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#E6A700',
+    backgroundColor: theme.colors.warning,
     width: '100%',
     overflow: 'hidden',
     zIndex: 100,

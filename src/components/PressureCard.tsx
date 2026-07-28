@@ -26,7 +26,7 @@ export const PressureCard = ({ forecastPressure }: PressureCardProps) => {
 
       {status === 'checking' && (
         <View style={styles.checkingRow}>
-          <ActivityIndicator color="white" />
+          <ActivityIndicator color={theme.colors.white} />
           <Text style={styles.hint}>{t('pressureChecking')}</Text>
         </View>
       )}
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
     marginBottom: 12,
   },
   checkingRow: {
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     fontWeight: '500',
-    color: 'white',
+    color: theme.colors.text,
   },
   hint: {
     fontSize: 14,

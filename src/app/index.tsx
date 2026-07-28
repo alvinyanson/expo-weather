@@ -101,7 +101,7 @@ export default function HomeScreen() {
           <SymbolView
             name={{ ios: 'exclamationmark.triangle.fill', android: 'warning' }}
             size={48}
-            tintColor="white"
+            tintColor={theme.colors.white}
           />
           <Text style={styles.errorText}>{error.message}</Text>
           <Pressable
@@ -154,7 +154,7 @@ export default function HomeScreen() {
                       android: isSaved ? 'bookmark' : 'bookmark_border',
                     }}
                     size={18}
-                    tintColor={isSaved ? theme.colors.accent : 'white'}
+                    tintColor={isSaved ? theme.colors.accent : theme.colors.white}
                   />
                   <Text style={[styles.saveButtonText, isSaved && styles.saveButtonTextSaved]}>
                     {isSaved ? t('savedLocationBtn') : t('saveLocationBtn')}
@@ -246,15 +246,15 @@ const styles = StyleSheet.create({
     minHeight: 48,
   },
   saveButtonSaved: {
-    backgroundColor: 'rgba(246, 173, 85, 0.15)',
+    backgroundColor: theme.colors.accentSurface,
     borderWidth: 1,
-    borderColor: 'rgba(246, 173, 85, 0.3)',
+    borderColor: theme.colors.accentBorder,
   },
   saveButtonPressed: {
     opacity: 0.7,
   },
   saveButtonText: {
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '600',
     fontSize: theme.typography.sizes.md,
   },
@@ -266,24 +266,24 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   footerText: {
-    fontSize: 14,
+    fontSize: theme.typography.sizes.sm,
     color: theme.colors.textHint,
   },
   errorText: {
-    color: 'white',
+    color: theme.colors.text,
     textAlign: 'center',
     marginTop: 10,
-    fontSize: 16,
+    fontSize: theme.typography.sizes.md,
     marginBottom: 20,
   },
   retryButton: {
     backgroundColor: theme.colors.surface,
     paddingHorizontal: 30,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: theme.borderRadius.xl,
   },
   retryText: {
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '600',
   },
 });

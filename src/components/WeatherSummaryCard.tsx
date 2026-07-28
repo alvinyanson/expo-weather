@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   summaryTemp: {
     fontSize: 64,
     fontWeight: '200',
-    color: 'white',
+    color: theme.colors.text,
   },
   divider: {
     height: 1,
@@ -89,6 +89,6 @@ const styles = StyleSheet.create({
   detailValue: {
     fontSize: 16,
     fontWeight: '500',
-    color: 'white',
+    color: theme.colors.text,
   },
 });

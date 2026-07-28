@@ -67,7 +67,7 @@ export const SearchHeader = () => {
             onFocus={() => setShowRecent(true)}
             onBlur={() => setTimeout(() => setShowRecent(false), 200)}
           />
-          {isSearching && <ActivityIndicator size="small" color="white" />}
+          {isSearching && <ActivityIndicator size="small" color={theme.colors.white} />}
         </View>
         <Pressable
           testID="map-button"
@@ -80,7 +80,11 @@ export const SearchHeader = () => {
           accessibilityRole="button"
           accessibilityLabel={t('mapButtonLabel')}
         >
-          <SymbolView name={{ ios: 'map', android: 'map' }} size={24} tintColor="white" />
+          <SymbolView
+            name={{ ios: 'map', android: 'map' }}
+            size={24}
+            tintColor={theme.colors.white}
+          />
         </Pressable>
         <Pressable
           testID="saved-locations-button"
@@ -96,7 +100,7 @@ export const SearchHeader = () => {
           <SymbolView
             name={{ ios: 'bookmark', android: 'bookmark_border' }}
             size={24}
-            tintColor="white"
+            tintColor={theme.colors.white}
           />
         </Pressable>
         <Pressable
@@ -109,7 +113,7 @@ export const SearchHeader = () => {
           <SymbolView
             name={{ ios: 'gearshape', android: 'settings' }}
             size={24}
-            tintColor="white"
+            tintColor={theme.colors.white}
           />
         </Pressable>
       </View>
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    color: 'white',
+    color: theme.colors.text,
     fontSize: 16,
     fontFamily: Platform.OS === 'ios' ? 'Helvetica' : 'sans-serif-light',
   },
@@ -218,7 +222,7 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.borderLight,
   },
   dropdownItemText: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: 16,
   },
   recentSearchesTitle: {

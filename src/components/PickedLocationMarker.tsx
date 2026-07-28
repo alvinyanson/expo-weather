@@ -80,7 +80,7 @@ export const PickedLocationMarker = ({
             <ActivityIndicator
               testID="picked-marker-loading"
               size="small"
-              color="white"
+              color={theme.colors.white}
               style={styles.loader}
             />
           ) : (
@@ -130,7 +130,7 @@ export const PickedLocationMarker = ({
                   android: isSaved ? 'bookmark' : 'bookmark_border',
                 }}
                 size={20}
-                tintColor={isSaved ? theme.colors.accent : 'white'}
+                tintColor={isSaved ? theme.colors.accent : theme.colors.white}
               />
             </Pressable>
           </View>
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.xs,
   },
   calloutCity: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: theme.typography.sizes.md,
     fontWeight: '600',
     flex: 1,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     marginVertical: theme.spacing.xs,
   },
   calloutTemp: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: theme.typography.sizes.md,
     fontWeight: '600',
   },

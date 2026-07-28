@@ -105,7 +105,7 @@ export default function LoginScreen() {
             android_ripple={{ color: theme.colors.surface }}
           >
             {pending === 'guest' ? (
-              <ActivityIndicator size="small" color="white" />
+              <ActivityIndicator size="small" color={theme.colors.white} />
             ) : (
               <Text style={styles.guestButtonText}>{t('continueGuest')}</Text>
             )}
@@ -131,12 +131,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: '700',
-    color: 'white',
+    color: theme.colors.text,
     marginTop: 20,
     letterSpacing: 0.5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: theme.typography.sizes.md,
     color: theme.colors.textMuted,
     marginTop: 8,
   },
@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
   errorText: {
     color: theme.colors.error,
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: theme.typography.sizes.sm,
     marginBottom: 6,
   },
   googleButtonWrapper: {
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.md,
     overflow: 'hidden',
   },
   googleButton: {
@@ -158,16 +158,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.white,
     height: 52,
   },
   googleButtonText: {
-    fontSize: 16,
+    fontSize: theme.typography.sizes.md,
     fontWeight: '600',
     color: theme.colors.primary,
   },
   guestButtonWrapper: {
-    borderRadius: 12,
+    borderRadius: theme.borderRadius.md,
     borderWidth: 1,
     borderColor: theme.colors.border,
     overflow: 'hidden',
@@ -178,9 +178,9 @@ const styles = StyleSheet.create({
     height: 52,
   },
   guestButtonText: {
-    fontSize: 16,
+    fontSize: theme.typography.sizes.md,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
   },
   pressed: {
     opacity: 0.7,

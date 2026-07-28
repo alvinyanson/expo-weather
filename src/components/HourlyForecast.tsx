@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   hourlySummary: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: 14,
     paddingHorizontal: 15,
     marginBottom: 15,
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
   },
   hourlyTime: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: 16,
     fontWeight: '500',
     marginBottom: 10,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   hourlyTemp: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: 18,
     fontWeight: '500',
   },

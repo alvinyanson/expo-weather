@@ -4,9 +4,14 @@ export const theme = {
     primary: '#2A4365', // Deep blue, matches well with sky blue
     secondary: '#2B6CB0', // Mid-dark blue for buttons/accents
     accent: '#F6AD55', // Warm orange to complement the blue background
+    accentSurface: 'rgba(246, 173, 85, 0.15)', // Faint accent background for saved state
+    accentBorder: 'rgba(246, 173, 85, 0.3)', // Translucent accent border
     error: '#FEB2B2', // Soft red/pink that contrasts well
+    warning: '#E6A700', // Amber/yellow for battery saver / warning elements
     danger: '#E53E3E', // Strong red
     success: '#48BB78', // Green for success feedback
+    white: '#FFFFFF', // Solid white
+    shadow: '#000000', // Black shadow color
 
     background: '#5494D6', // App background (Sunny sky blue)
 
@@ -22,6 +27,7 @@ export const theme = {
     surfaceHighlight: 'rgba(255, 255, 255, 0.25)', // Active/hover cards
     surfaceSubtle: 'rgba(255, 255, 255, 0.05)', // Very faint backgrounds
     overlay: 'rgba(42, 67, 101, 0.95)', // Modal/search overlay
+    modalBackdrop: 'rgba(0, 0, 0, 0.5)', // Modal backdrop background
 
     // Translucent borders
     border: 'rgba(255, 255, 255, 0.2)', // Default border
@@ -35,6 +41,9 @@ export const theme = {
     // Translucent text
     textMuted: 'rgba(255, 255, 255, 0.85)', // Secondary text
     textHint: 'rgba(255, 255, 255, 0.7)', // Placeholders and tertiary text
+
+    // Switch thumb off color
+    switchThumbOff: '#f4f3f4',
   },
   spacing: {
     xs: 4,

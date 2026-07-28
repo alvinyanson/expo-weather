@@ -54,7 +54,7 @@ const toastStyles = StyleSheet.create({
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm + 4,
     width: '90%',
-    shadowColor: '#000',
+    shadowColor: theme.colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -66,7 +66,7 @@ const toastStyles = StyleSheet.create({
     marginLeft: theme.spacing.sm + 4,
   },
   toastTitle: {
-    color: '#FFFFFF',
+    color: theme.colors.text,
     fontWeight: '600',
     fontSize: theme.typography.sizes.md,
   },

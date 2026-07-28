@@ -73,7 +73,7 @@ export default function SavedLocationsScreen() {
           <SymbolView
             name={{ ios: 'exclamationmark.triangle.fill', android: 'warning' }}
             size={48}
-            tintColor="white"
+            tintColor={theme.colors.white}
           />
           <Text style={styles.message}>{error.message}</Text>
           <Pressable style={styles.retryButton} onPress={() => refetch()}>
@@ -128,7 +128,7 @@ export default function SavedLocationsScreen() {
           <SymbolView
             name={{ ios: 'chevron.left', android: 'chevron_left' }}
             size={24}
-            tintColor="white"
+            tintColor={theme.colors.white}
           />
         </Pressable>
         <Text testID="saved-title" style={styles.headerTitle}>
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: theme.typography.sizes.lg,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
   },
   content: {
     flex: 1,
@@ -217,13 +217,13 @@ const styles = StyleSheet.create({
     padding: theme.spacing.lg,
   },
   message: {
-    color: 'white',
+    color: theme.colors.text,
     textAlign: 'center',
     marginTop: theme.spacing.md,
     fontSize: theme.typography.sizes.md,
   },
   emptyTitle: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: theme.typography.sizes.lg,
     fontWeight: '600',
     marginTop: theme.spacing.md,
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.lg,
   },
   retryText: {
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '600',
   },
   columnWrapper: {
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.modalBackdrop,
   },
   modalContent: {
     backgroundColor: theme.colors.overlay,
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: theme.typography.sizes.lg,
     fontWeight: 'bold',
-    color: 'white',
+    color: theme.colors.text,
     marginBottom: theme.spacing.sm,
   },
   modalSubtitle: {
@@ -306,12 +306,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.danger,
   },
   modalCancelText: {
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '600',
     fontSize: theme.typography.sizes.md,
   },
   modalDeleteText: {
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '600',
     fontSize: theme.typography.sizes.md,
   },

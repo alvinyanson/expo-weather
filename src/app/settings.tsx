@@ -59,7 +59,7 @@ export default function SettingsScreen() {
           <SymbolView
             name={{ ios: 'chevron.left', android: 'chevron_left' }}
             size={24}
-            tintColor="white"
+            tintColor={theme.colors.white}
           />
         </Pressable>
         <Text testID="settings-title" style={styles.headerTitle}>
@@ -227,7 +227,7 @@ export default function SettingsScreen() {
           </View>
           <View style={styles.toggleContainer}>
             {isUpdatingNotifications ? (
-              <ActivityIndicator size="small" color="white" />
+              <ActivityIndicator size="small" color={theme.colors.white} />
             ) : (
               <Switch
                 testID="weather-alerts-switch"
@@ -237,7 +237,7 @@ export default function SettingsScreen() {
                   handleToggleNotifications(value);
                 }}
                 trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
-                thumbColor={notificationsEnabled ? 'white' : '#f4f3f4'}
+                thumbColor={notificationsEnabled ? theme.colors.white : theme.colors.switchThumbOff}
               />
             )}
           </View>
@@ -257,7 +257,9 @@ export default function SettingsScreen() {
                 setHapticsEnabled(value);
               }}
               trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
-              thumbColor={hapticsEnabled !== false ? 'white' : '#f4f3f4'}
+              thumbColor={
+                hapticsEnabled !== false ? theme.colors.white : theme.colors.switchThumbOff
+              }
             />
           </View>
         </View>
@@ -276,7 +278,9 @@ export default function SettingsScreen() {
                 setBatterySaverAware(value);
               }}
               trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
-              thumbColor={batterySaverAware !== false ? 'white' : '#f4f3f4'}
+              thumbColor={
+                batterySaverAware !== false ? theme.colors.white : theme.colors.switchThumbOff
+              }
             />
           </View>
         </View>
@@ -295,7 +299,9 @@ export default function SettingsScreen() {
                 setBackgroundRefreshEnabled(value);
               }}
               trackColor={{ false: theme.colors.border, true: theme.colors.secondary }}
-              thumbColor={backgroundRefreshEnabled ? 'white' : '#f4f3f4'}
+              thumbColor={
+                backgroundRefreshEnabled ? theme.colors.white : theme.colors.switchThumbOff
+              }
             />
           </View>
         </View>
@@ -347,12 +353,12 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: theme.typography.sizes.lg,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
   },
   content: {
-    padding: 20,
+    padding: theme.spacing.lg,
     flexGrow: 1,
   },
   settingRow: {
@@ -369,18 +375,18 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 18,
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '500',
   },
   settingDescription: {
-    fontSize: 14,
+    fontSize: theme.typography.sizes.sm,
     color: theme.colors.textHint,
     marginTop: 4,
   },
   toggleContainer: {
     flexDirection: 'row',
     backgroundColor: theme.colors.surfaceSubtle,
-    borderRadius: 8,
+    borderRadius: theme.borderRadius.sm,
     padding: 4,
   },
   toggleButton: {
@@ -391,7 +397,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   toggleButtonActive: {
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.white,
   },
   toggleText: {
     color: theme.colors.textMuted,
@@ -402,8 +408,8 @@ const styles = StyleSheet.create({
   },
 
   signOutButtonWrapper: {
-    borderRadius: 8,
-    marginTop: 16,
+    borderRadius: theme.borderRadius.sm,
+    marginTop: theme.spacing.md,
     borderWidth: 1,
     borderColor: theme.colors.borderError,
     overflow: 'hidden',
@@ -416,8 +422,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   signOutButtonText: {
-    fontSize: 16,
+    fontSize: theme.typography.sizes.md,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
   },
 });

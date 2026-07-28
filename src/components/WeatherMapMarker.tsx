@@ -51,7 +51,11 @@ export const WeatherMapMarker = ({
               {marker.city}
             </Text>
             {isLoading || !weather ? (
-              <ActivityIndicator testID="map-marker-loading" size="small" color="white" />
+              <ActivityIndicator
+                testID="map-marker-loading"
+                size="small"
+                color={theme.colors.white}
+              />
             ) : (
               <View style={styles.calloutRow}>
                 <SymbolView
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   calloutCity: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: theme.typography.sizes.md,
     fontWeight: '600',
     marginBottom: theme.spacing.xs,
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing.xs,
   },
   calloutTemp: {
-    color: 'white',
+    color: theme.colors.text,
     fontSize: theme.typography.sizes.md,
     fontWeight: '600',
   },

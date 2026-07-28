@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   forecastTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
   },
   forecastLabels: {
     flexDirection: 'row',
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   forecastDay: {
     flex: 1,
     fontSize: 16,
-    color: 'white',
+    color: theme.colors.text,
     fontWeight: '400',
   },
   forecastIcon: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   maxTemp: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
     width: 50,
     textAlign: 'right',
     marginRight: 12,

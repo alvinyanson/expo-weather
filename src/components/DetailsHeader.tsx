@@ -43,7 +43,7 @@ export const DetailsHeader = ({
           <SymbolView
             name={{ ios: 'chevron.left', android: 'chevron_left' }}
             size={24}
-            tintColor="white"
+            tintColor={theme.colors.white}
           />
         </Pressable>
       </View>
@@ -78,7 +78,7 @@ export const DetailsHeader = ({
             <SymbolView
               name={{ ios: 'square.and.arrow.up', android: 'share' }}
               size={24}
-              tintColor="white"
+              tintColor={theme.colors.white}
             />
           </Pressable>
         ) : null}
@@ -97,7 +97,7 @@ export const DetailsHeader = ({
                 android: isSaved ? 'bookmark' : 'bookmark_border',
               }}
               size={24}
-              tintColor={isSaved ? theme.colors.accent : 'white'}
+              tintColor={isSaved ? theme.colors.accent : theme.colors.white}
             />
           </Pressable>
         ) : null}
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   headerCity: {
     fontSize: 20,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
   },
   headerCondition: {
     fontSize: 14,

@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   cityName: {
     fontSize: 34,
     fontWeight: '600',
-    color: 'white',
+    color: theme.colors.text,
     letterSpacing: 0.5,
   },
   dateText: {
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   temperatureText: {
     fontSize: 80,
     fontWeight: '200',
-    color: 'white',
+    color: theme.colors.text,
   },
   conditionText: {
     fontSize: 24,
