@@ -24,6 +24,7 @@
     "react/jsx-no-duplicate-props": "error",
     "import/no-duplicates": "error",
     "no-console": "off",
+    "unicorn/no-array-sort": "off",
 
     "react/react-in-jsx-scope": "off",
     "react/no-unknown-property": "off"

@@ -62,7 +62,7 @@ export const getSavedLocations = async (userId: string): Promise<SavedLocation[]
   const q = query(collection(db, COLLECTION), where('userId', '==', userId));
   const snapshot = await getDocs(q);
   const results = snapshot.docs.map((d) => mapDoc(d.id, d.data() as SavedLocationDoc));
-  return results.toSorted((a, b) => {
+  return results.sort((a, b) => {
     if (a.order !== undefined && b.order !== undefined) {
       if (a.order !== b.order) {
         return a.order - b.order;
