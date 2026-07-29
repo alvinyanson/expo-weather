@@ -42,4 +42,17 @@ describe('buildWeatherShareMessage', () => {
 
     expect(message).toBe('Nowhere: Clear Sky, 10°C now (high 0°C, low 0°C).');
   });
+
+  it('appends deep link URL when lat and lon are provided', () => {
+    const message = buildWeatherShareMessage({
+      city: 'Manila',
+      weather,
+      tempUnit: '°C',
+      lat: 14.5995,
+      lon: 120.9842,
+    });
+
+    expect(message).toContain('Manila: Clear Sky, 24°C now (high 30°C, low 20°C).');
+    expect(message).toContain('expoweather://weather?lat=14.5995&lon=120.9842&city=Manila');
+  });
 });

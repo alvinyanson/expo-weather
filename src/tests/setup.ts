@@ -10,6 +10,51 @@ vi.mock('expo-localization', () => ({
   ],
 }));
 
+vi.mock('expo-linking', () => ({
+  createURL: (
+    path: string,
+    options?: {
+      queryParams?: Record<string, string | number | boolean | (string | number | boolean)[]>;
+    },
+  ) => {
+    const scheme = 'expoweather://';
+    const query = options?.queryParams
+      ? '?' +
+        Object.entries(options.queryParams)
+          .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+          .join('&')
+      : '';
+    return `${scheme}${path}${query}`;
+  },
+  parse: (url: string) => {
+    try {
+      const match = url.match(/^([a-zA-Z0-9+\-.]+):\/\/([^?]*)\??(.*)$/);
+      if (!match) return { hostname: null, path: null, queryParams: {} };
+      const path = match[2];
+      const queryString = match[3];
+      const queryParams: Record<string, string> = {};
+      if (queryString) {
+        const searchParams = new URLSearchParams(queryString);
+        searchParams.forEach((value, key) => {
+          queryParams[key] = value;
+        });
+      }
+      return {
+        hostname: path,
+        path,
+        queryParams,
+      };
+    } catch {
+      return { hostname: null, path: null, queryParams: {} };
+    }
+  },
+  addEventListener: vi.fn(() => ({ remove: vi.fn() })),
+  removeEventListener: vi.fn(),
+  getInitialURL: vi.fn(() => Promise.resolve(null)),
+  openURL: vi.fn(() => Promise.resolve(true)),
+  canOpenURL: vi.fn(() => Promise.resolve(true)),
+}));
+
 vi.mock('react-native-toast-message', () => ({
   default: {
     show: vi.fn(),

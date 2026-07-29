@@ -4,7 +4,7 @@ import DetailsScreen from '@/app/details';
 const { backMock } = vi.hoisted(() => ({ backMock: vi.fn() }));
 
 vi.mock('expo-router', () => ({
-  useRouter: () => ({ back: backMock }),
+  useRouter: () => ({ back: backMock, canGoBack: () => true }),
   useLocalSearchParams: () => ({}),
 }));
 
@@ -138,6 +138,12 @@ describe('DetailsScreen', () => {
     render(<DetailsScreen />);
     fireEvent.click(screen.getByLabelText('Share weather'));
 
-    expect(mockShare).toHaveBeenCalledWith({ city: 'Manila', weather, tempUnit: '°C' });
+    expect(mockShare).toHaveBeenCalledWith({
+      city: 'Manila',
+      weather,
+      tempUnit: '°C',
+      lat: 1,
+      lon: 2,
+    });
   });
 });

@@ -10,6 +10,8 @@ interface ShareWeatherArgs {
   city: string;
   weather: WeatherResponse;
   tempUnit: string;
+  lat?: number;
+  lon?: number;
 }
 
 // Opens the share sheet with a localized weather summary. Never rethrows.
