@@ -94,6 +94,7 @@ function RootApp() {
         <Stack.Protected guard={hasCompletedOnboarding && isAuthenticated}>
           <Stack.Screen name="index" />
           <Stack.Screen name="details" />
+          <Stack.Screen name="weather" />
           <Stack.Screen name="settings" />
           <Stack.Screen name="saved" />
           <Stack.Screen name="map" />

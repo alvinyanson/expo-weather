@@ -201,6 +201,10 @@ const translations = {
     grantPermissionBtn: 'Grant Access',
     openSettingsBtn: 'Open Settings',
 
+    // Deep linking
+    invalidDeepLinkTitle: 'Invalid Link',
+    invalidDeepLinkBody: 'The weather link is invalid or incomplete.',
+
     // Error boundary
     errorBoundaryTitle: 'We ran into a problem.',
     errorBoundarySubtitle: "We're sorry, but the application encountered an unexpected error.",
@@ -411,6 +415,10 @@ const translations = {
       '端末の設定で位置情報の許可がブロックされています。ローカルの天気情報を取得するには、設定を開いて位置情報のアクセスを許可してください。',
     grantPermissionBtn: 'アクセスを許可',
     openSettingsBtn: '設定を開く',
+
+    // Deep linking
+    invalidDeepLinkTitle: '無効なリンク',
+    invalidDeepLinkBody: '天気リンクが無効か不完全です。',
 
     // Error boundary
     errorBoundaryTitle: '問題が発生しました。',

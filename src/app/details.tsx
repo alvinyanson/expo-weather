@@ -92,7 +92,13 @@ export default function DetailsScreen() {
 
   const handleShare = () => {
     if (!weather || !targetLocation) return;
-    share({ city: targetLocation.city, weather, tempUnit });
+    share({
+      city: targetLocation.city,
+      weather,
+      tempUnit,
+      lat: targetLocation.latitude,
+      lon: targetLocation.longitude,
+    });
   };
 
   const handleCopyCoordinates = () => {
@@ -112,9 +118,17 @@ export default function DetailsScreen() {
   const isGettingLocation = !params.lat && isLoadingLocation;
   const isLoading = isGettingLocation || (!weather && isFetchingWeather);
 
+  const handleBack = () => {
+    if (typeof router.canGoBack === 'function' ? router.canGoBack() : true) {
+      router.back();
+    } else {
+      router.replace('/');
+    }
+  };
+
   const handleDismiss = () => {
     haptics.impact();
-    router.back();
+    handleBack();
   };
 
   if (isError) {
@@ -122,7 +136,7 @@ export default function DetailsScreen() {
       <View style={styles.container}>
         <View style={styles.center}>
           <Text style={styles.loadingText}>{t('noWeatherData')}</Text>
-          <Pressable style={styles.retryButton} onPress={() => router.back()}>
+          <Pressable style={styles.retryButton} onPress={handleBack}>
             <Text style={styles.retryText}>{t('goBack')}</Text>
           </Pressable>
         </View>
@@ -147,7 +161,7 @@ export default function DetailsScreen() {
           city={targetLocation.city}
           weather={weather}
           lastUpdated={lastUpdated}
-          onBack={() => router.back()}
+          onBack={handleBack}
           onShare={handleShare}
           onSave={handleSaveLocation}
           isSaved={isSaved}
