@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useBarometer } from '@/hooks/useBarometer';
-import { formatPressure } from '@/utils/formatters';
+import { formatNumber, formatPressure } from '@/utils/formatters';
 import { theme } from '@/theme';
 import { t } from '@/services/i18n';
 
@@ -12,8 +12,8 @@ interface PressureCardProps {
 const comparisonNote = (pressure: number, forecastPressure: number): string => {
   const delta = Math.round(pressure - forecastPressure);
   if (Math.abs(delta) <= 1) return t('pressureMatchesForecast');
-  if (delta > 1) return t('pressureAboveForecast', { delta });
-  return t('pressureBelowForecast', { delta: Math.abs(delta) });
+  if (delta > 1) return t('pressureAboveForecast', { delta: formatNumber(delta) });
+  return t('pressureBelowForecast', { delta: formatNumber(Math.abs(delta)) });
 };
 
 export const PressureCard = ({ forecastPressure }: PressureCardProps) => {

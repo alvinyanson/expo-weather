@@ -210,6 +210,13 @@ const translations = {
     errorBoundarySubtitle: "We're sorry, but the application encountered an unexpected error.",
     errorBoundaryMessage: 'Please try restarting the app or try again later.',
 
+    // History
+    viewHistory: 'View History',
+    viewWeatherHistory: 'View weather history',
+    clearHistory: 'Clear history',
+    noHistoryYet: 'No history yet',
+    historyLowHigh: 'Low: %{low}° High: %{high}°',
+
     // Weather Conditions
     weatherClear: 'Clear Sky',
     weatherPartlyCloudy: 'Partly Cloudy',
@@ -424,6 +431,13 @@ const translations = {
     errorBoundaryTitle: '問題が発生しました。',
     errorBoundarySubtitle: '申し訳ありません。アプリケーションで予期しないエラーが発生しました。',
     errorBoundaryMessage: 'アプリを再起動するか、後でもう一度お試しください。',
+
+    // History
+    viewHistory: '履歴を表示',
+    viewWeatherHistory: '気象履歴を表示',
+    clearHistory: '履歴を消去',
+    noHistoryYet: '履歴がまだありません',
+    historyLowHigh: '最低: %{low}° 最高: %{high}°',
 
     // Weather Conditions
     weatherClear: '快晴',

@@ -32,12 +32,14 @@ export const WeatherSummaryCard = ({ weather, tempUnit, windUnit }: WeatherSumma
       <View style={styles.summaryDetails}>
         <View style={styles.detailItem} testID="detail-humidity">
           <Text style={styles.detailLabel}>{t('humidityLabel')}</Text>
-          <Text style={styles.detailValue}>{weather.current.relative_humidity_2m}%</Text>
+          <Text style={styles.detailValue}>
+            {formatRound(weather.current.relative_humidity_2m)}%
+          </Text>
         </View>
         <View style={styles.detailItem} testID="detail-wind">
           <Text style={styles.detailLabel}>{t('windLabel')}</Text>
           <Text style={styles.detailValue}>
-            {weather.current.wind_speed_10m} {windUnit}
+            {formatRound(weather.current.wind_speed_10m)} {windUnit}
           </Text>
         </View>
         <View style={styles.detailItem} testID="detail-uv-index">

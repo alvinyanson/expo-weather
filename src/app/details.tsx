@@ -8,7 +8,7 @@ import {
 } from '@/hooks';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { theme } from '@/theme';
-import { formatTime } from '@/utils/formatters';
+import { formatRelativeTime } from '@/utils/formatters';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -62,7 +62,7 @@ export default function DetailsScreen() {
     dataUpdatedAt,
   } = useFetchWeather(targetLocation);
 
-  const lastUpdated = dataUpdatedAt ? formatTime(dataUpdatedAt) : '';
+  const lastUpdated = dataUpdatedAt ? formatRelativeTime(dataUpdatedAt) : '';
 
   const { savedLocations, toggleSavedLocation } = useSavedLocations();
   const haptics = useHaptics();
@@ -172,7 +172,7 @@ export default function DetailsScreen() {
           style={({ pressed }) => [styles.historyButton, pressed && styles.historyButtonPressed]}
           android_ripple={{ color: theme.colors.ripple }}
           accessibilityRole="button"
-          accessibilityLabel="View weather history"
+          accessibilityLabel={t('viewWeatherHistory')}
           onPress={() =>
             router.push({
               pathname: '/history',
@@ -184,7 +184,7 @@ export default function DetailsScreen() {
             })
           }
         >
-          <Text style={styles.historyButtonText}>View History</Text>
+          <Text style={styles.historyButtonText}>{t('viewHistory')}</Text>
         </Pressable>
 
         <ScrollView

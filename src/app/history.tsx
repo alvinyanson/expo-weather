@@ -15,6 +15,8 @@ import { useDatabase } from '@/contexts/DatabaseContext';
 import { useWeatherHistory } from '@/hooks/useWeatherHistory';
 import { DailyWeatherSummary, WeatherHistoryRow as WeatherHistoryRowType } from '@/interfaces';
 import { theme } from '@/theme';
+import { formatDateFull, formatRound } from '@/utils/formatters';
+import { t } from '@/services/i18n';
 
 export default function HistoryScreen(): ReactElement {
   const router = useRouter();
@@ -38,7 +40,7 @@ export default function HistoryScreen(): ReactElement {
           <Pressable
             onPress={() => router.back()}
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={t('goBack')}
             style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
             android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
           >
@@ -65,7 +67,7 @@ export default function HistoryScreen(): ReactElement {
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel={t('goBack')}
           style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
           android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
         >
@@ -81,7 +83,7 @@ export default function HistoryScreen(): ReactElement {
         <Pressable
           onPress={handleClear}
           accessibilityRole="button"
-          accessibilityLabel="Clear history"
+          accessibilityLabel={t('clearHistory')}
           style={({ pressed }) => [styles.trashButton, pressed && styles.buttonPressed]}
           android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
         >
@@ -100,7 +102,7 @@ export default function HistoryScreen(): ReactElement {
             size={56}
             tintColor={theme.colors.textHint}
           />
-          <Text style={styles.emptyText}>No history yet</Text>
+          <Text style={styles.emptyText}>{t('noHistoryYet')}</Text>
         </View>
       ) : (
         <SectionList<WeatherHistoryRowType, DailyWeatherSummary>
@@ -109,9 +111,12 @@ export default function HistoryScreen(): ReactElement {
           renderItem={({ item }) => <WeatherHistoryRow row={item} />}
           renderSectionHeader={({ section }) => (
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionDate}>{section.date}</Text>
+              <Text style={styles.sectionDate}>{formatDateFull(section.date)}</Text>
               <Text style={styles.sectionMinMax}>
-                Low: {Math.round(section.temp_min)}° High: {Math.round(section.temp_max)}°
+                {t('historyLowHigh', {
+                  low: formatRound(section.temp_min),
+                  high: formatRound(section.temp_max),
+                })}
               </Text>
             </View>
           )}
