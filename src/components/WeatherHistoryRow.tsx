@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { WeatherHistoryRow as WeatherHistoryRowType } from '@/interfaces';
 import { theme } from '@/theme';
-import { formatTime } from '@/utils/formatters';
+import { formatPressure, formatRound, formatTime } from '@/utils/formatters';
 import { weatherCodeToSymbol, getIconTintColor } from '@/utils/weatherMapper';
 
 type Props = {
@@ -16,7 +16,7 @@ export const WeatherHistoryRow = ({ row }: Props): ReactElement => {
   const symbolName = weatherCodeToSymbol(row.weather_code);
   const tintColor = getIconTintColor(row.weather_code);
   const timeLabel = formatTime(row.fetched_at);
-  const pressureLabel = row.pressure != null ? `${Math.round(row.pressure)} hPa` : '—';
+  const pressureLabel = row.pressure != null ? `${formatPressure(row.pressure)} hPa` : '—';
 
   return (
     <View style={styles.container}>
@@ -30,7 +30,7 @@ export const WeatherHistoryRow = ({ row }: Props): ReactElement => {
 
       <View style={styles.tempColumn}>
         <Text style={styles.temp}>
-          {Math.round(row.temperature)}
+          {formatRound(row.temperature)}
           {tempUnit}
         </Text>
       </View>
@@ -42,7 +42,7 @@ export const WeatherHistoryRow = ({ row }: Props): ReactElement => {
             size={12}
             tintColor={theme.colors.textMuted}
           />
-          <Text style={styles.detailText}>{row.humidity}%</Text>
+          <Text style={styles.detailText}>{formatRound(row.humidity)}%</Text>
         </View>
 
         <View style={styles.metricRow}>
@@ -52,7 +52,7 @@ export const WeatherHistoryRow = ({ row }: Props): ReactElement => {
             tintColor={theme.colors.textMuted}
           />
           <Text style={styles.detailText}>
-            {Math.round(row.wind_speed)} {windUnit}
+            {formatRound(row.wind_speed)} {windUnit}
           </Text>
         </View>
       </View>

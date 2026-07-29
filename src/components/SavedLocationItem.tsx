@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import type { SavedLocation } from '@/interfaces';
-import { formatDateFull, formatTime } from '@/utils/formatters';
+import { formatRelativeTime } from '@/utils/formatters';
 import { theme } from '@/theme';
 import { t } from '@/services/i18n';
 
@@ -59,9 +59,7 @@ export const SavedLocationItem = ({
   drag,
   isActive = false,
 }: SavedLocationItemProps) => {
-  const savedAt = location.createdAt
-    ? `${formatDateFull(location.createdAt)} · ${formatTime(location.createdAt)}`
-    : null;
+  const savedAt = location.createdAt ? formatRelativeTime(location.createdAt) : null;
 
   return (
     <ReanimatedSwipeable

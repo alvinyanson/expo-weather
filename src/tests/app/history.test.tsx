@@ -71,6 +71,8 @@ const sampleSummaries: DailyWeatherSummary[] = [
   },
 ];
 
+import { formatDateFull } from '@/utils/formatters';
+
 describe('HistoryScreen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -117,7 +119,7 @@ describe('HistoryScreen', () => {
     render(<HistoryScreen />);
 
     expect(screen.getByText('Manila')).toBeTruthy();
-    expect(screen.getByText('2026-07-27')).toBeTruthy();
+    expect(screen.getByText(formatDateFull('2026-07-27'))).toBeTruthy();
     expect(screen.getByText('Low: 24° High: 33°')).toBeTruthy(); // Math.round(24.2) and Math.round(32.8)
     expect(screen.getByText('30°C')).toBeTruthy();
   });
@@ -131,7 +133,7 @@ describe('HistoryScreen', () => {
 
     render(<HistoryScreen />);
 
-    const backButton = screen.getByLabelText('Go back');
+    const backButton = screen.getByLabelText(/go back/i);
     fireEvent.click(backButton);
 
     expect(backMock).toHaveBeenCalledTimes(1);
