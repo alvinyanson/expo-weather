@@ -23,6 +23,7 @@ import {
 } from 'react-native';
 import { t } from '@/services/i18n';
 
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { DetailsHeader } from '@/components/DetailsHeader';
 import { WeatherSummaryCard } from '@/components/WeatherSummaryCard';
 import { DailyForecastList } from '@/components/DailyForecastList';
@@ -58,6 +59,9 @@ export default function DetailsScreen() {
     data: weather,
     isFetching: isFetchingWeather,
     isError,
+    error: weatherError,
+    failureCount: weatherFailureCount,
+    failureReason: weatherFailureReason,
     refetch,
     dataUpdatedAt,
   } = useFetchWeather(targetLocation);
@@ -116,6 +120,9 @@ export default function DetailsScreen() {
   };
 
   const isGettingLocation = !params.lat && isLoadingLocation;
+  // A retry is in flight once a fetch is running after at least one failure. The query
+  // only surfaces `error` after every retry is spent, so use `failureReason` until then.
+  const isRetryingWeather = isFetchingWeather && (weatherFailureCount ?? 0) > 0;
   const isLoading = isGettingLocation || (!weather && isFetchingWeather);
 
   const handleBack = () => {
@@ -131,11 +138,16 @@ export default function DetailsScreen() {
     handleBack();
   };
 
-  if (isError) {
+  if (isError || (isRetryingWeather && !weather)) {
     return (
       <View style={styles.container}>
         <View style={styles.center}>
-          <Text style={styles.loadingText}>{t('noWeatherData')}</Text>
+          <ApiErrorState
+            error={weatherError ?? weatherFailureReason}
+            onRetry={refetch}
+            isRetrying={isRetryingWeather}
+            failureCount={weatherFailureCount}
+          />
           <Pressable style={styles.retryButton} onPress={handleBack}>
             <Text style={styles.retryText}>{t('goBack')}</Text>
           </Pressable>

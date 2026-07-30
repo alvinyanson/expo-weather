@@ -6,3 +6,4 @@ export * from './SwipeToDismiss';
 export * from './OnboardingSlide';
 export * from './OnboardingPagination';
 export * from './LocationPermissionCard';
+export * from './ApiErrorState';

@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { AxiosError } from 'axios';
 import HomeScreen from '@/app/index';
 
 const { pushMock, backMock } = vi.hoisted(() => {
@@ -227,11 +228,32 @@ describe('HomeScreen', () => {
     mockSearchHook.mockReturnValue(searchHookState());
 
     render(<HomeScreen />);
-    expect(screen.getByText('Network error')).toBeTruthy();
+    expect(screen.getByText('No Internet Connection')).toBeTruthy();
 
     fireEvent.click(screen.getByText('Retry'));
     expect(refetchLocation).toHaveBeenCalled();
     expect(refetchWeather).toHaveBeenCalled();
+  });
+
+  it('shows the retry progress while the weather query is still retrying', () => {
+    mockLocationHook.mockReturnValue(hookState({ data: location }));
+    // A retry in flight: the query reports a failure reason but no error yet.
+    mockWeatherHook.mockReturnValue(
+      hookState({
+        isLoading: true,
+        isFetching: true,
+        failureCount: 1,
+        failureReason: new AxiosError('timeout of 10000ms exceeded', 'ECONNABORTED'),
+      }),
+    );
+    mockSearchHook.mockReturnValue(searchHookState());
+
+    render(<HomeScreen />);
+
+    expect(screen.getByText('Request Timed Out')).toBeTruthy();
+    expect(screen.getByText('Retrying (Attempt 2 of 3)...')).toBeTruthy();
+    expect(screen.queryByTestId('api-error-retry-button')).toBeNull();
+    expect(screen.queryByTestId('home-skeleton')).toBeNull();
   });
 
   it('renders LocationPermissionCard with rationale when canAskAgain is true', () => {

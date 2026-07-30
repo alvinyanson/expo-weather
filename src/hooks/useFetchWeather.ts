@@ -7,6 +7,8 @@ import { useDatabase } from '@/contexts/DatabaseContext';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useBatteryStore } from '@/store/useBatteryStore';
 
+import { getExponentialBackoffDelay, shouldRetryQuery } from '@/utils/apiError';
+
 export const useFetchWeather = (location?: LocationData) => {
   const temperatureUnit = useSettingsStore((state) => state.temperatureUnit);
   const windSpeedUnit = useSettingsStore((state) => state.windSpeedUnit);
@@ -22,6 +24,8 @@ export const useFetchWeather = (location?: LocationData) => {
     enabled: !!location,
     staleTime: isThrottled ? 1000 * 60 * 30 : 1000 * 60 * 10, // 30 minutes throttled, 10 minutes normal
     refetchOnWindowFocus: !isThrottled,
+    retry: shouldRetryQuery,
+    retryDelay: getExponentialBackoffDelay,
   });
 
   const db = useDatabase();

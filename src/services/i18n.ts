@@ -227,6 +227,19 @@ const translations = {
     weatherSnow: 'Snow',
     weatherShowers: 'Showers',
     weatherThunderstorm: 'Thunderstorm',
+
+    // API Error States
+    errorTimeoutTitle: 'Request Timed Out',
+    errorTimeoutMessage:
+      'The server took too long to respond. Please check your connection and try again.',
+    errorOfflineTitle: 'No Internet Connection',
+    errorOfflineMessage:
+      'You appear to be offline. Please connect to the internet to update weather data.',
+    errorServerTitle: 'Server Error',
+    errorServerMessage: 'The weather service encountered an error. Please try again later.',
+    errorGeneralTitle: 'Something Went Wrong',
+    errorGeneralMessage: 'Could not load weather data. Please try again.',
+    retryingText: 'Retrying (Attempt %{attempt} of %{max})...',
   },
   ja: {
     // CurrentWeather
@@ -449,6 +462,19 @@ const translations = {
     weatherSnow: '雪',
     weatherShowers: 'にわか雨',
     weatherThunderstorm: '雷雨',
+
+    // API Error States
+    errorTimeoutTitle: 'リクエストタイムアウト',
+    errorTimeoutMessage:
+      'サーバーからの応答に時間がかかりすぎています。接続を確認して再試行してください。',
+    errorOfflineTitle: 'インターネット未接続',
+    errorOfflineMessage:
+      'オフラインのようです。天気データを更新するにはインターネットに接続してください。',
+    errorServerTitle: 'サーバーエラー',
+    errorServerMessage: '気象サービスでエラーが発生しました。後でやり直してください。',
+    errorGeneralTitle: 'エラーが発生しました',
+    errorGeneralMessage: '天気データを読み込めませんでした。もう一度お試しください。',
+    retryingText: '再試行中 (試行 %{attempt} / %{max})...',
   },
 };
 

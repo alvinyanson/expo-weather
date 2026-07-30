@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
+import { AxiosError } from 'axios';
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useFetchWeather } from '@/hooks/useFetchWeather';
@@ -9,6 +10,8 @@ import { useDatabase } from '@/contexts/DatabaseContext';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useBatteryStore } from '@/store/useBatteryStore';
 import type { LocationData, WeatherResponse } from '@/interfaces';
+
+vi.mock('expo-symbols', () => ({ SymbolView: () => null }));
 
 vi.mock('@/services', () => ({
   fetchWeather: vi.fn(),
@@ -62,6 +65,14 @@ describe('useFetchWeather', () => {
     );
   };
 
+  // No retry override, so the hook's own retry policy is what gets exercised.
+  const createRetryWrapper = () => {
+    queryClient = new QueryClient();
+    return ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     useSettingsStore.setState({
@@ -77,6 +88,8 @@ describe('useFetchWeather', () => {
 
   afterEach(() => {
     cleanup();
+    // Drop any pending retry timers so they don't leak into the next test.
+    queryClient?.clear();
   });
 
   it('is disabled when location parameter is undefined', () => {
@@ -172,5 +185,40 @@ describe('useFetchWeather', () => {
     const normalQueryOptions = normalQuery?.options as any;
     expect(normalQueryOptions?.staleTime).toBe(1000 * 60 * 10); // 10 mins
     expect(normalQueryOptions?.refetchOnWindowFocus).toBe(true);
+  });
+
+  it('does not retry 4xx client errors', async () => {
+    mockFetchWeather.mockRejectedValue(
+      new AxiosError('Not Found', 'ERR_BAD_REQUEST', undefined, undefined, {
+        status: 404,
+      } as never),
+    );
+
+    const { result } = renderHook(() => useFetchWeather(mockLocation), {
+      wrapper: createRetryWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+
+    // React Query retries 3 times by default; the policy stops after the first failure.
+    expect(mockFetchWeather).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries retryable errors after a backoff delay and reports the in-flight failure', async () => {
+    mockFetchWeather.mockRejectedValue(
+      new AxiosError('timeout of 10000ms exceeded', 'ECONNABORTED'),
+    );
+
+    const { result } = renderHook(() => useFetchWeather(mockLocation), {
+      wrapper: createRetryWrapper(),
+    });
+
+    await waitFor(() => expect(result.current.failureCount).toBe(1));
+
+    // Still fetching during the 1s backoff, so no error is surfaced to the screen yet.
+    expect(result.current.isFetching).toBe(true);
+    expect(result.current.isError).toBe(false);
+    expect(result.current.failureReason).toBeInstanceOf(AxiosError);
+    expect(mockFetchWeather).toHaveBeenCalledTimes(1);
   });
 });

@@ -15,6 +15,7 @@ import {
 import { t } from '@/services/i18n';
 
 import { LocationPermissionError } from '@/services/weather.service';
+import { ApiErrorState } from '@/components/ApiErrorState';
 import { LocationPermissionCard } from '@/components/LocationPermissionCard';
 import { SearchHeader } from '@/components/SearchHeader';
 import { CurrentWeather } from '@/components/CurrentWeather';
@@ -41,6 +42,9 @@ export default function HomeScreen() {
     isLoading: isLoadingWeather,
     error: weatherError,
     refetch: refetchWeather,
+    isFetching: isFetchingWeather,
+    failureCount: weatherFailureCount,
+    failureReason: weatherFailureReason,
   } = useFetchWeather(gpsLocation);
 
   const { savedLocations, toggleSavedLocation } = useSavedLocations();
@@ -79,7 +83,11 @@ export default function HomeScreen() {
   };
 
   const isLoading = isLoadingLocation || isLoadingWeather;
-  const error = locationError || weatherError;
+  // A retry is in flight once a fetch is running after at least one failure. The query
+  // only surfaces `error` after every retry is spent, so use `failureReason` until then.
+  const isRetryingWeather = isFetchingWeather && (weatherFailureCount ?? 0) > 0;
+  const error =
+    locationError || weatherError || (isRetryingWeather && !weather ? weatherFailureReason : null);
 
   if (error) {
     if (locationError instanceof LocationPermissionError) {
@@ -98,21 +106,15 @@ export default function HomeScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.center}>
-          <SymbolView
-            name={{ ios: 'exclamationmark.triangle.fill', android: 'warning' }}
-            size={48}
-            tintColor={theme.colors.white}
-          />
-          <Text style={styles.errorText}>{error.message}</Text>
-          <Pressable
-            style={styles.retryButton}
-            onPress={() => {
+          <ApiErrorState
+            error={error}
+            onRetry={() => {
               refetchLocation();
               refetchWeather();
             }}
-          >
-            <Text style={styles.retryText}>{t('retryText')}</Text>
-          </Pressable>
+            isRetrying={isRetryingWeather}
+            failureCount={weatherFailureCount}
+          />
         </View>
       </View>
     );
