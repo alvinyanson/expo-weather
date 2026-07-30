@@ -185,6 +185,7 @@ export default function DetailsScreen() {
           android_ripple={{ color: theme.colors.ripple }}
           accessibilityRole="button"
           accessibilityLabel={t('viewWeatherHistory')}
+          testID="details-history-button"
           onPress={() =>
             router.push({
               pathname: '/history',

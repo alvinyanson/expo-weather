@@ -2,16 +2,22 @@ appId: com.anonymous.expoweather
 tags:
   - subflow
 ---
-- launchApp:
-    clearState: true
-
-# Wait up to 30s for the app to load (JS is embedded in the release build).
+# Login screen should already be visible (called after onboarding_flow.yaml).
+# Guard with a wait in case JS bundle is still hydrating.
 - extendedWaitUntil:
-    visible: 'Expo Weather'
-    timeout: 30000
+    visible:
+      id: 'login-title'
+    timeout: 15000
 
-- assertVisible: 'Sign in to continue'
-- assertVisible: 'Continue with Google'
-- assertVisible: 'Continue as Guest'
-- tapOn: 'Continue as Guest'
-- assertVisible: 'Search city...'
+- assertVisible:
+    id: 'login-subtitle'
+- assertVisible:
+    id: 'google-signin-button'
+- assertVisible:
+    id: 'guest-signin-button'
+- tapOn:
+    id: 'guest-signin-button'
+
+# Authenticated — Home screen must show the search input.
+- assertVisible:
+    id: 'search-input'

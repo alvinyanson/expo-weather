@@ -1,12 +1,14 @@
 appId: com.anonymous.expoweather
 ---
-# Reach the authenticated Home screen.
+# Reach the authenticated Home screen via onboarding → login.
+- runFlow: onboarding_flow.yaml
 - runFlow: login_flow.yaml
 
-# Wait for Home, save the current location so Saved has an entry.
-- extendedWaitUntil:
-    visible:
+# details-hint may be off-screen on smaller devices — scroll to it before interacting.
+- scrollUntilVisible:
+    element:
       id: 'details-hint'
+    direction: DOWN
     timeout: 30000
 - tapOn:
     id: 'save-location-button'

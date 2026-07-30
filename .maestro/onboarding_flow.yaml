@@ -1,0 +1,46 @@
+appId: com.anonymous.expoweather
+tags:
+  - subflow
+---
+- launchApp:
+    clearState: true
+
+# Wait for the first onboarding slide to render.
+- extendedWaitUntil:
+    visible:
+      id: 'onboarding-slide-search'
+    timeout: 30000
+
+# Slide 1 — Search: verify pagination and advance.
+- assertVisible:
+    id: 'onboarding-pagination'
+- assertVisible:
+    id: 'onboarding-next'
+- tapOn:
+    id: 'onboarding-next'
+
+# Slide 2 — Save: verify slide rendered and advance.
+- extendedWaitUntil:
+    visible:
+      id: 'onboarding-slide-save'
+    timeout: 10000
+- assertVisible:
+    id: 'onboarding-next'
+- tapOn:
+    id: 'onboarding-next'
+
+# Slide 3 — Alerts: "Next" is replaced by "Get Started".
+- extendedWaitUntil:
+    visible:
+      id: 'onboarding-slide-alerts'
+    timeout: 10000
+- assertVisible:
+    id: 'onboarding-get-started'
+- tapOn:
+    id: 'onboarding-get-started'
+
+# Onboarding complete — login screen must be visible next.
+- extendedWaitUntil:
+    visible:
+      id: 'login-title'
+    timeout: 15000

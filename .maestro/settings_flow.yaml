@@ -1,12 +1,14 @@
 appId: com.anonymous.expoweather
 ---
-# Reach the authenticated Home screen.
+# Reach the authenticated Home screen via onboarding → login.
+- runFlow: onboarding_flow.yaml
 - runFlow: login_flow.yaml
 
-# Wait for Home, then open Settings.
-- extendedWaitUntil:
-    visible:
+# details-hint may be off-screen on smaller devices — scroll to it before tapping settings.
+- scrollUntilVisible:
+    element:
       id: 'details-hint'
+    direction: DOWN
     timeout: 30000
 - tapOn:
     id: 'settings-button'
@@ -33,6 +35,24 @@ appId: com.anonymous.expoweather
     id: 'language-toggle-ja'
 - assertVisible:
     id: 'weather-alerts-switch'
+- scrollUntilVisible:
+    element:
+      id: 'haptics-switch'
+    direction: DOWN
+- assertVisible:
+    id: 'haptics-switch'
+- scrollUntilVisible:
+    element:
+      id: 'battery-saver-switch'
+    direction: DOWN
+- assertVisible:
+    id: 'battery-saver-switch'
+- scrollUntilVisible:
+    element:
+      id: 'background-refresh-switch'
+    direction: DOWN
+- assertVisible:
+    id: 'background-refresh-switch'
 
 # Temperature unit toggle (default Celsius -> Fahrenheit; testID reflects state)
 - assertVisible:

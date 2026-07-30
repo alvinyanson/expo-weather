@@ -19,7 +19,7 @@ export const WeatherHistoryRow = ({ row }: Props): ReactElement => {
   const pressureLabel = row.pressure != null ? `${formatPressure(row.pressure)} hPa` : '—';
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="history-row">
       <View style={styles.timeColumn}>
         <Text style={styles.time}>{timeLabel}</Text>
       </View>
