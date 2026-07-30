@@ -98,7 +98,7 @@ describe('DetailsScreen', () => {
     mockWeatherHook.mockReturnValue(hookState({ isError: true }));
 
     render(<DetailsScreen />);
-    expect(screen.getByText('No weather data available.')).toBeTruthy();
+    expect(screen.getByText('Something Went Wrong')).toBeTruthy();
 
     fireEvent.click(screen.getByText('Go Back'));
     expect(backMock).toHaveBeenCalled();
