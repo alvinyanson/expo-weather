@@ -1,12 +1,14 @@
 appId: com.anonymous.expoweather
 ---
-# Reach the authenticated Home screen.
+# Reach the authenticated Home screen via onboarding → login.
+- runFlow: onboarding_flow.yaml
 - runFlow: login_flow.yaml
 
-# Wait for Home, then open Details via the weather hero.
-- extendedWaitUntil:
-    visible:
+# details-hint may be off-screen on smaller devices — scroll to it before tapping.
+- scrollUntilVisible:
+    element:
       id: 'details-hint'
+    direction: DOWN
     timeout: 30000
 - tapOn:
     id: 'current-weather'
@@ -20,6 +22,10 @@ appId: com.anonymous.expoweather
 # Header
 - assertVisible:
     id: 'back-button'
+- assertVisible:
+    id: 'details-city'
+- assertVisible:
+    id: 'details-share-button'
 - assertVisible:
     id: 'details-save-button'
 - assertVisible:
@@ -38,6 +44,8 @@ appId: com.anonymous.expoweather
 # Forecast list
 - assertVisible:
     id: 'daily-forecast'
+- assertVisible:
+    id: 'details-history-button'
 
 # Back navigation returns to Home.
 - tapOn:

@@ -1,17 +1,21 @@
 appId: com.anonymous.expoweather
 ---
-# Reach the authenticated Home screen.
+# Reach the authenticated Home screen via onboarding → login.
+- runFlow: onboarding_flow.yaml
 - runFlow: login_flow.yaml
 
-# details-hint renders only after weather loads.
-- extendedWaitUntil:
-    visible:
+# details-hint renders only after weather loads and may be off-screen on smaller devices.
+- scrollUntilVisible:
+    element:
       id: 'details-hint'
+    direction: DOWN
     timeout: 30000
 
 # Search header
 - assertVisible:
     id: 'search-input'
+- assertVisible:
+    id: 'map-button'
 - assertVisible:
     id: 'saved-locations-button'
 - assertVisible:

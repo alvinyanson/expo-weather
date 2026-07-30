@@ -37,21 +37,28 @@ export default function HistoryScreen(): ReactElement {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
         <View style={styles.header}>
-          <Pressable
-            onPress={() => router.back()}
-            accessibilityRole="button"
-            accessibilityLabel={t('goBack')}
-            style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
-            android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
-          >
-            <SymbolView
-              name={{ ios: 'chevron.left', android: 'chevron_left' }}
-              size={24}
-              tintColor={theme.colors.text}
-            />
-          </Pressable>
-          <Text style={styles.headerTitle}>{city}</Text>
-          <View style={styles.backButton} />
+          <View style={styles.leftSlot}>
+            <Pressable
+              testID="history-back-button"
+              onPress={() => router.back()}
+              accessibilityRole="button"
+              accessibilityLabel={t('goBack')}
+              style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
+              android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+            >
+              <SymbolView
+                name={{ ios: 'chevron.left', android: 'chevron_left' }}
+                size={24}
+                tintColor={theme.colors.text}
+              />
+            </Pressable>
+          </View>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle} testID="history-title" numberOfLines={1}>
+              {city}
+            </Text>
+          </View>
+          <View style={styles.rightSlot} />
         </View>
         <View style={styles.center}>
           <ActivityIndicator size="large" color={theme.colors.text} />
@@ -64,39 +71,49 @@ export default function HistoryScreen(): ReactElement {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       <View style={styles.header}>
-        <Pressable
-          onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel={t('goBack')}
-          style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
-          android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
-        >
-          <SymbolView
-            name={{ ios: 'chevron.left', android: 'chevron_left' }}
-            size={24}
-            tintColor={theme.colors.text}
-          />
-        </Pressable>
-        <Text style={styles.headerTitle} numberOfLines={1}>
-          {city}
-        </Text>
-        <Pressable
-          onPress={handleClear}
-          accessibilityRole="button"
-          accessibilityLabel={t('clearHistory')}
-          style={({ pressed }) => [styles.trashButton, pressed && styles.buttonPressed]}
-          android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
-        >
-          <SymbolView
-            name={{ ios: 'trash', android: 'delete' }}
-            size={22}
-            tintColor={theme.colors.text}
-          />
-        </Pressable>
+        <View style={styles.leftSlot}>
+          <Pressable
+            testID="history-back-button"
+            onPress={() => router.back()}
+            accessibilityRole="button"
+            accessibilityLabel={t('goBack')}
+            style={({ pressed }) => [styles.backButton, pressed && styles.buttonPressed]}
+            android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+          >
+            <SymbolView
+              name={{ ios: 'chevron.left', android: 'chevron_left' }}
+              size={24}
+              tintColor={theme.colors.text}
+            />
+          </Pressable>
+        </View>
+
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.headerTitle} testID="history-title" numberOfLines={1}>
+            {city}
+          </Text>
+        </View>
+
+        <View style={styles.rightSlot}>
+          <Pressable
+            testID="history-clear-button"
+            onPress={handleClear}
+            accessibilityRole="button"
+            accessibilityLabel={t('clearHistory')}
+            style={({ pressed }) => [styles.trashButton, pressed && styles.buttonPressed]}
+            android_ripple={{ color: theme.colors.ripple, borderless: true, radius: 24 }}
+          >
+            <SymbolView
+              name={{ ios: 'trash', android: 'delete' }}
+              size={22}
+              tintColor={theme.colors.text}
+            />
+          </Pressable>
+        </View>
       </View>
 
       {summaries.length === 0 ? (
-        <View style={styles.center}>
+        <View style={styles.center} testID="history-empty">
           <SymbolView
             name={{ ios: 'clock.arrow.circlepath', android: 'history' }}
             size={56}
@@ -106,6 +123,7 @@ export default function HistoryScreen(): ReactElement {
         </View>
       ) : (
         <SectionList<WeatherHistoryRowType, DailyWeatherSummary>
+          testID="history-list"
           sections={summaries}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <WeatherHistoryRow row={item} />}
@@ -136,10 +154,22 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    height: 60,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.borderLight,
+  },
+  leftSlot: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  rightSlot: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  headerTitleContainer: {
+    alignItems: 'center',
   },
   backButton: {
     width: 44,
@@ -157,7 +187,6 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   headerTitle: {
-    flex: 1,
     color: theme.colors.text,
     fontSize: theme.typography.sizes.lg,
     fontWeight: '600',

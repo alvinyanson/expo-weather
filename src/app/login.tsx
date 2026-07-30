@@ -68,8 +68,12 @@ export default function LoginScreen() {
           tintColor={theme.colors.iconSun}
           type="monochrome"
         />
-        <Text style={styles.title}>{t('appName')}</Text>
-        <Text style={styles.subtitle}>{t('loginSubtitle')}</Text>
+        <Text style={styles.title} testID="login-title">
+          {t('appName')}
+        </Text>
+        <Text style={styles.subtitle} testID="login-subtitle">
+          {t('loginSubtitle')}
+        </Text>
       </View>
 
       <View style={styles.actions}>
@@ -81,6 +85,7 @@ export default function LoginScreen() {
             onPress={handleGoogle}
             disabled={busy}
             android_ripple={{ color: theme.colors.rippleDark }}
+            testID="google-signin-button"
           >
             {pending === 'google' ? (
               <ActivityIndicator size="small" color={theme.colors.primary} />
@@ -103,6 +108,7 @@ export default function LoginScreen() {
             onPress={handleGuest}
             disabled={busy}
             android_ripple={{ color: theme.colors.surface }}
+            testID="guest-signin-button"
           >
             {pending === 'guest' ? (
               <ActivityIndicator size="small" color={theme.colors.white} />

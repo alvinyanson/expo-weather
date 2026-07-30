@@ -1,0 +1,45 @@
+appId: com.anonymous.expoweather
+---
+# Reach the authenticated Home screen via onboarding → login.
+- runFlow: onboarding_flow.yaml
+- runFlow: login_flow.yaml
+
+# Navigate to Details first — history is only accessible from there.
+- scrollUntilVisible:
+    element:
+      id: 'details-hint'
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    id: 'current-weather'
+
+# Wait for the Details screen to render (history button is near the top).
+- extendedWaitUntil:
+    visible:
+      id: 'details-history-button'
+    timeout: 30000
+
+- tapOn:
+    id: 'details-history-button'
+
+# Wait for the History screen header to render.
+- extendedWaitUntil:
+    visible:
+      id: 'history-back-button'
+    timeout: 15000
+
+# Header
+- assertVisible:
+    id: 'history-title'
+- assertVisible:
+    id: 'history-clear-button'
+
+# Weather history is logged upon fetching weather — assert the history list is visible.
+- assertVisible:
+    id: 'history-list'
+
+# Back navigation returns to Details screen.
+- tapOn:
+    id: 'history-back-button'
+- assertVisible:
+    id: 'back-button'

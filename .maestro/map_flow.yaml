@@ -1,0 +1,42 @@
+appId: com.anonymous.expoweather
+---
+# Reach the authenticated Home screen via onboarding → login.
+- runFlow: onboarding_flow.yaml
+- runFlow: login_flow.yaml
+
+# details-hint may be off-screen on smaller devices — scroll to it before tapping map.
+- scrollUntilVisible:
+    element:
+      id: 'details-hint'
+    direction: DOWN
+    timeout: 30000
+- tapOn:
+    id: 'map-button'
+
+# Wait for the map screen to render (native view initialisation).
+- extendedWaitUntil:
+    visible:
+      id: 'map-title'
+    timeout: 15000
+
+# Map screen header and controls
+- assertVisible:
+    id: 'map-back-button'
+- assertVisible:
+    id: 'map-zoom-in-button'
+- assertVisible:
+    id: 'map-zoom-out-button'
+
+# NOTE: map-marker-current-location only renders when location permission is granted at runtime.
+# Guest sign-in on a fresh state does not guarantee the permission, so this assertion is skipped.
+
+# NOTE: Long-press on the native MapLibre <Map> view is not reliably testable via Maestro.
+# Maestro's simulated gesture does not consistently trigger onLongPress on native map SDKs,
+# and PickedLocationMarker renders inside a native <Marker> layer that Maestro cannot traverse.
+# This is out of scope for Maestro E2E
+
+# Back navigation returns to Home.
+- tapOn:
+    id: 'map-back-button'
+- assertVisible:
+    id: 'search-input'
